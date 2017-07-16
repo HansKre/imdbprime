@@ -32,8 +32,7 @@ function getVideosFromUrlExt($url, &$reachedEnd, $i)
 
     //Parse the HTML. The @ is used to suppress any parsing errors
     //that will be thrown if the $html string isn't valid XHTML.
-    //@$dom->loadHTML($html);
-    if ($dom->loadHTML($html)) {
+    if (@$dom->loadHTML($html)) {
         //Get all h2Elems. You could also use any other tag name here
         $resultLiArray = getElementsBy($dom, "li","id","result_");
 
@@ -122,15 +121,24 @@ $reachedEnd = false;
 
 $i = isset($_GET["i"]) ? $_GET["i"] : 1;
 //$i = 399;
+$oneSecond = 1000000;
+$sleepTime = $oneSecond;
 while ($reachedEnd == false) {
     echo "Parsing page " . $i, "\n";
     $url = $part1 . $i . $part2 . $i . $part3;
-    $videos = array_merge($videos, getVideosFromUrlExt($url, $reachedEnd, $i));
-    // write to file
-    $now = new DateTime(null, new DateTimeZone('Europe/Berlin'));
-    file_put_contents( 'log.txt', $i . " , " . $now->format('Y-m-d H:i:s') . "\n", FILE_APPEND | LOCK_EX);
-    $i++;
-    sleep(1);
+    $newVideos = getVideosFromUrlExt($url, $reachedEnd, $i);
+    if (!empty($newVideos)) {
+        $videos = array_merge($videos, $newVideos);
+        $i++;
+    } else {
+        // repeat previous request with a higher sleep time
+        if ($sleepTime < ($oneSecond * 20)) {
+            $sleepTime += 500000;
+        } else {
+            echo "sleep timer is 20 Seconds already. There must be something seriously wrong.";
+        }
+    }
+    usleep($sleepTime);
 }
 
 echo "Finished parsing", '<br>';
