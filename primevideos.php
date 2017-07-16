@@ -130,7 +130,7 @@ while ($reachedEnd == false) {
     $now = new DateTime(null, new DateTimeZone('Europe/Berlin'));
     file_put_contents( 'log.txt', $i . " , " . $now->format('Y-m-d H:i:s') . "\n", FILE_APPEND | LOCK_EX);
     $i++;
-    usleep(500000);
+    sleep(1);
 }
 
 echo "Finished parsing", '<br>';
