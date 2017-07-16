@@ -19,7 +19,7 @@ function extractYear ($resultLi, $movieTitle) {
     return "0";
 }
 
-function getVideosFromUrlExt($url, &$reachedEnd, $i)
+function getVideosFromUrlExt($url, &$reachedEnd)
 {
     $videos = array();
     //How to parse: http://w-shadow.com/blog/2009/10/20/how-to-extract-html-tags-and-their-attributes-with-php/
@@ -94,7 +94,7 @@ if (!isset($_GET["internal"])) {
 $i = isset($_GET["i"]) ? $_GET["i"] : 1;
 //$i = 399;
 $randomNumber = rand();
-myLog($randomNumber . "Starting primevideos.php script with i = " $i);
+myLog($randomNumber . "Starting primevideos.php script with i = " . $i);
 
 $startTime = microtime(true);
 
@@ -113,7 +113,7 @@ $sleepTime = $oneSecond;
 while ($reachedEnd == false) {
     myLog($randomNumber . " Parsing page " . $i);
     $url = $part1 . $i . $part2 . $i . $part3;
-    $newVideos = getVideosFromUrlExt($url, $reachedEnd, $i);
+    $newVideos = getVideosFromUrlExt($url, $reachedEnd);
     if (!empty($newVideos)) {
         $videos = array_merge($videos, $newVideos);
         $i++;
