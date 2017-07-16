@@ -19,10 +19,7 @@ function extractYear ($resultLi, $movieTitle) {
     return "0";
 }
 
-/**
- * @param $url
- */
-function getVideosFromUrl($url, &$reachedEnd)
+function getVideosFromUrlExt($url, &$reachedEnd, $i)
 {
     $videos = array();
     //How to parse: http://w-shadow.com/blog/2009/10/20/how-to-extract-html-tags-and-their-attributes-with-php/
@@ -30,45 +27,8 @@ function getVideosFromUrl($url, &$reachedEnd)
     //Load the HTML page
     $html = file_get_contents($url);
 
-    //Create a new DOM document
-    $dom = new DOMDocument;
-
-    //Parse the HTML. The @ is used to suppress any parsing errors
-    //that will be thrown if the $html string isn't valid XHTML.
-    @$dom->loadHTML($html);
-
-    //Get all h2Elems. You could also use any other tag name here
-    $h2Elems = $dom->getElementsByTagName('h2');
-
-    //Iterate over the extracted h2Elems and display their URLs
-    foreach ($h2Elems as $h2Elem) {
-        //Extract and show the "data-attribute" attribute.
-        $movieTitle = $h2Elem->getAttribute('data-attribute');
-        if (strlen($movieTitle) > 1) {
-            $videos[] = $movieTitle;
-        }
-    }
-
-    //div class="proceedWarning"><span>Sie haben das Ende unseres besten Suchergebnis-Sets erreicht.</span></div>
-    $warningsDivElems = getElementsByClass($dom, 'div', 'proceedWarning');
-    if ($warningsDivElems) {
-        foreach ($warningsDivElems as $warningsDivElem) {
-            //we are looking for 'Sie haben das Ende unseres besten Suchergebnis-Sets erreicht.'
-            if (strpos($warningsDivElem->nodeValue,'Ende') !== false) {
-                $reachedEnd = true;
-            }
-        }
-    }
-    return $videos;
-}
-
-function getVideosFromUrlExt($url, &$reachedEnd)
-{
-    $videos = array();
-    //How to parse: http://w-shadow.com/blog/2009/10/20/how-to-extract-html-tags-and-their-attributes-with-php/
-
-    //Load the HTML page
-    $html = file_get_contents($url);
+    //debug save file
+    file_put_contents($i . "_page.html",$html);
 
     //Create a new DOM document
     $dom = new DOMDocument;
@@ -128,6 +88,8 @@ function getVideosFromUrlExt($url, &$reachedEnd)
         return $videos;
     } else {
         echo "Parsing error.";
+        print_r($dom);
+        return array();
     }
 }
 
@@ -167,7 +129,7 @@ $i = isset($_GET["i"]) ? $_GET["i"] : 1;
 while ($reachedEnd == false) {
     echo "Parsing page " . $i, "\n";
     $url = $part1 . $i . $part2 . $i . $part3;
-    $videos = array_merge($videos, getVideosFromUrlExt($url, $reachedEnd));
+    $videos = array_merge($videos, getVideosFromUrlExt($url, $reachedEnd, $i));
     // write to file
     $now = new DateTime(null, new DateTimeZone('Europe/Berlin'));
     file_put_contents( 'log.txt', $i . " , " . $now->format('Y-m-d H:i:s') . "\n", FILE_APPEND | LOCK_EX);
