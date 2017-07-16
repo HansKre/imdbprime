@@ -64,7 +64,7 @@ function getVideosFromUrlExt($url, &$reachedEnd, $i)
                     // " 52 Min."
                     if (strpos($laufzeit, 'Std') !== false) {
                         $year = extractYear($resultLi, $movieTitle);
-                        echo $year . " , " . $movieTitle ."\n";
+                        //echo $year . " , " . $movieTitle ."\n";
                         $videos[] = array($year, $movieTitle);
                     }
                 }
@@ -83,31 +83,15 @@ function getVideosFromUrlExt($url, &$reachedEnd, $i)
         }
         return $videos;
     } else {
-        echo "Parsing error.";
+        myLog("Parsing error.");
         return array();
     }
 }
 
 $randomNumber = rand();
 myLog("Starting primevideos.php script " . $randomNumber);
-//lock process
-/*$singletonFileName = "singleton.xxx";
-if (file_exists($singletonFileName)) {
-    echo "Process already running, aborting";
-    myLog("Process already running, aborting");
-    return;
-} else {
-    $singletonFile = fopen($singletonFileName, "w");
-    fclose($singletonFile);
-    myLog("Singleton file created");
-}*/
-
 
 $startTime = microtime(true);
-
-//delete old file
-unlink('log.txt');
-unlink('videos.txt');
 
 // https://www.amazon.de/s/ref=sr_pg_399?fst=as%3Aoff&rh=n%3A3279204031%2Cp_n_ways_to_watch%3A7448695031%2Cn%3A%213010076031%2Cn%3A3015915031&page=399&bbn=3279204031&ie=UTF8
 
@@ -127,7 +111,7 @@ if (!isset($_GET["internal"])) {
 $oneSecond = 1000000;
 $sleepTime = $oneSecond;
 while ($reachedEnd == false) {
-    echo "Parsing page " . $i, "\n";
+    myLog($randomNumber . " Parsing page " . $i);
     $url = $part1 . $i . $part2 . $i . $part3;
     $newVideos = getVideosFromUrlExt($url, $reachedEnd, $i);
     if (!empty($newVideos)) {
@@ -137,33 +121,25 @@ while ($reachedEnd == false) {
         $sleepTime -= 100000;
     } else {
         // repeat previous request with a higher sleep time
-        if ($sleepTime < ($oneSecond * 20)) {
-            $sleepTime += 500000;
-        } else {
-            echo "sleep timer is 20 Seconds already. There must be something seriously wrong.";
-        }
+        $sleepTime += 500000;
+        myLog($randomNumber . " , " . $sleepTime/1000000);
     }
     usleep($sleepTime);
 }
 
-echo "Finished parsing", '<br>';
-echo '<br>', "Anzahl gefundener Videos: " . count($videos), '<br>';
+myLog($randomNumber . " Finished parsing. Anzahl gefundener Videos: " . count($videos));
 
+//delete old file
+unlink('videos.txt');
 
 //write to text file
 $string_data = serialize($videos);
 file_put_contents("videos.txt", $string_data);
-//$data = file_get_contents( 'videos.txt' );
-//$arr = unserialize( $data );
-
-//tell about files
-echo "Videos stored on the server for later use:", '<br>';
-echo "<a href='https://hanskrebs.000webhostapp.com/videos.json'>videos.json</a>", '<br>';
 
 //print total execution time
 $executionTime = (microtime(true) - $startTime) / 60;
 myLog('Primevideos.php finished. Total Execution Time: ' . $executionTime . ' Minutes ' . $randomNumber);
 file_put_contents( 'log.txt', 'Total Execution Time: ' . $executionTime . ' Minutes' . "\n", FILE_APPEND | LOCK_EX);
 
-return "Status 200";
+echo "Status 200";
 ?>

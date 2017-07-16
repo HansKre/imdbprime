@@ -44,7 +44,7 @@ function getMovieUrl ($movieTitle, $year) {
             $temporaryArray = array();
             $eindeutig = true;
             foreach ($resultTdElems as $resultTdElem) {
-                echo $movieTitle . " ist mehrdeutig: " . $resultTdElem->nodeValue . "\n";
+                //echo $movieTitle . " ist mehrdeutig: " . $resultTdElem->nodeValue . "\n";
                 if (contains($resultTdElem->nodeValue, "(TV Series)") ||
                     contains($resultTdElem->nodeValue, "(TV Episode)") ||
                     contains($resultTdElem->nodeValue, "(TV Mini-Series)") ||
@@ -79,7 +79,7 @@ function getMovieUrl ($movieTitle, $year) {
             } elseif (count($temporaryArray) == 1) {
                 $correctTdElem = $temporaryArray[0];
             } else {
-                echo "Unknown case 1 \n";
+                //echo "Unknown case 1 \n";
                 return "";
             }
         } else {
@@ -93,7 +93,7 @@ function getMovieUrl ($movieTitle, $year) {
                 $linksArray[] = $aElem->getAttribute('href');
             }
         } else {
-            echo "Unknown case 2 \n";
+            //echo "Unknown case 2 \n";
         }
     } else {
         //echo "No matching titles found \n";
@@ -101,7 +101,7 @@ function getMovieUrl ($movieTitle, $year) {
     }
 
     if (count($linksArray) > 1) {
-        echo $searchUrl . "\n";
+        //echo $searchUrl . "\n";
         print_r($linksArray);
         return "";
     }
@@ -187,7 +187,7 @@ foreach ($videos as $video) {
         str_replace("&","and",$cleanMovieTitle);
         //try again only if movie title changed after cleaning
         if ((($positionColon !== false) || ($positionMinus !== false)) && (strlen($cleanMovieTitle) !== 0)) {
-            echo "Trying $video[1] again with: $cleanMovieTitle \n";
+            //echo "Trying $video[1] again with: $cleanMovieTitle \n";
             $searchUrl = getMovieUrl($cleanMovieTitle, $video[0]);
         }
     }
@@ -219,7 +219,9 @@ $string_data = serialize($skippedVideos);
 file_put_contents($skippedVideosName, $string_data);
 
 //print total execution time
-myLog ("queryimdb.php finished. Execution time: " . (microtime(true) - $startTime) / 60) . $randomNumber;
+$execTimeString = (microtime(true) - $startTime) / 60;
+$logString = $randomNumber . "queryimdb.php finished. Execution time: " . $execTimeString;
+myLog ($logString);
 
-return "Status 200";
+echo "Status 200";
 ?>
