@@ -1,5 +1,5 @@
 <?php
-ini_set('max_execution_time', 1800);
+ini_set('max_execution_time', 3600);
 require_once ('commons.php');
 
 function extractYear ($resultLi, $movieTitle) {
@@ -120,6 +120,9 @@ $videos = array();
 $reachedEnd = false;
 
 $i = isset($_GET["i"]) ? $_GET["i"] : 1;
+if (!isset($_GET["internal"])) {
+    return "Status 300";
+}
 //$i = 399;
 $oneSecond = 1000000;
 $sleepTime = $oneSecond;
@@ -130,6 +133,8 @@ while ($reachedEnd == false) {
     if (!empty($newVideos)) {
         $videos = array_merge($videos, $newVideos);
         $i++;
+        // let the sleep timer breath. success decreases the timer.
+        $sleepTime -= 100000;
     } else {
         // repeat previous request with a higher sleep time
         if ($sleepTime < ($oneSecond * 20)) {
@@ -157,21 +162,8 @@ echo "<a href='https://hanskrebs.000webhostapp.com/videos.json'>videos.json</a>"
 
 //print total execution time
 $executionTime = (microtime(true) - $startTime) / 60;
-echo '<br>', 'Total Execution Time: ' . $executionTime . ' Minutes';
+myLog('Primevideos.php finished. Total Execution Time: ' . $executionTime . ' Minutes ' . $randomNumber);
 file_put_contents( 'log.txt', 'Total Execution Time: ' . $executionTime . ' Minutes' . "\n", FILE_APPEND | LOCK_EX);
 
-
-
-//$data = file_get_contents( 'videos.txt');
-//$videos1 = unserialize( $data );
-//print_r($videos1);
-//echo "Anzahl gefundener Videos: " . count($videos1);
-
-//unlock process
-myLog("Primevideos.php finished. " . $randomNumber);
-/*$success = unlink($singletonFileName);
-$successString = $success ? "successful" : "not successful";
-echo $successString;
-myLog("Deleting singleton file was: " . $successString);*/
-echo "status 200";
+return "Status 200";
 ?>

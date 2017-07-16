@@ -146,6 +146,10 @@ function getMovieRating($url)
 }
 /*********Execution Flow*************/
 
+if (!isset($_GET["internal"])) {
+    return "Status 300";
+}
+
 $randomNumber = rand();
 myLog("Starting queryimdb.php script " . $randomNumber);
 $startTime = microtime(true);
@@ -215,9 +219,7 @@ $string_data = serialize($skippedVideos);
 file_put_contents($skippedVideosName, $string_data);
 
 //print total execution time
-myLog ("queryimdb.php Execution time: " . $executionTime = (microtime(true) - $startTime) / 60);
-echo "queryimdb.php Execution time: " . $executionTime = (microtime(true) - $startTime) / 60 . "\n";
+myLog ("queryimdb.php finished. Execution time: " . (microtime(true) - $startTime) / 60) . $randomNumber;
 
-myLog("queryimdb.php finished. " . $randomNumber);
-echo "status 200";
+return "Status 200";
 ?>
