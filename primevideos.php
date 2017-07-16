@@ -94,7 +94,7 @@ if (!isset($_GET["internal"])) {
 $i = isset($_GET["i"]) ? $_GET["i"] : 1;
 //$i = 399;
 $randomNumber = rand();
-myLog($randomNumber . "Starting primevideos.php script with i = " . $i);
+myLog($randomNumber . " Starting primevideos.php script with i = " . $i);
 
 $startTime = microtime(true);
 

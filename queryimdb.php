@@ -151,7 +151,7 @@ if (!isset($_GET["internal"])) {
 }
 
 $randomNumber = rand();
-myLog("Starting queryimdb.php script " . $randomNumber);
+myLog($randomNumber . " Starting queryimdb.php script ");
 $startTime = microtime(true);
 
 
@@ -162,9 +162,6 @@ $videos = unserialize( $data );
 $skippedVideos = array();
 $videosWithRatings = array();
 //$videos = array("Star Trek Beyond");
-
-$appendFileName = "videosWithRatingsContinousWrite.txt";
-unlink($appendFileName);
 
 foreach ($videos as $video) {
     $cleanMovieTitle = $video[1];
@@ -197,8 +194,9 @@ foreach ($videos as $video) {
         if ($theRating !== "0.0") {
             $videosWithRatings[] = array($theRating, $video[0], $video[1]);
             $string_data = nowFormat() . " , " . $theRating . " , " . $video[0] . " , " . $video[1] . "\n";
-            file_put_contents($appendFileName, $string_data, FILE_APPEND);
+            myLog($randomNumber . " adding: " . $string_data);
         } else {
+            myLog($randomNumber . " skipping: " . video[1]);
             $skippedVideos[] = $video;
         }
     } else {
@@ -220,8 +218,10 @@ file_put_contents($skippedVideosName, $string_data);
 
 //print total execution time
 $execTimeString = (microtime(true) - $startTime) / 60;
-$logString = $randomNumber . "queryimdb.php finished. Execution time: " . $execTimeString;
-myLog ($logString);
+$logString1 = $randomNumber . " queryimdb.php finished.";
+$logString2 = $randomNumber . " Execution time: " . $execTimeString;
+myLog ($logString1);
+myLog ($logString2;
 
 echo "Status 200";
 ?>
