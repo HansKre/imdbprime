@@ -206,7 +206,7 @@ foreach ($videos as $video) {
     }
 }
 rsort($videosWithRatings);
-print_r($videosWithRatings);
+//print_r($videosWithRatings);
 
 //write to text file
 $videosWithRatingsName = "videosWithRatings.txt";

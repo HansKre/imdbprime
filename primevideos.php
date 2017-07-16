@@ -87,7 +87,10 @@ function getVideosFromUrlExt($url, &$reachedEnd, $i)
         return array();
     }
 }
-
+echo "prime startet";
+if (!isset($_GET["internal"])) {
+    return "Status 300";
+}
 $randomNumber = rand();
 myLog("Starting primevideos.php script " . $randomNumber);
 
@@ -104,9 +107,6 @@ $videos = array();
 $reachedEnd = false;
 
 $i = isset($_GET["i"]) ? $_GET["i"] : 1;
-if (!isset($_GET["internal"])) {
-    return "Status 300";
-}
 //$i = 399;
 $oneSecond = 1000000;
 $sleepTime = $oneSecond;
