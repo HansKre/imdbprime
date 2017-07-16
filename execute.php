@@ -7,7 +7,7 @@ require_once ('commons.php');
 
 myLog("=====Starte=====");
 $baseURL = "http://imdbprime-snah.rhcloud.com";
-$cmd = "curl -s " . $baseURL . "/primevideos.php?internal=true&i=390";
+$cmd = "curl -s " . $baseURL . "\"/primevideos.php?internal=true&i=390\"";
 $outputPrimeV = shell_exec($cmd);
 /*if ($outputPrimeV) {
     echo "2";
