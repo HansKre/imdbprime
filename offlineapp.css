@@ -1,0 +1,67 @@
+body {
+  font: normal 16px/20px "Helvetica Neue", Helvetica, sans-serif;
+  background: rgb(237, 237, 236);
+  margin: 0;
+  padding: 0;
+}
+
+section, header, footer {
+  display: block;
+}
+
+h1 {
+  padding-top: 10px;
+}
+
+h2 {
+  font-size: 100%;
+  font-style: italic;
+}
+
+header,
+article > *,
+footer > * {
+  margin: 20px;
+}
+
+footer > * {
+  margin: 20px;
+  color: #999;
+}
+
+#status {
+  padding: 5px;
+  color: #fff;
+  background: #ccc;
+}
+
+#status.fail {
+  background: #c00;
+}
+
+#status.success {
+  background: #0c0;
+}
+
+#status.offline {
+  background: #c00;
+}
+
+#status.online {
+  background: #0c0;
+}
+
+#directions {
+  color: rgba(23, 125, 61, 0.74);
+  font-size: smaller;
+  line-height: 200%;
+  max-width: 400px;
+  padding:5px;
+  background-color: rgb(217, 217, 216);
+  border-radius: 10px;
+  border-top: 1px solid #fff;
+}
+
+p.network {
+  color: rgba(0, 0, 0, 0.58);
+}

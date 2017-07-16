@@ -1,0 +1,17 @@
+CACHE MANIFEST
+#v0.2 from 09.07.2017
+
+# see https://www.catswhocode.com/blog/how-to-create-offline-html5-web-apps-in-5-easy-steps
+
+CACHE
+#what to cache in application cache
+index.html
+
+NETWORK
+#what to NOT cache if network is online
+#star means, load everything if network is online
+*
+
+FALLBACK
+#just an example how to use: if the ressource /api is offline then the cached ressource offline.html shall be used
+/api offline.html
