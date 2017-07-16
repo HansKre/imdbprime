@@ -27,9 +27,6 @@ function getVideosFromUrlExt($url, &$reachedEnd, $i)
     //Load the HTML page
     $html = file_get_contents($url);
 
-    //debug save file
-    file_put_contents($i . "_page.html",$html);
-
     //Create a new DOM document
     $dom = new DOMDocument;
 
@@ -88,7 +85,6 @@ function getVideosFromUrlExt($url, &$reachedEnd, $i)
         return $videos;
     } else {
         echo "Parsing error.";
-        print_r($dom);
         return array();
     }
 }
@@ -134,6 +130,7 @@ while ($reachedEnd == false) {
     $now = new DateTime(null, new DateTimeZone('Europe/Berlin'));
     file_put_contents( 'log.txt', $i . " , " . $now->format('Y-m-d H:i:s') . "\n", FILE_APPEND | LOCK_EX);
     $i++;
+    usleep(500000);
 }
 
 echo "Finished parsing", '<br>';
