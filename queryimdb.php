@@ -196,7 +196,7 @@ foreach ($videos as $video) {
             $string_data = nowFormat() . " , " . $theRating . " , " . $video[0] . " , " . $video[1] . "\n";
             myLog($randomNumber . " adding: " . $string_data);
         } else {
-            myLog($randomNumber . " skipping: " . video[1]);
+            myLog($randomNumber . " skipping: " . $video[1]);
             $skippedVideos[] = $video;
         }
     } else {

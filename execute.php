@@ -8,7 +8,11 @@ require_once ('commons.php');
 myLog("=====Starte=====");
 $baseURL = "http://imdbprime-snah.rhcloud.com";
 $cmd = "curl -s " . $baseURL . "\"/primevideos.php?internal=true&i=1\"";
-$outputPrimeV = shell_exec($cmd);
+if (!isset($_GET["skipprimev"]) {
+    $outputPrimeV = shell_exec($cmd);
+} else {
+    myLog("skipping primevideos.php");
+}
 /*if ($outputPrimeV) {
     echo "2";
     if ($outputPrimeV !== "Status 200") {
