@@ -145,7 +145,9 @@ function getMovieRating($url)
     }
 }
 /*********Execution Flow*************/
-
+if (isset($argv[1])) {
+    $_GET["internal"] = $argv[1];
+}
 if (!isset($_GET["internal"])) {
     return "Status 300";
 }
@@ -193,10 +195,11 @@ foreach ($videos as $video) {
         $theRating = getMovieRating($searchUrl);
         if ($theRating !== "0.0") {
             $videosWithRatings[] = array($theRating, $video[0], $video[1]);
-            $string_data = nowFormat() . " , " . $theRating . " , " . $video[0] . " , " . $video[1] . "\n";
+            $string_data = $theRating . " , " . $video[0] . " , " . $video[1] . "\n";
             myLog($randomNumber . " adding: " . $string_data);
         } else {
-            myLog($randomNumber . " skipping: " . $video[1]);
+            $string_data = $video[0] . " , " . $video[1] . "\n";
+            myLog($randomNumber . " skipping: " . $string_data);
             $skippedVideos[] = $video;
         }
     } else {
@@ -221,7 +224,7 @@ $execTimeString = (microtime(true) - $startTime) / 60;
 $logString1 = $randomNumber . " queryimdb.php finished.";
 $logString2 = $randomNumber . " Execution time: " . $execTimeString;
 myLog ($logString1);
-myLog ($logString2;
+myLog ($logString2);
 
 echo "Status 200";
 ?>

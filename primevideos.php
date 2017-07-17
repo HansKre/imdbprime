@@ -87,7 +87,16 @@ function getVideosFromUrlExt($url, &$reachedEnd)
         return array();
     }
 }
-myLog(print_r($_GET));
+
+
+
+/*=============EXECUTION LOGIC============*/
+if (isset($argv[1])) {
+    $_GET["internal"] = $argv[1];
+}
+if (isset($argv[2])) {
+    $_GET["i"] = $argv[2];
+}
 if (!isset($_GET["internal"])) {
     return "Status 300";
 }

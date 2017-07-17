@@ -1,37 +1,70 @@
 <?php
+const STATUS_200 = "Status 200";
+const BASEURL = "http://imdbprime-snah.rhcloud.com";
 ini_set('max_execution_time', 36000);
 require_once ('commons.php');
 
 // https://ageek.de/6/php-scripte-im-hintergrund-ausfuhren/
 // https://entwickler.de/online/asynchronous-io-in-php-oder-doch-lieber-threads-137913.html
 
-myLog("=====Starte=====");
-$baseURL = "http://imdbprime-snah.rhcloud.com";
-$cmd = "curl -s " . $baseURL . "\"/primevideos.php?internal=true&i=1\"";
-if (!isset($_GET["skipprimev"])) {
-    $outputPrimeV = shell_exec($cmd);
-} else {
-    myLog("skipping primevideos.php");
+
+function isRunningOnMBA() {
+    if ($_ENV['USER'] == "hanskrebs") {
+        return true;
+    }
+    return false;
 }
-/*if ($outputPrimeV) {
-    echo "2";
-    if ($outputPrimeV !== "Status 200") {
-        echo "prime videos nicht erfolgreich.";
-        return;
-    }*/
-    myLog("Starte IMDB Query.");
-    $cmd = "curl -s " . $baseURL . "/queryimdb.php?internal=true";
-    $outputQueryI = shell_exec($cmd);
-    /*if ($outputQueryI) {
-        if ($outputQueryI !== "Status 200") {
-            echo "IMDB Query nicht erfolgreich.";
-            return;
-        }
+
+function executePrimeVideos() {
+    // allow starting from shell with: php -f execute.php 123
+    // $arg[1] didn't work ...
+    $i = isset($_SERVER['argv'][1]) ? $_SERVER['argv'][1] : 399;
+
+    $serverCmd = "curl -s " . BASEURL . "\"/primevideos.php?internal=true&i=1\"";
+    $localCmd = "php -f  primevideos.php true $i";
+    $out = "";
+    if (isRunningOnMBA()) {
+        $out = shell_exec($localCmd);
     } else {
-        // fehlerfall
+        $out = shell_exec($serverCmd);
+    }
+    if (contains($out, STATUS_200)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function executeQueryImdb() {
+    $serverCmd = "curl -s " . BASEURL . "/queryimdb.php?internal=true";
+    $localCmd = "php -f  queryimdb.php true";
+    $out = "";
+    if (isRunningOnMBA()) {
+        $out = shell_exec($localCmd);
+    } else {
+        $out = shell_exec($serverCmd);
+    }
+    if (contains($out, STATUS_200)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+/*============EXECUTION LOGIC==============*/
+
+myLog("=====Starte=====");
+if (executePrimeVideos()) {
+    myLog("=====Starte IMDB Query.=====");
+    if (executeQueryImdb()) {
+        myLog("=====Fertig=====");
+        echo "Status 200";
+    } else {
+        myLog("=====Abbruch: queryimdb.php nicht erfolgreich.=====");
+        echo "Status 900";
     }
 } else {
-    // fehlerfall
-}*/
-    myLog("=====Fertig=====");
+    myLog("=====Abbruch: primevideos.php nicht erfolgreich.=====");
+    echo "Status 900";
+}
 ?>
