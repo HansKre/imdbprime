@@ -8,7 +8,7 @@ require_once ('commons.php');
 myLog("=====Starte=====");
 $baseURL = "http://imdbprime-snah.rhcloud.com";
 $cmd = "curl -s " . $baseURL . "\"/primevideos.php?internal=true&i=1\"";
-if (!isset($_GET["skipprimev"]) {
+if (!isset($_GET["skipprimev"])) {
     $outputPrimeV = shell_exec($cmd);
 } else {
     myLog("skipping primevideos.php");
