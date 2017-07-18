@@ -54,7 +54,8 @@ function executeQueryImdb() {
 /*============EXECUTION LOGIC==============*/
 
 myLog("=====Starte=====");
-if (executePrimeVideos()) {
+//if (executePrimeVideos()) {
+if (ture) {
     myLog("=====Starte IMDB Query.=====");
     if (executeQueryImdb()) {
         myLog("=====Fertig=====");
