@@ -18,6 +18,6 @@ Thumbs.db
 global.log
 log.txt
 skippedVideos.txt
-videos.txt
+#videos.txt
 videosWithRatings.txt
 videosWithRatingsContinousWrite.txt
