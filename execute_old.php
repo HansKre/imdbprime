@@ -1,10 +1,7 @@
 <?php
-declare(strict_types=1);
-require_once ('queryimdb.php');
-
 const STATUS_200 = "Status 200";
 const BASEURL = "http://imdbprime-snah.rhcloud.com";
-ini_set('max_execution_time', '36000');
+ini_set('max_execution_time', 36000);
 require_once ('commons.php');
 
 // https://ageek.de/6/php-scripte-im-hintergrund-ausfuhren/
@@ -39,7 +36,19 @@ function executePrimeVideos() {
 }
 
 function executeQueryImdb() {
-    return doQueryImdb(rand());
+    $serverCmd = "curl -s " . BASEURL . "/queryimdb.php?internal=true";
+    $localCmd = "php -f  queryimdb.php true";
+    $out = "";
+    if (isRunningOnMBA()) {
+        $out = shell_exec($localCmd);
+    } else {
+        $out = shell_exec($serverCmd);
+    }
+    if (contains($out, STATUS_200)) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 /*============EXECUTION LOGIC==============*/

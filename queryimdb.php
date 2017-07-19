@@ -1,5 +1,6 @@
 <?php
-ini_set('max_execution_time', 18000);
+declare(strict_types=1);
+ini_set('max_execution_time', '18000');
 require_once ('commons.php');
 
 function containsYear(string $string, string $year):bool {
@@ -48,6 +49,7 @@ function _getMovieUrl ($movieTitle, $year) {
         } else {
             myLog("Unhandled case for $movieTitle and $searchUrl. class 'result_text' missing");
         }
+        file_put_contents("null_$movieTitle.html", $html);
         return null;
     }
     if (empty($linksArray)) {
@@ -130,13 +132,15 @@ function extractMovieUrlsFromHtml($year, $resultTdElems, $linksArray) {
 }
 
 function getMovieUrl($movieTitle, $year) {
-    $searchUrl = null;
+    /*$searchUrl = null;
     $sleepTimer =ONESECOND;
     while (is_null($searchUrl)) {
         $searchUrl = _getMovieUrl($movieTitle, $year);
         usleep($sleepTimer);
         $sleepTimer += ONESECOND / 2;
-    }
+    }*/
+
+    $searchUrl = _getMovieUrl($movieTitle, $year);
 
     $cleanMovieTitle = $movieTitle;
     if ($searchUrl == "no results") {
@@ -162,7 +166,7 @@ function getMovieUrl($movieTitle, $year) {
     if ($searchUrl == "no results") {
         return "";
     } elseif (is_null($searchUrl)) {
-        //todo: kann das vorkommen?
+        myLog("Null URL bei: $movieTitle");
         return "";
     }
     else {
@@ -205,69 +209,71 @@ function getMovieRating($url)
     }
 }
 /*********Execution Flow*************/
-/*if (isset($argv[1])) {
+function doQueryImdb(int $randomNumber):bool {
+    /*if (isset($argv[1])) {
     $_GET["internal"] = $argv[1];
 }
 if (!isset($_GET["internal"])) {
     return "Status 300";
 }*/
 
-$randomNumber = rand();
-myLog($randomNumber . " Starting queryimdb.php script ");
-$startTime = microtime(true);
+    myLog($randomNumber . " Starting queryimdb.php script ");
+    $startTime = microtime(true);
 
 
 // https://www.amazon.de/s/ref=sr_pg_399?fst=as%3Aoff&rh=n%3A3279204031%2Cp_n_ways_to_watch%3A7448695031%2Cn%3A%213010076031%2Cn%3A3015915031&page=399&bbn=3279204031&ie=UTF8
 
-$data = file_get_contents( 'videos.txt' );
-$videos = unserialize( $data );
-$skippedVideos = array();
-$videosWithRatings = array();
+    $data = file_get_contents( 'videos.txt' );
+    $videos = unserialize( $data );
+    $skippedVideos = array();
+    $videosWithRatings = array();
 //$videos = array("Star Trek Beyond");
 
-foreach ($videos as $video) {
-    $cleanMovieTitle = $video[1];
-    $position = strpos($cleanMovieTitle, " [");
-    if ($position !== false) {
-        $cleanMovieTitle = substr($cleanMovieTitle, 0, $position);
-    }
-    $searchUrl = getMovieUrl($cleanMovieTitle, $video[0]);
-    //todo: warum kommt hier ein $searchUrl = null an?
-    if (!is_null($searchUrl) && ($searchUrl !== "")) {
-        //echo $searchUrl . "\n";
-        $theRating = getMovieRating($searchUrl);
-        if ($theRating !== "0.0") {
-            $videosWithRatings[] = array($theRating, $video[0], $video[1]);
-            $string_data = $theRating . " , " . $video[0] . " , " . $video[1];
-            myLog($randomNumber . " adding: " . $string_data);
+    foreach ($videos as $video) {
+        $cleanMovieTitle = $video[1];
+        $position = strpos($cleanMovieTitle, " [");
+        if ($position !== false) {
+            $cleanMovieTitle = substr($cleanMovieTitle, 0, $position);
+        }
+        $searchUrl = getMovieUrl($cleanMovieTitle, $video[0]);
+        //todo: warum kommt hier ein $searchUrl = null an?
+        if (!is_null($searchUrl) && ($searchUrl !== "")) {
+            //echo $searchUrl . "\n";
+            $theRating = getMovieRating($searchUrl);
+            if ($theRating !== "0.0") {
+                $videosWithRatings[] = array($theRating, $video[0], $video[1]);
+                $string_data = $theRating . " , " . $video[0] . " , " . $video[1];
+                myLog($randomNumber . " adding: " . $string_data);
+            } else {
+                $string_data = $video[0] . " , " . $video[1];
+                myLog($randomNumber . " skipping: " . $string_data);
+                $skippedVideos[] = $video;
+            }
         } else {
-            $string_data = $video[0] . " , " . $video[1];
-            myLog($randomNumber . " skipping: " . $string_data);
             $skippedVideos[] = $video;
         }
-    } else {
-        $skippedVideos[] = $video;
     }
-}
-rsort($videosWithRatings);
+    rsort($videosWithRatings);
 //print_r($videosWithRatings);
 
 //write to text file
-$videosWithRatingsName = "videosWithRatings.txt";
-$skippedVideosName = "skippedVideos.txt";
-unlink($videosWithRatingsName);
-unlink($skippedVideosName);
-$string_data = serialize($videosWithRatings);
-file_put_contents($videosWithRatingsName, $string_data);
-$string_data = serialize($skippedVideos);
-file_put_contents($skippedVideosName, $string_data);
+    $videosWithRatingsName = "videosWithRatings.txt";
+    $skippedVideosName = "skippedVideos.txt";
+    unlink($videosWithRatingsName);
+    unlink($skippedVideosName);
+    $string_data = serialize($videosWithRatings);
+    file_put_contents($videosWithRatingsName, $string_data);
+    $string_data = serialize($skippedVideos);
+    file_put_contents($skippedVideosName, $string_data);
 
 //print total execution time
-$execTimeString = (microtime(true) - $startTime) / 60;
-$logString1 = $randomNumber . " queryimdb.php finished.";
-$logString2 = $randomNumber . " Execution time: " . $execTimeString;
-myLog ($logString1);
-myLog ($logString2);
+    $execTimeString = (microtime(true) - $startTime) / 60;
+    $logString1 = $randomNumber . " queryimdb.php finished.";
+    $logString2 = $randomNumber . " Execution time: " . $execTimeString;
+    myLog ($logString1);
+    myLog ($logString2);
 
-echo "Status 200";
+    echo "Status 200";
+    return true;
+}
 ?>
