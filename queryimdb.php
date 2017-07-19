@@ -2,17 +2,19 @@
 ini_set('max_execution_time', 18000);
 require_once ('commons.php');
 
-function containsYear($string, $year) {
-    if (contains($string, "(".$year.")") ||
-        contains($string, "(". ($year + 1) .")") ||
-        contains($string, "(". ($year - 1) .")")
-    ) {
-        return true;
+function containsYear(string $string, string $year):bool {
+    if (is_numeric($year)) {
+        if (contains($string, "(".$year.")") ||
+            contains($string, "(". ($year + 1) .")") ||
+            contains($string, "(". ($year - 1) .")")
+        ) {
+            return true;
+        }
     }
     return false;
 }
 
-function getMovieUrl ($movieTitle, $year) {
+function _getMovieUrl ($movieTitle, $year) {
     //http://www.imdb.com/find?q=Star%20Wars%3A%20The%20last%20Jedi&s=tt&exact=true&ref_=fn_tt_ex
     $baseUrl = 'http://www.imdb.com';
     $part1 = '/find?q=';
@@ -38,76 +40,134 @@ function getMovieUrl ($movieTitle, $year) {
     $linksArray = array();
     $resultTdElems = getElementsByClass($dom, 'td', 'result_text');
     if ($resultTdElems) {
-        $correctTdElem = null;
-        if (count($resultTdElems) > 1) {
-            // mehrdeutigkeit behandeln
-            $temporaryArray = array();
-            $eindeutig = true;
-            foreach ($resultTdElems as $resultTdElem) {
-                //echo $movieTitle . " ist mehrdeutig: " . $resultTdElem->nodeValue . "\n";
-                if (contains($resultTdElem->nodeValue, "(TV Series)") ||
-                    contains($resultTdElem->nodeValue, "(TV Episode)") ||
-                    contains($resultTdElem->nodeValue, "(TV Mini-Series)") ||
-                    contains($resultTdElem->nodeValue, "(Short)") ||
-                    contains($resultTdElem->nodeValue, "(TV Movie)") ||
-                    contains($resultTdElem->nodeValue, "(in development)") ||
-                    contains($resultTdElem->nodeValue, "(Video)") ||
-                    contains($resultTdElem->nodeValue, "(Video Game)")
-                ) {
-                    $eindeutig = false;
-                }
-                if ($eindeutig) {
-                    // jahr vergleichen, manchmal weicht das Amazon-Jahr vom IMDB-Jahr um +/- 1 ab
-                    if (containsYear($resultTdElem->nodeValue, $year)) {
-                        $temporaryArray[] = $resultTdElem;
-                    }
-                }
-            } // ende foreach
-            if (count($temporaryArray) > 1) {
-                // immer noch nicht eindeutig
-                // wir sind nun in der engeren Auswahl
-                $preferred = 0;
-                //im Array sind die Einträge bereits absteigend nach ihrer Trefferwahrscheinlichkeit auf Basis der IMDB-Einschätzung sortiert
-                //deshalb tasten wir uns von hinten nach vorn
-                for ($i = count($temporaryArray) - 1; $i=0; $i--) {
-                    $nodeValue = $resultTdElem->nodeValue;
-                    if (!contains($nodeValue, "aka \"") && !multipleOccuranceOf($nodeValue, "(") && containsYear($nodeValue, $year)) {
-                        $preferred = $i;
-                    }
-                }
-                $correctTdElem = $temporaryArray[$preferred];
-            } elseif (count($temporaryArray) == 1) {
-                $correctTdElem = $temporaryArray[0];
-            } else {
-                //echo "Unknown case 1 \n";
-                return "";
-            }
-        } else {
-            // exactly 1 result
-            $correctTdElem = $resultTdElems[0];
-        }
-        if ($correctTdElem) {
-            //get deep link
-            $aElems = $correctTdElem->getElementsByTagName('a');
-            foreach ($aElems as $aElem) {
-                $linksArray[] = $aElem->getAttribute('href');
-            }
-        } else {
-            //echo "Unknown case 2 \n";
-        }
+        $linksArray = extractMovieUrlsFromHtml($year, $resultTdElems, $linksArray);
     } else {
-        //echo "No matching titles found \n";
+        // h1 class="findHeader">No results found for <span
+        if (hasElementByAndSearchString($dom, "h1", "class", "findHeader", "No results found for")) {
+            return "no results";
+        } else {
+            myLog("Unhandled case for $movieTitle and $searchUrl. class 'result_text' missing");
+        }
+        return null;
+    }
+    if (empty($linksArray)) {
         return "";
     }
-
     if (count($linksArray) > 1) {
-        //echo $searchUrl . "\n";
-        print_r($linksArray);
-        return "";
+        myLog("Multiple entries in linksArray for searchurl: " . $searchUrl . " \n" . print_r($linksArray));
+        return "too many results";
     }
-
     //http://www.imdb.com/title/tt1718835/?ref_=fn_tt_tt_1
     return ($baseUrl . $linksArray[0]);
+}
+
+/**
+ * @param $year
+ * @param $resultTdElems
+ * @param $linksArray
+ * @return array
+ */
+function extractMovieUrlsFromHtml($year, $resultTdElems, $linksArray) {
+    $correctTdElem = null;
+    if (count($resultTdElems) > 1) {
+        // mehrdeutigkeit behandeln
+        $temporaryArray = array();
+        $eindeutig = true;
+        foreach ($resultTdElems as $resultTdElem) {
+            //echo $movieTitle . " ist mehrdeutig: " . $resultTdElem->nodeValue . "\n";
+            if (contains($resultTdElem->nodeValue, "(TV Series)") ||
+                contains($resultTdElem->nodeValue, "(TV Episode)") ||
+                contains($resultTdElem->nodeValue, "(TV Mini-Series)") ||
+                contains($resultTdElem->nodeValue, "(Short)") ||
+                contains($resultTdElem->nodeValue, "(TV Movie)") ||
+                contains($resultTdElem->nodeValue, "(in development)") ||
+                contains($resultTdElem->nodeValue, "(Video)") ||
+                contains($resultTdElem->nodeValue, "(Video Game)")
+            ) {
+                $eindeutig = false;
+            }
+            if ($eindeutig) {
+                // jahr vergleichen, manchmal weicht das Amazon-Jahr vom IMDB-Jahr um +/- 1 ab
+                if (containsYear($resultTdElem->nodeValue, $year)) {
+                    $temporaryArray[] = $resultTdElem;
+                }
+            }
+        } // ende foreach
+        if (count($temporaryArray) > 1) {
+            // immer noch nicht eindeutig
+            // wir sind nun in der engeren Auswahl
+            $preferred = 0;
+            //im Array sind die Einträge bereits absteigend nach ihrer Trefferwahrscheinlichkeit auf Basis der IMDB-Einschätzung sortiert
+            //deshalb tasten wir uns von hinten nach vorn
+            for ($i = count($temporaryArray) - 1; $i = 0; $i--) {
+                $nodeValue = $resultTdElem->nodeValue;
+                if (!contains($nodeValue, "aka \"") && !multipleOccuranceOf($nodeValue, "(") && containsYear($nodeValue, $year)) {
+                    $preferred = $i;
+                }
+            }
+            $correctTdElem = $temporaryArray[$preferred];
+        } elseif (count($temporaryArray) == 1) {
+            $correctTdElem = $temporaryArray[0];
+        } else {
+            myLog("Unknown case 1");
+            return array();
+        }
+    } else {
+        // exactly 1 result
+        $correctTdElem = $resultTdElems[0];
+    }
+    if ($correctTdElem) {
+        //get deep link
+        $aElems = $correctTdElem->getElementsByTagName('a');
+        foreach ($aElems as $aElem) {
+            $linksArray[] = $aElem->getAttribute('href');
+        }
+    } else {
+        myLog("Unknown case 2");
+        return array();
+    }
+    return $linksArray;
+}
+
+function getMovieUrl($movieTitle, $year) {
+    $searchUrl = null;
+    $sleepTimer =ONESECOND;
+    while (is_null($searchUrl)) {
+        $searchUrl = _getMovieUrl($movieTitle, $year);
+        usleep($sleepTimer);
+        $sleepTimer += ONESECOND / 2;
+    }
+
+    $cleanMovieTitle = $movieTitle;
+    if ($searchUrl == "no results") {
+        //try again without substring after : and -
+        $positionColon = strpos($cleanMovieTitle, ":");
+        if ($positionColon !== false) {
+            $cleanMovieTitle = substr($cleanMovieTitle, 0, $positionColon);
+        }
+        $positionMinus = strpos($cleanMovieTitle, "-");
+        if ($positionMinus !== false) {
+            $cleanMovieTitle = substr($cleanMovieTitle, 0, $positionMinus);
+        }
+        // todo: replace als change interpretieren
+        // todo: remove brackets ( )
+        str_replace("&","and",$cleanMovieTitle);
+        //try again only if movie title changed after cleaning
+        if ((($positionColon !== false) || ($positionMinus !== false)) && (strlen($cleanMovieTitle) !== 0)) {
+            echo "Trying $movieTitle again with: $cleanMovieTitle \n";
+            // selbstaufruf
+            $searchUrl = getMovieUrl($cleanMovieTitle, $movieTitle);
+        }
+    }
+    if ($searchUrl == "no results") {
+        return "";
+    } elseif (is_null($searchUrl)) {
+        //todo: kann das vorkommen?
+        return "";
+    }
+    else {
+        return $searchUrl;
+    }
 }
 
 /**
@@ -172,33 +232,16 @@ foreach ($videos as $video) {
         $cleanMovieTitle = substr($cleanMovieTitle, 0, $position);
     }
     $searchUrl = getMovieUrl($cleanMovieTitle, $video[0]);
-    if ($searchUrl == "") {
-        //try again without substring after : and -
-        $positionColon = strpos($cleanMovieTitle, ":");
-        if ($positionColon !== false) {
-            $cleanMovieTitle = substr($cleanMovieTitle, 0, $positionColon);
-        }
-        $positionMinus = strpos($cleanMovieTitle, "-");
-        if ($positionMinus !== false) {
-            $cleanMovieTitle = substr($cleanMovieTitle, 0, $positionMinus);
-        }
-        // todo: replace als change interpretieren
-        str_replace("&","and",$cleanMovieTitle);
-        //try again only if movie title changed after cleaning
-        if ((($positionColon !== false) || ($positionMinus !== false)) && (strlen($cleanMovieTitle) !== 0)) {
-            //echo "Trying $video[1] again with: $cleanMovieTitle \n";
-            $searchUrl = getMovieUrl($cleanMovieTitle, $video[0]);
-        }
-    }
-    if ($searchUrl !== "") {
+    //todo: warum kommt hier ein $searchUrl = null an?
+    if (!is_null($searchUrl) && ($searchUrl !== "")) {
         //echo $searchUrl . "\n";
         $theRating = getMovieRating($searchUrl);
         if ($theRating !== "0.0") {
             $videosWithRatings[] = array($theRating, $video[0], $video[1]);
-            $string_data = $theRating . " , " . $video[0] . " , " . $video[1] . "\n";
+            $string_data = $theRating . " , " . $video[0] . " , " . $video[1];
             myLog($randomNumber . " adding: " . $string_data);
         } else {
-            $string_data = $video[0] . " , " . $video[1] . "\n";
+            $string_data = $video[0] . " , " . $video[1];
             myLog($randomNumber . " skipping: " . $string_data);
             $skippedVideos[] = $video;
         }

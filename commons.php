@@ -1,5 +1,5 @@
 <?php
-
+    const ONESECOND = 1000000;
     function nowFormat () {
         $now = new DateTime(null, new DateTimeZone('Europe/Berlin'));
         return $now->format('Y-m-d H:i:s');
@@ -41,4 +41,14 @@
         return false;
     }
 
+    function hasElementByAndSearchString($parentNode, $tagName, $attributeName, $attributeValue, $searchString) {
+        $returnArr = getElementsBy($parentNode, $tagName, $attributeName, $attributeValue);
+        foreach ($returnArr as $value) {
+            $stringValue = $value->nodeValue;
+            if (contains($stringValue, $searchString)) {
+                return true;
+            }
+        }
+        return false;
+    }
 ?>
