@@ -9,7 +9,7 @@ require_once ('commons.php');
 
 
 function isRunningOnMBA() {
-    if ($_ENV['USER'] == "hanskrebs") {
+    if (contains(__DIR__, "hanskrebs")) {
         return true;
     }
     return false;
@@ -55,7 +55,7 @@ function executeQueryImdb() {
 
 myLog("=====Starte=====");
 //if (executePrimeVideos()) {
-if (ture) {
+if (true) {
     myLog("=====Starte IMDB Query.=====");
     if (executeQueryImdb()) {
         myLog("=====Fertig=====");
