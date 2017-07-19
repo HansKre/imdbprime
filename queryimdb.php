@@ -205,12 +205,12 @@ function getMovieRating($url)
     }
 }
 /*********Execution Flow*************/
-if (isset($argv[1])) {
+/*if (isset($argv[1])) {
     $_GET["internal"] = $argv[1];
 }
 if (!isset($_GET["internal"])) {
     return "Status 300";
-}
+}*/
 
 $randomNumber = rand();
 myLog($randomNumber . " Starting queryimdb.php script ");
