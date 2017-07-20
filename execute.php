@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 require_once ('queryimdb.php');
 
 const STATUS_200 = "Status 200";

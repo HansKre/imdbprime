@@ -1,10 +1,9 @@
 <?php
-declare(strict_types=1);
 const IMDBURL = 'http://www.imdb.com';
 ini_set('max_execution_time', '18000');
 require_once ('commons.php');
 
-function containsYear(string $string, string $year):bool {
+function containsYear($string, $year) {
     if (is_numeric($year)) {
         if (contains($string, "(".$year.")") ||
             contains($string, "(". ($year + 1) .")") ||
@@ -82,7 +81,7 @@ function _getMovieUrl ($movieTitle, $year) {
  * @param $linksArray
  * @return array
  */
-function extractMovieUrlsFromHtml(string $year, string $movieTitle, array $resultTdElems):array {
+function extractMovieUrlsFromHtml($year, $movieTitle, $resultTdElems) {
     $correctTdElem = null;
     //if (count($resultTdElems) > 1) {
         // mehrdeutigkeit behandeln
@@ -224,7 +223,7 @@ function getMovieRating($url)
     }
 }
 /*********Execution Flow*************/
-function doQueryImdb(int $randomNumber):bool {
+function doQueryImdb($randomNumber) {
 
     myLog($randomNumber . " Starting queryimdb.php script ");
     $startTime = microtime(true);
