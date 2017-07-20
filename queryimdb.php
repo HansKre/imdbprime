@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+const IMDBURL = 'http://www.imdb.com';
 ini_set('max_execution_time', '18000');
 require_once ('commons.php');
 
@@ -16,14 +17,18 @@ function containsYear(string $string, string $year):bool {
 }
 
 function _getMovieUrl ($movieTitle, $year) {
-    //http://www.imdb.com/find?q=Star%20Wars%3A%20The%20last%20Jedi&s=tt&exact=true&ref_=fn_tt_ex
-    $baseUrl = 'http://www.imdb.com';
+    //http://www.imdb.com/find?q=Die+Unfassbaren+2+-+Now+You+See+Me+2&s=tt&exact=true&ref_=fn_tt_ex
     $part1 = '/find?q=';
     $part2 = '&s=tt&exact=true&ref_=fn_tt_ex';
-    $searchUrl = $baseUrl . $part1 . urlencode($movieTitle) . $part2;
+    $urlForExactSearch = IMDBURL . $part1 . urlencode($movieTitle) . $part2;
+
+    //http://www.imdb.com/find?ref_=nv_sr_fn&q=Die+Unfassbaren+2+-+Now+You+See+Me+2&s=tt
+    $part1 = '/find?ref_=nv_sr_fn&q=';
+    $part2 = '&s=tt';
+    $urlForPopularSearch = IMDBURL . $part1 . urlencode($movieTitle) . $part2;
 
     //Load the HTML page
-    $html = file_get_contents($searchUrl);
+    $html = file_get_contents($urlForExactSearch);
 
     //Create a new DOM document
     $dom = new DOMDocument;
@@ -40,8 +45,16 @@ function _getMovieUrl ($movieTitle, $year) {
     */
     $linksArray = array();
     $resultTdElems = getElementsByClass($dom, 'td', 'result_text');
+    if (!$resultTdElems) {
+        //retry with other url
+        $html = file_get_contents($urlForPopularSearch);
+        $dom = new DOMDocument;
+        @$dom->loadHTML($html);
+        $resultTdElems = getElementsByClass($dom, 'td', 'result_text');
+    }
+    // not null, not empty
     if ($resultTdElems) {
-        $linksArray = extractMovieUrlsFromHtml($year, $resultTdElems, $linksArray);
+        $linksArray = extractMovieUrlsFromHtml($year, $movieTitle, $resultTdElems);
     } else {
         // h1 class="findHeader">No results found for <span
         if (hasElementByAndSearchString($dom, "h1", "class", "findHeader", "No results found for")) {
@@ -60,7 +73,7 @@ function _getMovieUrl ($movieTitle, $year) {
         return "too many results";
     }
     //http://www.imdb.com/title/tt1718835/?ref_=fn_tt_tt_1
-    return ($baseUrl . $linksArray[0]);
+    return (IMDBURL . $linksArray[0]);
 }
 
 /**
@@ -69,14 +82,13 @@ function _getMovieUrl ($movieTitle, $year) {
  * @param $linksArray
  * @return array
  */
-function extractMovieUrlsFromHtml($year, $resultTdElems, $linksArray) {
+function extractMovieUrlsFromHtml(string $year, string $movieTitle, array $resultTdElems):array {
     $correctTdElem = null;
-    if (count($resultTdElems) > 1) {
+    //if (count($resultTdElems) > 1) {
         // mehrdeutigkeit behandeln
         $temporaryArray = array();
         $eindeutig = true;
         foreach ($resultTdElems as $resultTdElem) {
-            //echo $movieTitle . " ist mehrdeutig: " . $resultTdElem->nodeValue . "\n";
             if (contains($resultTdElem->nodeValue, "(TV Series)") ||
                 contains($resultTdElem->nodeValue, "(TV Episode)") ||
                 contains($resultTdElem->nodeValue, "(TV Mini-Series)") ||
@@ -86,6 +98,7 @@ function extractMovieUrlsFromHtml($year, $resultTdElems, $linksArray) {
                 contains($resultTdElem->nodeValue, "(Video)") ||
                 contains($resultTdElem->nodeValue, "(Video Game)")
             ) {
+                //echo "skipping: " . $resultTdElem->nodeValue . "\n";
                 $eindeutig = false;
             }
             if ($eindeutig) {
@@ -111,13 +124,13 @@ function extractMovieUrlsFromHtml($year, $resultTdElems, $linksArray) {
         } elseif (count($temporaryArray) == 1) {
             $correctTdElem = $temporaryArray[0];
         } else {
-            myLog("Unknown case 1");
+            myLog("not a movie: $movieTitle");
             return array();
         }
-    } else {
+    /*} else {
         // exactly 1 result
         $correctTdElem = $resultTdElems[0];
-    }
+    }*/
     if ($correctTdElem) {
         //get deep link
         $aElems = $correctTdElem->getElementsByTagName('a');
@@ -158,7 +171,7 @@ function getMovieUrl($movieTitle, $year) {
         str_replace("&","and",$cleanMovieTitle);
         //try again only if movie title changed after cleaning
         if ((($positionColon !== false) || ($positionMinus !== false)) && (strlen($cleanMovieTitle) !== 0)) {
-            echo "Trying $movieTitle again with: $cleanMovieTitle \n";
+            echo "Trying $year , $movieTitle again with: $cleanMovieTitle \n";
             // selbstaufruf
             $searchUrl = getMovieUrl($cleanMovieTitle, $movieTitle);
         }
@@ -166,7 +179,9 @@ function getMovieUrl($movieTitle, $year) {
     if ($searchUrl == "no results") {
         return "";
     } elseif (is_null($searchUrl)) {
-        myLog("Null URL bei: $movieTitle");
+        myLog("null: Null URL bei: $movieTitle");
+        return "";
+    } elseif (!contains($searchUrl, IMDBURL)) {
         return "";
     }
     else {
@@ -210,12 +225,6 @@ function getMovieRating($url)
 }
 /*********Execution Flow*************/
 function doQueryImdb(int $randomNumber):bool {
-    /*if (isset($argv[1])) {
-    $_GET["internal"] = $argv[1];
-}
-if (!isset($_GET["internal"])) {
-    return "Status 300";
-}*/
 
     myLog($randomNumber . " Starting queryimdb.php script ");
     $startTime = microtime(true);
@@ -227,7 +236,8 @@ if (!isset($_GET["internal"])) {
     $videos = unserialize( $data );
     $skippedVideos = array();
     $videosWithRatings = array();
-//$videos = array("Star Trek Beyond");
+    /*$videos = array();
+    $videos[] = array("2016", "Die Unfassbaren 2 - Now You See Me 2");*/
 
     foreach ($videos as $video) {
         $cleanMovieTitle = $video[1];
@@ -273,7 +283,6 @@ if (!isset($_GET["internal"])) {
     myLog ($logString1);
     myLog ($logString2);
 
-    echo "Status 200";
     return true;
 }
 ?>

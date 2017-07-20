@@ -1,7 +1,8 @@
 <?php
+    declare(strict_types=1);
     const ONESECOND = 1000000;
     function nowFormat () {
-        $now = new DateTime(null, new DateTimeZone('Europe/Berlin'));
+        $now = new DateTime("", new DateTimeZone('Europe/Berlin'));
         return $now->format('Y-m-d H:i:s');
     }
 
@@ -10,7 +11,7 @@
         file_put_contents( $logFileName, nowformat() . " " . $message . "\n", FILE_APPEND | LOCK_EX);
     }
 
-    function getElementsBy($parentNode, $tagName, $attributeName, $attributeValue) {
+    function getElementsBy($parentNode, $tagName, $attributeName, $attributeValue):array {
         $nodes=array();
 
         $childNodeList = $parentNode->getElementsByTagName($tagName);
