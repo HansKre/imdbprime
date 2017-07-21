@@ -19,5 +19,5 @@ global.log
 log.txt
 skippedVideos.txt
 #videos.txt
-#videosWithRatings.txt
+videosWithRatings.txt
 videosWithRatingsContinousWrite.txt
