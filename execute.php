@@ -2,6 +2,7 @@
 require_once ('commons.php');
 require_once ('queryimdb.php');
 require_once ('primevideos.php');
+require_once ('getLastVideoFromFile.php');
 const STATUS_200 = "Status 200";
 const BASEURL = "http://imdbprime-snah.rhcloud.com";
 ini_set('max_execution_time', '36000');
@@ -33,15 +34,17 @@ function setEnvVar() {
 }
 
 /*============EXECUTION LOGIC==============*/
+// todo: handle execution time
 $myExecutionId = rand();
 myLog("=====Starte=====");
 //if (executePrimeVideos($myExecutionId, 400)) {
 /*executePrimeVideos($myExecutionId, 399);
 if (false) {*/
-if (true){
+if (file_exists("videos2.txt")){
     myLog("=====Starte IMDB Query.=====");
     if (executeQueryImdb($myExecutionId)) {
         myLog("=====Fertig=====");
+        //todo: replace "old" result with "new", so that we always have something
         echo "Status 200";
     } else {
         myLog("=====Abbruch: queryimdb.php nicht erfolgreich.=====");

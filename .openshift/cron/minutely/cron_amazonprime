@@ -1,0 +1,4 @@
+#!/bin/bash
+date >> ${OPENSHIFT_PHP_LOG_DIR}/cron_test.log
+cd ${OPENSHIFT_REPO_DIR}
+php -f ${OPENSHIFT_REPO_DIR}/execute.php
