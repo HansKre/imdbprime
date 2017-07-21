@@ -2,4 +2,4 @@
 #php -f /var/lib/openshift/596b3e030c1e6687ce000047/app-root/runtime/repo/cron_test.php
 # für obigen Aufruf ist eine Anpassung notwendig: fopen(realpath(dirname(__FILE__)) . $fileName);
 date >> ${OPENSHIFT_PHP_LOG_DIR}/cron_test.log
-//curl http://imdbprime-snah.rhcloud.com/execute.php
+curl http://imdbprime-snah.rhcloud.com/execute.php

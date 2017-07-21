@@ -24,9 +24,10 @@ function executeQueryImdb($id) {
 /*============EXECUTION LOGIC==============*/
 $myExecutionId = rand();
 myLog("=====Starte=====");
-if (executePrimeVideos($myExecutionId, 400)) {
+//if (executePrimeVideos($myExecutionId, 400)) {
 /*executePrimeVideos($myExecutionId, 399);
 if (false) {*/
+if (true){
     myLog("=====Starte IMDB Query.=====");
     if (executeQueryImdb($myExecutionId)) {
         myLog("=====Fertig=====");
