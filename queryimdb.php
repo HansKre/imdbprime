@@ -60,11 +60,12 @@ function _getMovieUrl ($movieTitle, $year) {
         } else {
             myLog("Unhandled case for $movieTitle and $searchUrl. class 'result_text' missing");
         }
+        // if we get here, then it is a sign that an unknown html document was parsed
         file_put_contents("null_$movieTitle.html", $html);
         return null;
     }
     if (empty($linksArray)) {
-        return "";
+        return "no results";
     }
     if (count($linksArray) > 1) {
         myLog("Multiple entries in linksArray for searchurl: " . $searchUrl . " \n" . print_r($linksArray));
@@ -171,7 +172,7 @@ function getMovieUrl($movieTitle, $year) {
         if ((($positionColon !== false) || ($positionMinus !== false)) && (strlen($cleanMovieTitle) !== 0)) {
             echo "Trying $year , $movieTitle again with: $cleanMovieTitle \n";
             // selbstaufruf
-            $searchUrl = getMovieUrl($cleanMovieTitle, $movieTitle);
+            $searchUrl = getMovieUrl($cleanMovieTitle, $year);
         }
     }
     if ($searchUrl == "no results") {
@@ -235,10 +236,9 @@ function doQueryImdb($randomNumber) {
     $skippedVideos = array();
     $videosWithRatings = array();
     /*$videos = array();
-    $videos[] = array("2016", "Die Unfassbaren 2 - Now You See Me 2");*/
+    $videos[] = array("2014", "The Expendables 3 - A Man's Job (ungeschnittene Kinofassung)");*/
 
     foreach ($videos as $video) {
-        set_time_limit(10000);
         $cleanMovieTitle = $video[1];
         $position = strpos($cleanMovieTitle, " [");
         if ($position !== false) {
@@ -263,7 +263,6 @@ function doQueryImdb($randomNumber) {
         }
     }
     rsort($videosWithRatings);
-//print_r($videosWithRatings);
 
 //write to text file
     $videosWithRatingsName = "videosWithRatings.txt";
