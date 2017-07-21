@@ -1,6 +1,5 @@
 <?php
 const IMDBURL = 'http://www.imdb.com';
-ini_set('max_execution_time', '18000');
 require_once ('commons.php');
 
 function containsYear($string, $year) {
