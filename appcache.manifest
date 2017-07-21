@@ -2,12 +2,14 @@ CACHE MANIFEST
 #v0.2 from 09.07.2017
 
 # see https://www.catswhocode.com/blog/how-to-create-offline-html5-web-apps-in-5-easy-steps
+# https://www.html5rocks.com/de/tutorials/appcache/beginner/
 
-CACHE
+CACHE:
 #what to cache in application cache
 index.html
+videos.html
 
-NETWORK
+NETWORK:
 #what to NOT cache if network is online
 #star means, load everything if network is online
 *

@@ -264,7 +264,7 @@ function doQueryImdb($randomNumber) {
                 //echo $searchUrl . "\n";
                 $theRating = getMovieRating($searchUrl);
                 if ($theRating !== "0.0") {
-                    $videoWithRating = array($video[1], $video[0], $theRating);
+                    $videoWithRating = array($video[1], $video[0], $theRating, $searchUrl);
                     $string_data = $theRating . " , " . $video[0] . " , " . $video[1];
                     myLog($randomNumber . " adding: " . $string_data);
                 } else {

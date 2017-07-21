@@ -65,3 +65,42 @@ footer > * {
 p.network {
   color: rgba(0, 0, 0, 0.58);
 }
+
+
+    font-size:16px;
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+}
+
+#videosTable {
+  table-layout: fixed;
+  white-space: nowrap;
+}
+
+#videosTable.movie {
+  width: 50%;
+}
+
+#videosTable.year {
+  width: 20%;
+}
+
+#videosTable.rating {
+  width: 30%;
+}
+
+#videosTable td, #videosTable th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#videosTable tr:nth-child(even){background-color: #f2f2f2}
+
+#videosTable th {
+    padding-top: 11px;
+    padding-bottom: 11px;
+    background-color: #4CAF50;
+    color: white;
+}
