@@ -238,6 +238,7 @@ function doQueryImdb($randomNumber) {
     $videos[] = array("2016", "Die Unfassbaren 2 - Now You See Me 2");*/
 
     foreach ($videos as $video) {
+        //set_time_limit(10000);
         $cleanMovieTitle = $video[1];
         $position = strpos($cleanMovieTitle, " [");
         if ($position !== false) {
