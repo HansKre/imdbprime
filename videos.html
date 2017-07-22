@@ -55,7 +55,7 @@
                         // init with equal
                         let comparison = EQUAL;
 
-                        // 2017,x ? 2010,y
+                        /*// 2017,x ? 2010,y
                         //=======================
                         if ((a.year > b.year) && (a.ratingValue > b.ratingValue)) {
                             comparison = a_FIRST_desc;
@@ -87,6 +87,12 @@
                             // 2017,8.0 > 2010,8.0
                         }else if ((a.year == b.year) && (a.ratingValue == b.ratingValue)) {
                             comparison = EQUAL;
+                        }*/
+
+                        if (a.rating > b.rating) {
+                            comparison = a_FIRST_desc;
+                        }else if (b.rating > a.rating) {
+                            comparison = b_FIRST_desc;
                         }
 
                         return comparison;
