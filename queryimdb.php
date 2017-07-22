@@ -204,11 +204,14 @@ function getMovieRating($url)
     //that will be thrown if the $html string isn't valid XHTML.
     @$dom->loadHTML($html);
 
-    /*div class="ratings_wrapper">
+    /*<div class="ratings_wrapper">
         <div class="imdbRating" itemtype="http://schema.org/AggregateRating" itemscope="" itemprop="aggregateRating">
                 <div class="ratingValue">
-<strong title="6,0 based on 2.224 user ratings"><span itemprop="ratingValue">6,0</span></strong>*/
+<strong title="7,6 based on 285.844 user ratings"><span itemprop="ratingValue">7,6</span></strong><span class="grey">/</span><span class="grey" itemprop="bestRating">10</span>                </div>
+                <a href="/title/tt0096895/ratings?ref_=tt_ov_rt"
+><span class="small" itemprop="ratingCount">285.844</span></a>*/
     $ratingElemsArray = getElementsBy($dom, "span", "itemprop", "ratingValue");
+    $ratingCountElemsArray = getElementsBy($dom, "span", "itemprop", "ratingCount");
 
 
     /*array may be empty, if not enough ratings:
@@ -216,12 +219,21 @@ function getMovieRating($url)
         <div class="imdbRating" itemtype="http://schema.org/AggregateRating" itemscope="" itemprop="aggregateRating">
                 <div class="notEnoughRatings">Needs 5 Ratings</div>
         </div>*/
+
+    $ratingValue;
+    $ratingCount;
     if (empty($ratingElemsArray)) {
-        return "0.0";
+        $ratingValue = "0.0";
     } else {
         $ratingValue = $ratingElemsArray[0]->nodeValue;
-        return $ratingValue;
     }
+    if (empty($ratingCountElemsArray)) {
+        $ratingCount = "0";
+    } else {
+        $ratingCount = $ratingCountElemsArray[0]->nodeValue;
+    }
+
+    return array('ratingValue' => $ratingValue, 'ratingCount' => $ratingCount);
 }
 
 function hasTime($startTime) {
@@ -262,10 +274,10 @@ function doQueryImdb($randomNumber) {
             //todo: warum kommt hier ein $searchUrl = null an?
             if (!is_null($searchUrl) && ($searchUrl !== "")) {
                 //echo $searchUrl . "\n";
-                $theRating = getMovieRating($searchUrl);
-                if ($theRating !== "0.0") {
-                    $videoWithRating = array($video[1], $video[0], $theRating, $searchUrl);
-                    $string_data = $theRating . " , " . $video[0] . " , " . $video[1];
+                $imdbValues = getMovieRating($searchUrl);
+                if ($imdbValues['ratingValue'] !== "0.0") {
+                    $videoWithRating = array('movie' => $video[1], 'year' => $video[0], 'ratingValue' => $imdbValues['ratingValue'], 'ratingCount' => $imdbValues['ratingCount'], 'searchUrl' => $searchUrl);
+                    $string_data = $imdbValues['ratingValue'] . " from " . $imdbValues['ratingCount'] . " users for " . $video[0] . " , " . $video[1];
                     myLog($randomNumber . " adding: " . $string_data);
                 } else {
                     $string_data = $video[0] . " , " . $video[1];
@@ -283,25 +295,14 @@ function doQueryImdb($randomNumber) {
         $videosWithRatingsName = "videosWithRatings.txt";
         $skippedVideosName = "skippedVideos.txt";
         if ($videoWithRating) {
+            print_r($videoWithRating);
+            var_dump($videoWithRating);
             storeToFileThreadSave($videosWithRatingsName, $videoWithRating);
         }
         if ($skippedVideo) {
             storeToFileThreadSave($skippedVideosName, $skippedVideo);
         }
     }
-
-    //rsort($videosWithRatings);
-    //write to text file
-    //unlink($videosWithRatingsName);
-    //unlink($skippedVideosName);
-
-
-//print total execution time
-    //$execTimeString = (microtime(true) - $startTime) / 60;
-    //$logString1 = $randomNumber . " queryimdb.php finished.";
-    //$logString2 = $randomNumber . " Execution time: " . $execTimeString;
-    //myLog ($logString1);
-    //myLog ($logString2);
 
     return true;
 }
