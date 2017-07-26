@@ -1,6 +1,6 @@
 <?php
-function getLastVideoFromFile() {
-    $fileName = "videos2.txt";
+function getMovieFromFile() {
+    $fileName = "movies.txt";
     if (file_exists($fileName)) {
         $file = fopen($fileName,"c+");
         if ($file !== false) {
@@ -8,20 +8,20 @@ function getLastVideoFromFile() {
             flock($file,LOCK_EX);
 
             // read file content
-            $videos = unserialize( file_get_contents($fileName) );
+            $movies = unserialize( file_get_contents($fileName) );
 
             // store and remove last entry
-            $lastLine;
-            if ($videos) {
-                $lastLine = $videos[count($videos) - 1];
-                array_pop($videos);
+            $lastLine = 0;
+            if ($movies) {
+                $lastLine = $movies[count($movies) - 1];
+                array_pop($movies);
             }
 
             // delete if empty
-            if (count($videos) == 0) {
+            if (count($movies) == 0) {
                 unlink($fileName);
             } else {
-                file_put_contents($fileName, serialize($videos));
+                file_put_contents($fileName, serialize($movies));
             }
             // release lock
             flock($file,LOCK_UN);
@@ -30,11 +30,12 @@ function getLastVideoFromFile() {
             if ($lastLine) {
                 return $lastLine;
             } else {
-                return false;
+                return null;
             }
         }
     } else {
-        return false;
+        return null;
     }
+    return null;
 }
 

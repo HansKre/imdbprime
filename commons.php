@@ -51,4 +51,15 @@
         }
         return false;
     }
-?>
+
+    function containsYear($string, $year) {
+        if (is_numeric($year)) {
+            if (contains($string, "(".$year.")") ||
+                contains($string, "(". ($year + 1) .")") ||
+                contains($string, "(". ($year - 1) .")")
+            ) {
+                return true;
+            }
+        }
+        return false;
+    }

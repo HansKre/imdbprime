@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html manifest="appcache.manifest">
+<html>
 <head>
-    <title>HTML5 Offline App</title>
+    <title>Prime Movies with IMDB Rating</title>
     <link rel="stylesheet" href="offlineapp.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
@@ -89,9 +89,9 @@
                             comparison = EQUAL;
                         }*/
 
-                        if (a.rating > b.rating) {
+                        if (parseInt(a.ratingValue) > parseInt(b.ratingValue)) {
                             comparison = a_FIRST_desc;
-                        }else if (b.rating > a.rating) {
+                        }else if (parseInt(b.ratingValue) > parseInt(a.ratingValue)) {
                             comparison = b_FIRST_desc;
                         }
 
@@ -107,7 +107,7 @@
                         // array.join(separator)
                         ratingCountString = ratingCountString.split(",").join("");
                         var ratingCount = parseInt(ratingCountString);
-                        if (ratingCount> 10000) {
+                        if (ratingCount> 1) {
                             resultsArray.push(jArray[i]);
                         }
                     }
