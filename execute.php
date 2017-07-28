@@ -1,7 +1,8 @@
 <?php
 require_once ('commons.php');
 require_once ('queryimdb.php');
-require_once ('primevideos.php');
+require_once('primemovies.php');
+require_once ('getMovieFromFile.php');
 const STATUS_200 = "Status 200";
 const BASEURL = "http://imdbprime-snah.rhcloud.com";
 ini_set('max_execution_time', '36000');
@@ -22,15 +23,15 @@ function setEnvVar() {
 }
 
 /*============EXECUTION LOGIC==============*/
-// todo: handle execution time
-$startTime = time();
 
 $myExecutionId = rand();
 myLog("=====Starte=====");
-//if (executePrimeMovies($myExecutionId, 400)) {
-/*executePrimeMovies($myExecutionId, 399);
-if (false) {*/
-if (file_exists("movies.txt")){
+$myPrimeMovies = new PrimeMovies($myExecutionId);
+if ($myPrimeMovies->start(400)) {
+    echo "done";
+    return;
+}
+if (file_exists(fromFileName)){
     myLog("=====Starte IMDB Query.=====");
     $imdbQuery = new ImdbQuery($myExecutionId);
     if ($imdbQuery->doQuery()) {

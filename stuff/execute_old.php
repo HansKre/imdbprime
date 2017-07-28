@@ -20,8 +20,8 @@ function executePrimeVideos() {
     // $arg[1] didn't work ...
     $i = isset($_SERVER['argv'][1]) ? $_SERVER['argv'][1] : 399;
 
-    $serverCmd = "curl -s " . BASEURL . "\"/primevideos.php?internal=true&i=1\"";
-    $localCmd = "php -f  primevideos.php true $i";
+    $serverCmd = "curl -s " . BASEURL . "\"/primemovies.php?internal=true&i=1\"";
+    $localCmd = "php -f  primemovies.php true $i";
     $out = "";
     if (isRunningOnMBA()) {
         $out = shell_exec($localCmd);
@@ -65,7 +65,7 @@ if (true) {
         echo "Status 900";
     }
 } else {
-    myLog("=====Abbruch: primevideos.php nicht erfolgreich.=====");
+    myLog("=====Abbruch: primemovies.php nicht erfolgreich.=====");
     echo "Status 900";
 }
 ?>

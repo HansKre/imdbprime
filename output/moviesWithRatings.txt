@@ -1,0 +1,1 @@
+a:3:{i:0;s:3:"abc";i:1;a:5:{s:5:"movie";s:17:"The Lady In Black";s:8:"director";s:10:"Steve Spel";s:4:"year";s:4:"2015";s:11:"ratingValue";s:3:"4.2";s:11:"ratingCount";s:2:"33";}i:2;a:5:{s:5:"movie";s:17:"Borderline - 1950";s:8:"director";s:11:"Unavailable";s:4:"year";s:4:"2016";s:11:"ratingValue";s:3:"6.1";s:11:"ratingCount";s:3:"771";}}

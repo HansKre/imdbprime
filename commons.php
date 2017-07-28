@@ -7,7 +7,9 @@
 
     function myLog($message) {
         $logFileName = "global.log";
-        file_put_contents( $logFileName, nowformat() . " " . $message . "\n", FILE_APPEND | LOCK_EX);
+        $logMessageString =  nowformat() . " " . $message . "\n";
+        file_put_contents( $logFileName, $logMessageString, FILE_APPEND | LOCK_EX);
+        echo $logMessageString;
     }
 
     function getElementsBy($parentNode, $tagName, $attributeName, $attributeValue) {
@@ -52,7 +54,7 @@
         return false;
     }
 
-    function containsYear($string, $year) {
+    function matchesYear($string, $year) {
         if (is_numeric($year)) {
             if (contains($string, "(".$year.")") ||
                 contains($string, "(". ($year + 1) .")") ||
@@ -60,6 +62,15 @@
             ) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    function containsYear($string) {
+        $matchesArray;
+        if (preg_match('/\b\d{4}\b/', $string, $matchesArray) == 1) {
+            //return the found year
+            return $matchesArray[0];
         }
         return false;
     }

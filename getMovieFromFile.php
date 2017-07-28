@@ -1,14 +1,15 @@
 <?php
+const     fromFileName = './output/movies.txt';
+
 function getMovieFromFile() {
-    $fileName = "movies.txt";
-    if (file_exists($fileName)) {
-        $file = fopen($fileName,"c+");
+    if (file_exists(fromFileName)) {
+        $file = fopen(fromFileName,"c+");
         if ($file !== false) {
             // wait till we have the exclusive lock
             flock($file,LOCK_EX);
 
             // read file content
-            $movies = unserialize( file_get_contents($fileName) );
+            $movies = unserialize( file_get_contents(fromFileName) );
 
             // store and remove last entry
             $lastLine = 0;
@@ -19,9 +20,9 @@ function getMovieFromFile() {
 
             // delete if empty
             if (count($movies) == 0) {
-                unlink($fileName);
+                unlink(fromFileName);
             } else {
-                file_put_contents($fileName, serialize($movies));
+                file_put_contents(fromFileName, serialize($movies));
             }
             // release lock
             flock($file,LOCK_UN);

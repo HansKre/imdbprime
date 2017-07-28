@@ -2,7 +2,29 @@
 ini_set('max_execution_time', 3600);
 require_once ('commons.php');
 
-class PrimeVideos {
+class PrimeMovies {
+    private $i;
+    private $executionId;
+    private $startTime;
+    private $videosFound;
+
+    /*
+     * On Openshift, scripts get aborted after 20mins, thus to avoid data loss,
+     * no further calculation happens after 19 minutes.
+     */
+    private function hasTime() {
+        $now = time();
+        $elapsedMinutes = ($now - $this->startTime) / 60;
+        if ($elapsedMinutes > 18) {
+            return false;
+        }
+        return true;
+    }
+
+    private function log($message) {
+        myLog($this->executionId . " " . $message);
+    }
+
     private function extractYear ($resultLi, $movieTitle) {
         //OV]2017EUR
         $stringValue = $resultLi->nodeValue;
@@ -20,7 +42,7 @@ class PrimeVideos {
         return "0";
     }
 
-    private function getVideosFromUrlExt($url, &$reachedEnd)
+    private function getMoviesFromUrlExt($url, &$reachedEnd)
     {
         $videos = array();
         //How to parse: http://w-shadow.com/blog/2009/10/20/how-to-extract-html-tags-and-their-attributes-with-php/
@@ -89,32 +111,32 @@ class PrimeVideos {
         }
     }
 
-    private $i;
-    private $executionId;
-    private $startTime;
-    private $videosFound;
-
     private function startTime() {
         $this->startTime = microtime(true);
     }
 
     private function stopTime() {
         $executionTime = (microtime(true) - $this->startTime) / 60;
-        myLog($this->executionId . ' Primevideos.php finished. Total Execution Time: ' . $executionTime . ' Minutes. Videos found: ' . $this->videosFound);
+        myLog($this->executionId . ' Primemovies.php finished. Total Execution Time: ' . $executionTime . ' Minutes. Movies found: ' . $this->moviesFound);
     }
 
-    private function saveToFile($videos) {
+    private function saveToFile($movies) {
         //delete old file
-        unlink('videos.txt');
+        unlink('./output/movies.txt');
 
         //write to text file
-        $string_data = serialize($videos);
-        file_put_contents("videos.txt", $string_data);
+        $string_data = serialize($movies);
+        file_put_contents("./output/movies.txt", $string_data);
     }
 
-    public function start() {
+    public function start($startAt) {
+        if ($startAt) {
+            $this->i = $startAt;
+        } else {
+            $this->i = 1;
+        }
 
-        myLog($this->executionId . " Starting primevideos.php script with i = " . $this->i);
+        $this->log("Starting primemovies.php script with i = " . $this->i);
         $this->startTime();
 
         // https://www.amazon.de/s/ref=sr_pg_399?fst=as%3Aoff&rh=n%3A3279204031%2Cp_n_ways_to_watch%3A7448695031%2Cn%3A%213010076031%2Cn%3A3015915031&page=399&bbn=3279204031&ie=UTF8
@@ -123,52 +145,39 @@ class PrimeVideos {
         $part3 = '&bbn=3279204031&ie=UTF8';
 
         //arrays: https://www.php-einfach.de/php-tutorial/php-array/
-        $videos = array();
+        $movies = array();
         $reachedEnd = false;
 
         $sleepTime = ONESECOND;
         while ($reachedEnd == false) {
             myLog($this->executionId . " Parsing page " . $this->i);
             $url = $part1 . $this->i . $part2 . $this->i . $part3;
-            $newVideos = $this -> getVideosFromUrlExt($url, $reachedEnd);
-            if (!empty($newVideos)) {
-                $videos = array_merge($videos, $newVideos);
+            $newMovies = $this -> getMoviesFromUrlExt($url, $reachedEnd);
+            if (!empty($newMovies)) {
+                $movies = array_merge($movies, $newMovies);
                 $this->i++;
-                // let the sleep timer breath. success decreases the timer.
-                $sleepTime -= 100000;
+                if ($sleepTime > 2 * ONESECOND) {
+                    $sleepTime -= 500000;
+                }
             } else {
-                // repeat previous request with a higher sleep time
                 $sleepTime += 500000;
                 myLog($this->executionId . " , " . $sleepTime/1000000);
             }
             usleep($sleepTime);
         }
 
-        $this->videosFound = count($videos);
-        $this->saveToFile($videos);
+        $this->moviesFound = count($movies);
+        $this->saveToFile($movies);
         $this->stopTime();
 
         return true;
     }
 
-    public function __construct($executionId, $startAt) {
+    public function __construct($executionId) {
         if ($executionId) {
             $this->executionId = $executionId;
         } else {
             $this->executionId = rand();
         }
-        if ($startAt) {
-            $this->i = $startAt;
-        } else {
-            $this->i = 1;
-        }
     }
 }
-
-/*=============EXECUTION LOGIC============*/
-
-function executePrimeVideos($id, $startAt) {
-    $myPrimeVideos = new PrimeVideos($id, $startAt);
-    return $myPrimeVideos->start();
-}
-?>
