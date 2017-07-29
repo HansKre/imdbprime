@@ -1,13 +1,13 @@
 <?php
     const ONESECOND = 1000000;
-    function nowFormat () {
+    function nowAsString () {
         $now = new DateTime("", new DateTimeZone('Europe/Berlin'));
         return $now->format('Y-m-d H:i:s');
     }
 
     function myLog($message) {
         $logFileName = "global.log";
-        $logMessageString =  nowformat() . " " . $message . "\n";
+        $logMessageString =  nowAsString() . " " . $message . "\n";
         file_put_contents( $logFileName, $logMessageString, FILE_APPEND | LOCK_EX);
         echo $logMessageString;
     }

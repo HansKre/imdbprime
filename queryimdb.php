@@ -6,7 +6,7 @@ const skippedMoviesName = './output/skippedMovies.txt';
 require_once ('commons.php');
 require_once ('storeToFileThreadSave.php');
 require_once('ImdbMovieRatingsRetriever.php');
-require_once('getMovieFromFile.php');
+require_once('getNextMovieAndRemoveItFromFile.php');
 
 class ImdbQuery {
     private $myExecutionId;
@@ -70,10 +70,10 @@ class ImdbQuery {
         $this->log("Starting IMDB Query");
         $hasMoviesToProcess = true;
         while ($hasMoviesToProcess && $this->hasTime()) {
-            $this->movie = getMovieFromFile();
+            $this->movie = getNextMovieAndRemoveItFromFile();
             //$this->movie = array('year' => "2015", 'movie' => "The Lady In Black [OV]", 'director' => "Steve Spel");
-            $this->movie = array('year' => "2016", 'movie' => "Borderline - 1950 [OV]", 'director' => "Unavailable", 'actors' => array("Fred MacMurray", "Claire Trevor"));
-            $hasMoviesToProcess = false;
+            //$this->movie = array('year' => "2016", 'movie' => "Borderline - 1950 [OV]", 'director' => "Unavailable", 'actors' => array("Fred MacMurray", "Claire Trevor"));
+            //$hasMoviesToProcess = false;
             if ($this->movie) { // not empty & not null
                 $this->getMovieRating();
             } else {

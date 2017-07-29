@@ -29,51 +29,6 @@ footer > * {
   color: #999;
 }
 
-#status {
-  padding: 5px;
-  color: #fff;
-  background: #ccc;
-}
-
-#status.fail {
-  background: #c00;
-}
-
-#status.success {
-  background: #0c0;
-}
-
-#status.offline {
-  background: #c00;
-}
-
-#status.online {
-  background: #0c0;
-}
-
-#directions {
-  color: rgba(23, 125, 61, 0.74);
-  font-size: smaller;
-  line-height: 200%;
-  max-width: 400px;
-  padding:5px;
-  background-color: rgb(217, 217, 216);
-  border-radius: 10px;
-  border-top: 1px solid #fff;
-}
-
-p.network {
-  color: rgba(0, 0, 0, 0.58);
-}
-
-
-    font-size:16px;
-    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-    border-collapse: collapse;
-    border-spacing: 0;
-    width: 100%;
-}
-
 #videosTable {
   table-layout: fixed;
   white-space: nowrap;

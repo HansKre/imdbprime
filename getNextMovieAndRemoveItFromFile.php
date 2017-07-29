@@ -1,7 +1,7 @@
 <?php
-const     fromFileName = './output/movies.txt';
+const     fromFileName = './output/moviesForImdbQuery.txt';
 
-function getMovieFromFile() {
+function getNextMovieAndRemoveItFromFile() {
     if (file_exists(fromFileName)) {
         $file = fopen(fromFileName,"c+");
         if ($file !== false) {

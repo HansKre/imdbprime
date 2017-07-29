@@ -57,20 +57,28 @@ class ImdbMovieRatingsRetriever {
     }
 
     private function areStringsEqual($str1, $str2) {
-        $_str1 = strtolower(rtrim(ltrim($str1," ")," "));
-        $_str1 = str_replace(".", "", $_str1);
-        $_str2 = strtolower(rtrim(ltrim($str2," ")," "));
-        $_str2 = str_replace(".", "", $_str2);
-        if ($_str1 == $_str2) {
+        // $_str1 = str_replace(" ", "-", $str1);
+        $_str1 = preg_replace('/[^A-Za-z0-9\-]/', '', $str1);
+        $_str1 = trim($_str1);
+        $_str1 = strtolower($_str1);
+
+        //$_str2 = str_replace(" ", "-", $str2);
+        $_str2 = preg_replace('/[^A-Za-z0-9\-]/', '', $str2);
+        $_str2 = trim($_str2);
+        $_str2 = strtolower($_str2);
+
+        if (strcmp($_str1,$_str2) == 0) {
             return true;
         } else {
             return false;
         }
     }
 
-    private function isSameDirector($imdbMovieDetailsDom, $director) {
-        if ($this->areStringsEqual($director, "unavailable")) {
-            return true;
+    private function isSameDirector($imdbMovieDetailsDom, $directors) {
+        if (!is_array($directors)) {
+            if ($this->areStringsEqual($directors, "unavailable")) {
+                return true;
+            }
         }
         /*<div class="credit_summary_item">
             <h4 class="inline">Director:</h4>
@@ -81,15 +89,30 @@ class ImdbMovieRatingsRetriever {
 
         $elemsArray = getElementsBy($imdbMovieDetailsDom, "h4", "class", "inline");
 
+        $foundDirectorElems = array();
         foreach ($elemsArray as $i => $elem) {
             if (contains($elem->nodeValue, 'Director:')) {
-                $directorsArray = getElementsBy($imdbMovieDetailsDom, "span", "itemprop", "name");
-                $foundDirector = $directorsArray[0]->nodeValue;
-                return $this->areStringsEqual($director, $foundDirector);
+                $foundDirectorElems = getElementsBy($imdbMovieDetailsDom, "span", "itemprop", "name");
+            }
+        }
+
+        // before we get here, the movie title and director matches already
+        // thus, we return true already, if at least one actor matches
+        foreach ($foundDirectorElems as $foundDirectorElem) {
+            $foundDirector = $foundDirectorElem->nodeValue;
+            if (is_array($directors)) {
+                foreach ($directors as $director) {
+                    if ($this->areStringsEqual($director, $foundDirector)) {
+                        return true;
+                    }
+                }
+            } else {
+                return $this->areStringsEqual($directors, $foundDirector);
             }
         }
 
         return false;
+
     }
 
     private function hasSameActors($imdbMovieDetailsDom, $actors) {
@@ -128,9 +151,15 @@ class ImdbMovieRatingsRetriever {
         // before we get here, the movie title and director matches already
         // thus, we return true already, if at least one actor matches
         foreach ($foundActorElems as $foundActorElem) {
-            foreach ($actors as $actor) {
-                $foundActor = $foundActorElem->nodeValue;
-                if ($this->areStringsEqual($actor, $foundActor)) {
+            $foundActor = $foundActorElem->nodeValue;
+            if (is_array($actors)) {
+                foreach ($actors as $actor) {
+                    if ($this->areStringsEqual($actor, $foundActor)) {
+                        return true;
+                    }
+                }
+            } else {
+                if ($this->areStringsEqual($actors, $foundActor)) {
                     return true;
                 }
             }
@@ -193,10 +222,11 @@ class ImdbMovieRatingsRetriever {
 
     private function findBestMatchAndExtractMovieDetailsFromPromisingResults($promisingResultTdElems, $movieTitle) {
         $year = $this->movie['year'];
-        $director = $this->movie['director'];
+        $directors = $this->movie['director'];
         $actors = $this->movie['actors'];
 
         $possibleMatches = array();
+        //myLog($movieTitle . " has promising results: " . count($promisingResultTdElems));
         foreach ($promisingResultTdElems as $resultTdElem) {
             //get deep link
             $deepLink = $this->getDeepLink($resultTdElem);
@@ -211,11 +241,16 @@ class ImdbMovieRatingsRetriever {
             //that will be thrown if the $html string isn't valid XHTML.
             @$imdbMovieDetailsDom->loadHTML($imdbMovieDetailsHtml);
 
-            //todo: Abgleich mit Schauspielern
-            if ($this->isSameDirector($imdbMovieDetailsDom, $director) && $this->hasSameActors($imdbMovieDetailsDom, $actors)) {
+
+            $isSameDirector = $this->isSameDirector($imdbMovieDetailsDom, $directors);
+            $hasSameActors = $this->hasSameActors($imdbMovieDetailsDom, $actors);
+
+            //myLog("isSamedirector: " . var_export($isSameDirector, true) . " hasSameActors: " . var_export($hasSameActors, true));
+
+            if ($isSameDirector || $hasSameActors) {
                 $ratingValue = $this->getRatingValue($imdbMovieDetailsDom);
                 $ratingCount = $this->getRatingCount($imdbMovieDetailsDom);
-                $possibleMatches[] = array('movie'=>$movieTitle,'director'=>$director,'year'=>$year,'ratingValue'=>$ratingValue,'ratingCount'=>$ratingCount);
+                $possibleMatches[] = array('movie'=>$movieTitle,'director'=>$directors,'year'=>$year,'ratingValue'=>$ratingValue,'ratingCount'=>$ratingCount);
             }
         }
         if (count($possibleMatches) > 1) {
