@@ -23,7 +23,8 @@
             // load from php
             var jArray;
             $.ajax({
-                url: './getMoviesWithRatings.php'   //only possible on web server
+                //only possible on web server
+                url: './getMoviesWithRatings.php',
                 //url: 'http://imdbprime-snah.rhcloud.com/getMoviesWithRatings.php',
                 success: function(data) {
                     jArray = JSON.parse(data);
