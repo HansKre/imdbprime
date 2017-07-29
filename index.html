@@ -23,8 +23,8 @@
             // load from php
             var jArray;
             $.ajax({
-                //url: './getMoviesWithRatings.php', not possible if no local web server running!!!
-                url: 'http://imdbprime-snah.rhcloud.com/getMoviesWithRatings.php',
+                url: './getMoviesWithRatings.php'   //only possible on web server
+                //url: 'http://imdbprime-snah.rhcloud.com/getMoviesWithRatings.php',
                 success: function(data) {
                     jArray = JSON.parse(data);
 
@@ -107,7 +107,7 @@
                         // array.join(separator)
                         ratingCountString = ratingCountString.split(",").join("");
                         var ratingCount = parseInt(ratingCountString);
-                        if (ratingCount> 1) {
+                        if (ratingCount> 10000) {
                             resultsArray.push(jArray[i]);
                         }
                     }
