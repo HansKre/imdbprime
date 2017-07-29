@@ -1,0 +1,1 @@
+Don't delete this file. For Openshift and git, at least one file needs to be inside of a directory, otherwise that directory will not be created and our scripts won't operate properly.

@@ -94,6 +94,10 @@ function markExecutionAs($markString) {
     if (!file_exists($fileName)) {
         // create
         $file = fopen($fileName, "w");
+        if (!$file) {
+            myLog("Error. Could not open $fileName");
+            return false;
+        }
     } else {
         // open in r/w but without making any changes to the file
         $file = fopen($fileName,"c+");
@@ -123,12 +127,13 @@ $myExecutionId = rand();
 myLog("=====Starte=====");
 
 if (didRunPrimeMoviesToday() === ReturnValues::$shouldStart) {
-    markExecutionAs(ExecutionMarks::$started);
-    $myPrimeMovies = new PrimeMovies($myExecutionId);
-    if ($myPrimeMovies->start(1)) {
-        myLog("PrimeMovies Successful");
+    if (markExecutionAs(ExecutionMarks::$started)) {
+        $myPrimeMovies = new PrimeMovies($myExecutionId);
+        if ($myPrimeMovies->start(1)) {
+            myLog("PrimeMovies Successful");
+        }
+        markEndOfExecution(ExecutionMarks::$succeeded);
     }
-    markEndOfExecution(ExecutionMarks::$succeeded);
 }
 
 if (didRunPrimeMoviesToday() === ReturnValues::$succeeded) {
