@@ -2,21 +2,13 @@
 ini_set('max_execution_time', 3600);
 require_once ('commons.php');
 
-
-/*
- todo: primemovies "schöner"
-todo: execute restartfähig
-todo: videos nach jeder page schreiben
-todo: primefaces: bei zuletzt aufgehörter page wiedereinsetzen
-todo: director & actor crawlen
-*/
 class PrimeMovies {
     private $i;
     private $executionId;
     private $startTime;
     private $moviesFound;
 
-    public const PRIME_OUTPUT_MOVIES_TXT = './output/movies.txt';
+    const PRIME_OUTPUT_MOVIES_TXT = './output/movies.txt';
 
     /*
      * On Openshift, scripts get aborted after 20mins, thus to avoid data loss,
