@@ -5,7 +5,6 @@ const POPULAR = 2;
 class ImdbMovieRatingsRetriever {
     private $movie = null;
     private $lastParsedDom;
-    private $lastLoadedHtml;
 
     private function removeSquareBracketFromTitle($title) {
         $cleanMovieTitle = $title;
@@ -25,7 +24,7 @@ class ImdbMovieRatingsRetriever {
             myLog("Unhandled case for $movieTitle. class 'result_text' missing");
         }
         // if we get here, then it is a sign that an unknown html document was parsed
-        file_put_contents("null_$movieTitle.html", $this->lastLoadedHtml);
+        file_put_contents("null_$movieTitle.html", $this->lastParsedDom->saveHTML());
         return null;
     }
 
@@ -229,17 +228,8 @@ class ImdbMovieRatingsRetriever {
         //myLog($movieTitle . " has promising results: " . count($promisingResultTdElems));
         foreach ($promisingResultTdElems as $resultTdElem) {
             //get deep link
-            $deepLink = $this->getDeepLink($resultTdElem);
-
-            //Load the HTML page
-            $imdbMovieDetailsHtml = file_get_contents($deepLink);
-
-            //Create a new DOM document
-            $imdbMovieDetailsDom = new DOMDocument;
-
-            //Parse the HTML. The @ is used to suppress any parsing errors
-            //that will be thrown if the $html string isn't valid XHTML.
-            @$imdbMovieDetailsDom->loadHTML($imdbMovieDetailsHtml);
+            $imdbMovieUrl = $this->getImdbMovieUrl($resultTdElem);
+            $imdbMovieDetailsDom = $this->loadAndParseHtmlFrom($imdbMovieUrl);
 
 
             $isSameDirector = $this->isSameDirector($imdbMovieDetailsDom, $directors);
@@ -250,7 +240,7 @@ class ImdbMovieRatingsRetriever {
             if ($isSameDirector || $hasSameActors) {
                 $ratingValue = $this->getRatingValue($imdbMovieDetailsDom);
                 $ratingCount = $this->getRatingCount($imdbMovieDetailsDom);
-                $possibleMatches[] = array('movie'=>$movieTitle,'director'=>$directors,'year'=>$year,'ratingValue'=>$ratingValue,'ratingCount'=>$ratingCount, 'searchUrl'=>$deepLink);
+                $possibleMatches[] = array('movie'=>$movieTitle,'director'=>$directors,'year'=>$year,'ratingValue'=>$ratingValue,'ratingCount'=>$ratingCount, 'imdbMovieUrl'=>$imdbMovieUrl);
             }
         }
         if (count($possibleMatches) > 1) {
@@ -292,16 +282,7 @@ class ImdbMovieRatingsRetriever {
 
     private function doImdbSearchAndGetResultTdElems ($searchType, $movieTitle) {
         $urlForSearch = $this->getSearchUrl($searchType, $movieTitle);
-
-        //Do the search by loading the HTML page
-        $this->lastLoadedHtml = file_get_contents($urlForSearch);
-
-        //Create a new DOM document
-        $this->lastParsedDom = new DOMDocument;
-
-        //Parse the HTML. The @ is used to suppress any parsing errors
-        //that will be thrown if the $html string isn't valid XHTML.
-        @$this->lastParsedDom->loadHTML($this->lastLoadedHtml);
+        $this->lastParsedDom = loadAndParseHtmlFrom($urlForSearch);
 
         $resultTdElems = getElementsByClass($this->lastParsedDom, 'td', 'result_text');
         return $resultTdElems;
@@ -385,7 +366,7 @@ class ImdbMovieRatingsRetriever {
         return $imdbMovieDetails;
     }
 
-    private function getDeepLink($resultTdElem) {
+    private function getImdbMovieUrl($resultTdElem) {
         $aElems = $resultTdElem->getElementsByTagName('a');
         $linksArray = array();
         foreach ($aElems as $aElem) {

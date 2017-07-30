@@ -74,3 +74,16 @@
         }
         return false;
     }
+
+    function loadAndParseHtmlFrom($deepLink) {
+        //Load the HTML page
+        $imdbMovieDetailsHtml = file_get_contents($deepLink);
+
+        //Create a new DOM document
+        $imdbMovieDetailsDom = new DOMDocument;
+
+        //Parse the HTML. The @ is used to suppress any parsing errors
+        //that will be thrown if the $html string isn't valid XHTML.
+        @$imdbMovieDetailsDom->loadHTML($imdbMovieDetailsHtml);
+        return $imdbMovieDetailsDom;
+    }

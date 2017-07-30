@@ -6,9 +6,6 @@ class PrimeMovies {
     private $i;
     private $executionId;
     private $startTime;
-    private $moviesFound;
-
-    const PRIME_OUTPUT_MOVIES_TXT = './output/movies.txt';
 
     /*
      * On Openshift, scripts get aborted after 20mins, thus to avoid data loss,
@@ -100,19 +97,10 @@ class PrimeMovies {
 
     private function stopTime() {
         $executionTime = (microtime(true) - $this->startTime) / 60;
-        myLog($this->executionId . ' Primemovies.php finished. Total Execution Time: ' . $executionTime . ' Minutes. Movies found: ' . $this->moviesFound);
+        myLog($this->executionId . ' Primemovies.php finished. Total Execution Time: ' . $executionTime);
     }
 
-    private function saveToFile($movies) {
-        //delete old file
-        unlink(self::PRIME_OUTPUT_MOVIES_TXT);
-
-        //write to text file
-        $string_data = serialize($movies);
-        file_put_contents(self::PRIME_OUTPUT_MOVIES_TXT, $string_data);
-    }
-
-    public function start($startAt) {
+    public function startQuery($startAt) {
         $this->setCounter($startAt);
 
         $this->log("Starting primemovies.php script with i = " . $this->i);
@@ -125,9 +113,9 @@ class PrimeMovies {
         while ($reachedEnd == false) {
             myLog($this->executionId . " Parsing page " . $this->i);
             $newMovies = $this -> getMoviesFromUrl($this->getSearchUrl(), $reachedEnd);
-            print_r($newMovies);
             if (!empty($newMovies)) {
-                $movies = array_merge($movies, $newMovies);
+                //$movies = array_merge($movies, $newMovies);
+                FileOperations::storeToFileThreadSave(FileNames::$PRIME_OUTPUT_MOVIES_TXT, $newMovies);
                 $this->i++;
                 if ($sleepTime > 2 * ONESECOND) {
                     $sleepTime -= 500000;
@@ -139,11 +127,13 @@ class PrimeMovies {
             usleep($sleepTime);
         }
 
-        $this->moviesFound = count($movies);
-        $this->saveToFile($movies);
         $this->stopTime();
 
         return true;
+    }
+
+    public function continueQuery() {
+        $this->startQuery(FileOperations::whereToContinueAmazonQuery());
     }
 
     public function __construct($executionId) {

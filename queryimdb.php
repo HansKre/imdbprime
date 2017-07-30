@@ -1,12 +1,9 @@
 <?php
 const IMDBURL = 'http://www.imdb.com';
 const AMAZON_SEARCH_URL = 'https://www.amazon.de/s/ref=sr_pg_399?fst=as%3Aoff&rh=n%3A3279204031%2Cp_n_ways_to_watch%3A7448695031%2Cn%3A%213010076031%2Cn%3A3015915031&page=399&bbn=3279204031&ie=UTF8';
-const moviesWithRatingsName = './output/moviesWithRatings.txt';
-const skippedMoviesName = './output/skippedMovies.txt';
 require_once ('commons.php');
-require_once ('storeToFileThreadSave.php');
+require_once('FileOperations.php');
 require_once('ImdbMovieRatingsRetriever.php');
-require_once('getNextMovieAndRemoveItFromFile.php');
 
 class ImdbQuery {
     private $myExecutionId;
@@ -34,12 +31,10 @@ class ImdbQuery {
 
     private function storeAndReset() {
         if ($this->movieWithRating) {
-            print_r($this->movieWithRating);
-            var_dump($this->movieWithRating);
-            storeToFileThreadSave(moviesWithRatingsName, $this->movieWithRating);
+            FileOperations::storeToFileThreadSave(FileNames::$imdbQueryMoviesWithRatingsName_temp, $this->movieWithRating);
         }
         if ($this->skippedMovie) {
-            storeToFileThreadSave(skippedMoviesName, $this->skippedMovie);
+            FileOperations::storeToFileThreadSave(FileNames::$imdbQuerySkippedMoviesName_temp, $this->skippedMovie);
         }
         $this->movieWithRating = null;
         $this->skippedMovie = null;
@@ -70,7 +65,7 @@ class ImdbQuery {
         $this->log("Starting IMDB Query");
         $hasMoviesToProcess = true;
         while ($hasMoviesToProcess && $this->hasTime()) {
-            $this->movie = getNextMovieAndRemoveItFromFile();
+            $this->movie = FileOperations::getNextMovieAndRemoveItFromFile();
             //$this->movie = array('year' => "2015", 'movie' => "The Lady In Black [OV]", 'director' => "Steve Spel");
             //$this->movie = array('year' => "2016", 'movie' => "Borderline - 1950 [OV]", 'director' => "Unavailable", 'actors' => array("Fred MacMurray", "Claire Trevor"));
             //$hasMoviesToProcess = false;
@@ -81,6 +76,11 @@ class ImdbQuery {
             }
             $this->storeAndReset();
         }
+
+        if (!$hasMoviesToProcess) {
+            FileOperations::replaceOldImdbQueryResults();
+        }
+
         return true;
     }
 }

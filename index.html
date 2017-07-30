@@ -35,7 +35,7 @@
                      [year] => 2015
                      [ratingValue] => 4.3
                      [ratingCount] => 32
-                     [searchUrl] => http://www.imdb.com/title/tt3185776/?ref_=fn_tt_tt_1
+                     [imdbMovieUrl] => http://www.imdb.com/title/tt3185776/?ref_=fn_tt_tt_1
                      )*/
 
                     function compare(a, b){
@@ -124,7 +124,7 @@
                         var ratingCountCell = row.insertCell(3);
 
                         // Add some text to the new cells:
-                        titleCell.innerHTML = '<a target="_blank" href=' + resultsArray[i].searchUrl + '>' + resultsArray[i].movie + '</a>';
+                        titleCell.innerHTML = '<a target="_blank" href=' + resultsArray[i].imdbMovieUrl + '>' + resultsArray[i].movie + '</a>';
                         yearCell.innerHTML = resultsArray[i].year;
                         ratingCell.innerHTML = resultsArray[i].ratingValue;
                         ratingCountCell.innerHTML = resultsArray[i].ratingCount;
