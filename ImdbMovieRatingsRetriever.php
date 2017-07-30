@@ -1,4 +1,5 @@
 <?php
+require_once ('commons.php');
 const EXACT = 1;
 const POPULAR = 2;
 
@@ -229,7 +230,7 @@ class ImdbMovieRatingsRetriever {
         foreach ($promisingResultTdElems as $resultTdElem) {
             //get deep link
             $imdbMovieUrl = $this->getImdbMovieUrl($resultTdElem);
-            $imdbMovieDetailsDom = $this->loadAndParseHtmlFrom($imdbMovieUrl);
+            $imdbMovieDetailsDom = loadAndParseHtmlFrom($imdbMovieUrl);
 
 
             $isSameDirector = $this->isSameDirector($imdbMovieDetailsDom, $directors);

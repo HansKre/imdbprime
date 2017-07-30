@@ -106,7 +106,6 @@ class PrimeMovies {
         $this->log("Starting primemovies.php script with i = " . $this->i);
         $this->startTime();
 
-        $movies = array();
         $reachedEnd = false;
 
         $sleepTime = ONESECOND;
@@ -114,7 +113,6 @@ class PrimeMovies {
             myLog($this->executionId . " Parsing page " . $this->i);
             $newMovies = $this -> getMoviesFromUrl($this->getSearchUrl(), $reachedEnd);
             if (!empty($newMovies)) {
-                //$movies = array_merge($movies, $newMovies);
                 FileOperations::storeToFileThreadSave(FileNames::$PRIME_OUTPUT_MOVIES_TXT, $newMovies);
                 $this->i++;
                 if ($sleepTime > 2 * ONESECOND) {

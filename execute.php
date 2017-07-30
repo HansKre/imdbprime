@@ -23,9 +23,10 @@ function setEnvVar() {
 
 /*============EXECUTION LOGIC==============*/
 $myExecutionId = rand();
-myLog("=====Starte=====");
 
 $didRunPrimeMoviesToday = FileOperations::didRunPrimeMoviesToday();
+myLog("=====Starting Execution.php with: $didRunPrimeMoviesToday =====");
+
 if ($didRunPrimeMoviesToday === ReturnValues::$shouldStart) {
     if (FileOperations::markExecutionAs(ExecutionMarks::$started)) {
         if (!FileOperations::deletePrimeMoviesOutputFile()) {
@@ -48,7 +49,10 @@ if ($didRunPrimeMoviesToday === ReturnValues::$shouldStart) {
     }
 }
 
-if (FileOperations::didRunPrimeMoviesToday() === ReturnValues::$succeeded) {
+$didRunPrimeMoviesToday = FileOperations::didRunPrimeMoviesToday();
+myLog("===== Execution Decision for IMDB Query is: $didRunPrimeMoviesToday =====");
+
+if ($didRunPrimeMoviesToday === ReturnValues::$succeeded) {
     if (!file_exists(FileNames::$imdbQueryFromFileName)) {
         if (!file_exists(FileNames::$PRIME_OUTPUT_MOVIES_TXT)) {
             myLog(FileNames::$PRIME_OUTPUT_MOVIES_TXT . " does not exist");

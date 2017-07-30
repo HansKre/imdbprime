@@ -16,8 +16,14 @@ ehthumbs.db
 Thumbs.db
 
 global.log
-log.txt
-skippedVideos.txt
-#videos.txt
-videosWithRatings.txt
-videosWithRatingsContinousWrite.txt
+
+
+output/movies.txt
+output/moviesForImdbQuery.txt
+
+output/moviesWithRatings.txt
+output/skippedMovies.txt
+output/_moviesWithRatings.txt
+output/_skippedMovies.txt
+
+output/markExecutionOfPrimeMovies.txt
