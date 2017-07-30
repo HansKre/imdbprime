@@ -24,8 +24,8 @@
             var jArray;
             $.ajax({
                 //only possible on web server
-                url: './getMoviesWithRatings.php',
-                //url: 'http://imdbprime-snah.rhcloud.com/getMoviesWithRatings.php',
+                url: './getMoviesWithRatings.php?sortBy=ratingValue&order=descending',
+                //url: 'http://imdbprime-snah.rhcloud.com/getMoviesWithRatings.php?sortBy=ratingValue&order=descending',
                 success: function(data) {
                     jArray = JSON.parse(data);
 
@@ -99,7 +99,7 @@
                         return comparison;
                     }
 
-                    jArray.sort(compare);
+                    //jArray.sort(compare);
 
                     // remove all rating with count < 10.000
                     var resultsArray = [];

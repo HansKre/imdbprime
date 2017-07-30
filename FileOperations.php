@@ -108,7 +108,7 @@ class FileOperations {
     }
 
     public static function duplicatePrimeMoviesOutputForImdbQuery() {
-        copy(self::PRIME_OUTPUT_MOVIES_TXT, FileNames::$imdbQueryFromFileName);
+        copy(FileNames::$PRIME_OUTPUT_MOVIES_TXT, FileNames::$imdbQueryFromFileName);
     }
 
     public static function markExecutionAs($markString) {
