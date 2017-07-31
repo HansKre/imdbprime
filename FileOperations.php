@@ -202,11 +202,16 @@ class FileOperations {
     }
 
     public static function replaceOldImdbQueryResults() {
-        if (file_exists(FileNames::$imdbQueryMoviesWithRatingsName_temp) && file_exists(FileNames::$imdbQuerySkippedMoviesName_temp)) {
-            if (unlink(FileNames::$imdbQueryMoviesWithRatingsName) && unlink(FileNames::$imdbQuerySkippedMoviesName)) {
+        if (file_exists(FileNames::$imdbQueryMoviesWithRatingsName_temp) || file_exists(FileNames::$imdbQuerySkippedMoviesName_temp)) {
+            if (unlink(FileNames::$imdbQueryMoviesWithRatingsName) || unlink(FileNames::$imdbQuerySkippedMoviesName)) {
                 rename(FileNames::$imdbQueryMoviesWithRatingsName_temp, FileNames::$imdbQueryMoviesWithRatingsName);
                 rename(FileNames::$imdbQuerySkippedMoviesName_temp, FileNames::$imdbQuerySkippedMoviesName);
+            } else {
+                myLog("Could not delete " . FileNames::$imdbQueryMoviesWithRatingsName . " or " . FileNames::$imdbQuerySkippedMoviesName);
             }
+        } else {
+            rename(FileNames::$imdbQueryMoviesWithRatingsName_temp, FileNames::$imdbQueryMoviesWithRatingsName);
+            rename(FileNames::$imdbQuerySkippedMoviesName_temp, FileNames::$imdbQuerySkippedMoviesName);
         }
     }
 

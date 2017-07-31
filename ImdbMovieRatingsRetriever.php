@@ -6,6 +6,8 @@ const POPULAR = 2;
 class ImdbMovieRatingsRetriever {
     private $movie = null;
     private $lastParsedDom;
+    private $urlForImdbSearch;
+    private  $urlImdbMovie;
 
     private function removeSquareBracketFromTitle($title) {
         $cleanMovieTitle = $title;
@@ -229,8 +231,8 @@ class ImdbMovieRatingsRetriever {
         //myLog($movieTitle . " has promising results: " . count($promisingResultTdElems));
         foreach ($promisingResultTdElems as $resultTdElem) {
             //get deep link
-            $imdbMovieUrl = $this->getImdbMovieUrl($resultTdElem);
-            $imdbMovieDetailsDom = loadAndParseHtmlFrom($imdbMovieUrl);
+            $this->urlImdbMovie = $this->getImdbMovieUrl($resultTdElem);
+            $imdbMovieDetailsDom = loadAndParseHtmlFrom($this->urlImdbMovie);
 
 
             $isSameDirector = $this->isSameDirector($imdbMovieDetailsDom, $directors);
@@ -286,8 +288,8 @@ class ImdbMovieRatingsRetriever {
     }
 
     private function doImdbSearchAndGetResultTdElems ($searchType, $movieTitle) {
-        $urlForSearch = $this->getSearchUrl($searchType, $movieTitle);
-        $this->lastParsedDom = loadAndParseHtmlFrom($urlForSearch);
+        $this->urlForImdbSearch = $this->getSearchUrl($searchType, $movieTitle);
+        $this->lastParsedDom = loadAndParseHtmlFrom($this->urlForImdbSearch);
 
         $resultTdElems = getElementsByClass($this->lastParsedDom, 'td', 'result_text');
         return $resultTdElems;

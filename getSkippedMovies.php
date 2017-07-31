@@ -1,8 +1,7 @@
 <?php
 require_once ('FileOperations.php');
 
-    $data = file_get_contents( FileNames::$imdbQuerySkippedMoviesName );
-    $videos = unserialize( $data );
+    $videos = unserialize(file_get_contents( FileNames::$imdbQuerySkippedMoviesName ));
 
     usort($videos, function($a, $b) {
         //sort descending by ratingValue
@@ -10,6 +9,7 @@ require_once ('FileOperations.php');
     });
 
     // return
+    echo "Skipped videos: " . count($videos) . "<br>";
     foreach ($videos as $video) {
         echo $video['movie'] . "<br>";
     }
