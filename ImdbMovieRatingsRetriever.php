@@ -245,7 +245,11 @@ class ImdbMovieRatingsRetriever {
             }
         }
         if (count($possibleMatches) > 1) {
-            myLog("Found more than one match:  print_r($possibleMatches)");
+            myLog("Found more than one match:");
+            foreach ($possibleMatches as $possibleMatch) {
+                myLog("     " . $possibleMatch['movie']);
+            }
+            return $possibleMatches[0];
         } else if (count($possibleMatches) == 1) {
             return $possibleMatches[0];
         } else {

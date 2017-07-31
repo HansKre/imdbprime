@@ -17,13 +17,4 @@ Thumbs.db
 
 global.log
 
-
-output/movies.txt
-output/moviesForImdbQuery.txt
-
-output/moviesWithRatings.txt
-output/skippedMovies.txt
-output/_moviesWithRatings.txt
-output/_skippedMovies.txt
-
-output/markExecutionOfPrimeMovies.txt
+output/*.txt

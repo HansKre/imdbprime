@@ -1,4 +1,5 @@
 <?php
+require_once ('FileOperations.php');
 
     $sortBy = null;
     $order = null;
@@ -10,7 +11,7 @@
         $order = $_GET['order'];
     }
 
-    $data = file_get_contents( './output/moviesWithRatings.txt' );
+    $data = file_get_contents( FileNames::$imdbQueryMoviesWithRatingsName);
     $videos = unserialize( $data );
 
     if ($sortBy && $order) {

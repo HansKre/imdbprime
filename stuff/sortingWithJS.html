@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Prime Movies with IMDB Rating</title>
+    <link rel="stylesheet" href="index.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="table-view">
+        <table id="videosTable"><h1>Prime Movies with IMDB Rating</h1>
+            <tr>
+                <th class="movie">Movie</th>
+                <th class="year">Year</th>
+                <th class="rating">IMDB Rating</th>
+                <th class="ratingCount">Rating Count</th>
+            </tr>
+        </table>
+
+        <script>
+            // Find a <table> element with id="videosTable":
+            var tableElem = document.getElementById("videosTable");
+
+            // load from php
+            var jArray;
+            $.ajax({
+                //only possible on web server
+                url: './getMoviesWithRatings.php?sortBy=ratingValue&order=descending',
+                //url: 'http://imdbprime-snah.rhcloud.com/getMoviesWithRatings.php?sortBy=ratingValue&order=descending',
+                success: function(data) {
+                    jArray = JSON.parse(data);
+
+                    /*Array
+                     (
+                     [movie] => The Lady In Black [OV]
+                     [year] => 2015
+                     [ratingValue] => 4.3
+                     [ratingCount] => 32
+                     [imdbMovieUrl] => http://www.imdb.com/title/tt3185776/?ref_=fn_tt_tt_1
+                     )*/
+
+                    function compare(a, b){
+                        // ascending
+                            // a > b
+                            var b_FIRST_asc = 1;
+                            // b > a
+                            var a_FIRST_asc = -1;
+
+                        // descending
+                            // a > b
+                            var a_FIRST_desc = -1;
+                            // b > a
+                            var b_FIRST_desc= 1;
+
+                        var EQUAL = 0;
+
+                        // init with equal
+                        let comparison = EQUAL;
+
+                        /*// 2017,x ? 2010,y
+                        //=======================
+                        if ((a.year > b.year) && (a.ratingValue > b.ratingValue)) {
+                            comparison = a_FIRST_desc;
+                        }else if ((a.year > b.year) && (a.ratingValue < b.ratingValue)) {
+                            comparison = a_FIRST_desc;
+                        }else if ((a.year > b.year) && (a.ratingValue == b.ratingValue)) {
+                            comparison = a_FIRST_desc;
+                        }
+
+                        // 2009,x ? 2012,y
+                        //=======================
+                        else if ((a.year < b.year) && (a.ratingValue > b.ratingValue)) {
+                            comparison = b_FIRST_desc;
+                            // 2017,8.0 > 2010,8.7
+                        }else if ((a.year < b.year) && (a.ratingValue < b.ratingValue)) {
+                            comparison = b_FIRST_desc;
+                            // 2017,8.0 > 2010,8.0
+                        }else if ((a.year < b.year) && (a.ratingValue == b.ratingValue)) {
+                            comparison = b_FIRST_desc;
+                        }
+
+                        // 2009,x ? 2009,y
+                        //=======================
+                        else if ((a.year == b.year) && (a.ratingValue > b.ratingValue)) {
+                            comparison = a_FIRST_desc;
+                            // 2017,8.0 > 2010,8.7
+                        }else if ((a.year == b.year) && (a.ratingValue < b.ratingValue)) {
+                            comparison = b_FIRST_desc;
+                            // 2017,8.0 > 2010,8.0
+                        }else if ((a.year == b.year) && (a.ratingValue == b.ratingValue)) {
+                            comparison = EQUAL;
+                        }*/
+
+                        if (parseInt(a.ratingValue) > parseInt(b.ratingValue)) {
+                            comparison = a_FIRST_desc;
+                        }else if (parseInt(b.ratingValue) > parseInt(a.ratingValue)) {
+                            comparison = b_FIRST_desc;
+                        }
+
+                        return comparison;
+                    }
+
+                    //jArray.sort(compare);
+
+                    // remove all rating with count < 10.000
+                    var resultsArray = [];
+                    for (i =0; i < jArray.length; i++) {
+                        var ratingCountString = jArray[i].ratingCount;
+                        // array.join(separator)
+                        ratingCountString = ratingCountString.split(",").join("");
+                        var ratingCount = parseInt(ratingCountString);
+                        if (ratingCount> 10000) {
+                            resultsArray.push(jArray[i]);
+                        }
+                    }
+
+                    for (i = 0; i < resultsArray.length; i++) {
+                        // Create an empty <tr> element and add it to the 1st position of the table:
+                        var row = tableElem.insertRow(i + 1);
+
+                        // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
+                        var titleCell = row.insertCell(0);
+                        var yearCell = row.insertCell(1);
+                        var ratingCell = row.insertCell(2);
+                        var ratingCountCell = row.insertCell(3);
+
+                        // Add some text to the new cells:
+                        titleCell.innerHTML = '<a target="_blank" href=' + resultsArray[i].imdbMovieUrl + '>' + resultsArray[i].movie + '</a>';
+                        yearCell.innerHTML = resultsArray[i].year;
+                        ratingCell.innerHTML = resultsArray[i].ratingValue;
+                        ratingCountCell.innerHTML = resultsArray[i].ratingCount;
+                    }
+                }
+            });
+        </script>
+
+    </div>
+</body>
+</html>
