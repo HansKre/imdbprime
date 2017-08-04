@@ -269,5 +269,9 @@ class FileOperations {
             return 1;
         }
     }
+
+    public static function removePrimeOutput() {
+        unlink(FileNames::$PRIME_OUTPUT_MOVIES_TXT);
+    }
 }
 

@@ -64,6 +64,8 @@ if ($didRunPrimeMoviesToday === ReturnValues::$succeeded) {
     myLog("=====Starte IMDB Query.=====");
     $imdbQuery = new ImdbQuery($myExecutionId);
     if ($imdbQuery->doQuery()) {
+        // avoid running imdb query again
+        FileOperations::removePrimeOutput();
         myLog("=====Fertig=====");
         echo "Status 200";
     } else {

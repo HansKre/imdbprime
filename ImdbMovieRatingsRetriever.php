@@ -422,21 +422,21 @@ class ImdbMovieRatingsRetriever {
         }
 
         if (is_null($imdbMovieDetails) && (contains($cleanMovieTitle, "&"))) {
-            str_replace("&","and",$cleanMovieTitle);
+            $cleanMovieTitle = str_replace("&","and",$cleanMovieTitle);
             $imdbMovieDetails = $this->getMovieDetailsFor($cleanMovieTitle);
             if (is_null($imdbMovieDetails)) {
-                str_replace("and","und",$cleanMovieTitle);
+                $cleanMovieTitle = str_replace("and","und",$cleanMovieTitle);
                 $imdbMovieDetails = $this->getMovieDetailsFor($cleanMovieTitle);
             }
         } else if (is_null($imdbMovieDetails) && (contains($cleanMovieTitle, "und"))) {
             // "Stolz und Vorurteil" liefert falsche Ergebnisse, aber "Stolz & Vorurteil" funktioniert
-            str_replace("und","&", $cleanMovieTitle);
+            $cleanMovieTitle = str_replace("und","&", $cleanMovieTitle);
             $imdbMovieDetails = $this->getMovieDetailsFor($cleanMovieTitle);
         }
 
         if (is_null($imdbMovieDetails) && ((contains($cleanMovieTitle, "(")) || (contains($cleanMovieTitle, ")")))) {
-            str_replace("(", "", $cleanMovieTitle);
-            str_replace(")", "", $cleanMovieTitle);
+            $cleanMovieTitle = str_replace("(", "", $cleanMovieTitle);
+            $cleanMovieTitle = str_replace(")", "", $cleanMovieTitle);
             $imdbMovieDetails = $this->getMovieDetailsFor($cleanMovieTitle);
         }
 
@@ -481,23 +481,23 @@ class ImdbMovieRatingsRetriever {
 
     private function replaceRomanNumber() {
         if (contains($this->movie['movie'], " I ")) {
-            return str_replace(" I ", " 1 ", $this->movie['movie']);
+            return $this->removeSquareBracketFromTitle(str_replace(" I ", " 1 ", $this->movie['movie']));
         }
 
         if (contains($this->movie['movie'], " II ")) {
-            return str_replace(" II ", " 2 ", $this->movie['movie']);
+            return $this->removeSquareBracketFromTitle(str_replace(" II ", " 2 ", $this->movie['movie']));
         }
 
         if (contains($this->movie['movie'], " III ")) {
-            return str_replace(" III ", " 3 ", $this->movie['movie']);
+            return $this->removeSquareBracketFromTitle(str_replace(" III ", " 3 ", $this->movie['movie']));
         }
 
         if (contains($this->movie['movie'], " IV ")) {
-            return str_replace(" IV ", " 4 ", $this->movie['movie']);
+            return $this->removeSquareBracketFromTitle(str_replace(" IV ", " 4 ", $this->movie['movie']));
         }
 
         if (contains($this->movie['movie'], " V ")) {
-            return str_replace(" V ", " 5 ", $this->movie['movie']);
+            return $this->removeSquareBracketFromTitle(str_replace(" V ", " 5 ", $this->movie['movie']));
         }
     }
 }
