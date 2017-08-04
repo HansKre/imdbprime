@@ -202,16 +202,39 @@ class FileOperations {
     }
 
     public static function replaceOldImdbQueryResults() {
-        if (file_exists(FileNames::$imdbQueryMoviesWithRatingsName_temp) || file_exists(FileNames::$imdbQuerySkippedMoviesName_temp)) {
-            if (unlink(FileNames::$imdbQueryMoviesWithRatingsName) || unlink(FileNames::$imdbQuerySkippedMoviesName)) {
-                rename(FileNames::$imdbQueryMoviesWithRatingsName_temp, FileNames::$imdbQueryMoviesWithRatingsName);
-                rename(FileNames::$imdbQuerySkippedMoviesName_temp, FileNames::$imdbQuerySkippedMoviesName);
-            } else {
-                myLog("Could not delete " . FileNames::$imdbQueryMoviesWithRatingsName . " or " . FileNames::$imdbQuerySkippedMoviesName);
+        $canRename = false;
+        if (file_exists(FileNames::$imdbQueryMoviesWithRatingsName)) {
+            if (unlink(FileNames::$imdbQueryMoviesWithRatingsName)) {
+                $canRename = true;
+            }  else {
+                myLog("Could not delete " . FileNames::$imdbQueryMoviesWithRatingsName);
             }
         } else {
+            $canRename = true;
+        }
+
+        if ($canRename) {
             rename(FileNames::$imdbQueryMoviesWithRatingsName_temp, FileNames::$imdbQueryMoviesWithRatingsName);
+        } else {
+            myLog("Could not replace " . FileNames::$imdbQueryMoviesWithRatingsName);
+        }
+
+        $canRename = false;
+        if (file_exists(FileNames::$imdbQuerySkippedMoviesName)) {
+            if (unlink(FileNames::$imdbQuerySkippedMoviesName)) {
+                $canRename = true;
+                rename(FileNames::$imdbQuerySkippedMoviesName_temp, FileNames::$imdbQuerySkippedMoviesName);
+            } else {
+                myLog("Could not delete " . FileNames::$imdbQuerySkippedMoviesName);
+            }
+        } else {
+            $canRename = true;
+        }
+
+        if ($canRename) {
             rename(FileNames::$imdbQuerySkippedMoviesName_temp, FileNames::$imdbQuerySkippedMoviesName);
+        } else {
+            myLog("Could not replace " . FileNames::$imdbQuerySkippedMoviesName);
         }
     }
 

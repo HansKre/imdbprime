@@ -58,7 +58,9 @@
         if (is_numeric($year)) {
             if (contains($string, "(".$year.")") ||
                 contains($string, "(". ($year + 1) .")") ||
-                contains($string, "(". ($year - 1) .")")
+                contains($string, "(". ($year + 2) .")") ||
+                contains($string, "(". ($year - 1) .")") ||
+                contains($string, "(". ($year - 2) .")")
             ) {
                 return true;
             }

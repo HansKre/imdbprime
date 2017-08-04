@@ -49,7 +49,7 @@ class ImdbMovieRatingsRetriever {
             ) {
                //skip element
             } else if (is_numeric($year) && matchesYear($resultTdElem->nodeValue, $year)) {
-                // jahr vergleichen, manchmal weicht das Amazon-Jahr vom IMDB-Jahr um +/- 1 ab
+                // jahr vergleichen, manchmal weicht das Amazon-Jahr vom IMDB-Jahr um +/- 2 ab
                 $promisingResultTdElems[] = $resultTdElem;
             } else if (!is_numeric($year)) {
                 $promisingResultTdElems[] = $resultTdElem;
@@ -58,13 +58,18 @@ class ImdbMovieRatingsRetriever {
         return $promisingResultTdElems;
     }
 
-    private function areStringsEqual($str1, $str2) {
-        // $_str1 = str_replace(" ", "-", $str1);
+    private function areNamesEqual($str1, $str2) {
+        //str1 comes from amazon
+        //if (contains($str1, "Ã¶")) { --> Falsche Umlaute sind kein Thema, da Sonderzeichen komplett rausgefiltert werden
+
+        if (contains($str1, "--")) {
+            return true;
+        }
+
         $_str1 = preg_replace('/[^A-Za-z0-9\-]/', '', $str1);
         $_str1 = trim($_str1);
         $_str1 = strtolower($_str1);
 
-        //$_str2 = str_replace(" ", "-", $str2);
         $_str2 = preg_replace('/[^A-Za-z0-9\-]/', '', $str2);
         $_str2 = trim($_str2);
         $_str2 = strtolower($_str2);
@@ -72,13 +77,67 @@ class ImdbMovieRatingsRetriever {
         if (strcmp($_str1,$_str2) == 0) {
             return true;
         } else {
-            return false;
+            // Remove abbreviated middle names e.g. Michael C. Williams
+            $alternateStr1 = "";
+            $alternateStr2 = "";
+            $containsDot1 = contains($str1, ".");
+            if ($containsDot1) {
+                $str1Expl = explode(" ", $str1);
+                foreach ($str1Expl as $str) {
+                    if (!contains($str, ".") && !strlen($str) < 4) {
+                        $alternateStr1 = $alternateStr1 . " " . $str;
+                    }
+                }
+            } else {
+                $alternateStr1 = $str1;
+            }
+            $containsDot2 = contains($str2, ".");
+            if ($containsDot2) {
+                $str2Expl = explode(" ", $str2);
+                foreach ($str2Expl as $str) {
+                    if (!contains($str, ".") && !strlen($str) < 4) {
+                        $alternateStr2 = $alternateStr2 . " " . $str;
+                    }
+                }
+            } else {
+                $alternateStr2 = $str2;
+            }
+            // ... and try again
+            if ($containsDot1 || $containsDot2) {
+                return $this->areNamesEqual($alternateStr1, $alternateStr2);
+            }
+
+            return $this->compareByCharacter($_str1, $_str2);
         }
+    }
+
+    private function compareByCharacter($str1, $str2) {
+        // falls ein Sonderzeichen z.B. bei Amazon ist und bei IMDB nicht, dann sind die Namen bis
+        // auf das ausgefilterte Sonderzeichen gleich.
+        // Eine "intelligente" Zeichen-basierte Suche kann helfen
+        $i1 = 0;
+        $i2 = 0;
+        for ($i = 0; $i <= min(strlen($str1), strlen($str2)); $i++) {
+            if (mb_substr($str1, $i1, 1) == mb_substr($str2, $i2, 1)) {
+                $i1++;
+                $i2++;
+            } else if (mb_substr($str1, $i1 + 1, 1) == mb_substr($str2, $i2, 1)) {
+                $i1 = $i1 + 2;
+                $i2++;
+            } else if (mb_substr($str1, $i1, 1) == mb_substr($str2, $i2 + 1, 1)) {
+                $i1++;
+                $i2 = $i2 + 2;
+            } else {
+                return false;
+            }
+
+        }
+        return true;
     }
 
     private function isSameDirector($imdbMovieDetailsDom, $directors) {
         if (!is_array($directors)) {
-            if ($this->areStringsEqual($directors, "unavailable")) {
+            if ($this->areNamesEqual($directors, "unavailable")) {
                 return true;
             }
         }
@@ -93,8 +152,10 @@ class ImdbMovieRatingsRetriever {
 
         $foundDirectorElems = array();
         foreach ($elemsArray as $i => $elem) {
-            if (contains($elem->nodeValue, 'Director:')) {
-                $foundDirectorElems = getElementsBy($imdbMovieDetailsDom, "span", "itemprop", "name");
+            $nodeValue = $elem->nodeValue;
+            if (contains($nodeValue, 'Director:') || contains($nodeValue, 'Directors:')) {
+                $foundDirectorElems = getElementsBy($imdbMovieDetailsDom, "span", "itemprop", "director");
+                $foundDirectorElems = array_merge($foundDirectorElems, getElementsBy($imdbMovieDetailsDom, "span", "itemprop", "directors"));
             }
         }
 
@@ -104,12 +165,12 @@ class ImdbMovieRatingsRetriever {
             $foundDirector = $foundDirectorElem->nodeValue;
             if (is_array($directors)) {
                 foreach ($directors as $director) {
-                    if ($this->areStringsEqual($director, $foundDirector)) {
+                    if ($this->areNamesEqual($director, $foundDirector)) {
                         return true;
                     }
                 }
             } else {
-                return $this->areStringsEqual($directors, $foundDirector);
+                return $this->areNamesEqual($directors, $foundDirector);
             }
         }
 
@@ -145,8 +206,9 @@ class ImdbMovieRatingsRetriever {
 
         $foundActorElems = array();
         foreach ($elemsArray as $i => $elem) {
-            if (contains($elem->nodeValue, 'Writer:')) {
-                $foundActorElems = getElementsBy($imdbMovieDetailsDom, "span", "itemprop", "name");
+            if (contains($elem->nodeValue, 'Star:') || contains($elem->nodeValue, 'Stars:')) {
+                $foundActorElems = getElementsBy($imdbMovieDetailsDom, "span", "itemprop", "actor");
+                $foundActorElems = array_merge($foundActorElems, getElementsBy($imdbMovieDetailsDom, "span", "itemprop", "actors"));
             }
         }
 
@@ -156,12 +218,12 @@ class ImdbMovieRatingsRetriever {
             $foundActor = $foundActorElem->nodeValue;
             if (is_array($actors)) {
                 foreach ($actors as $actor) {
-                    if ($this->areStringsEqual($actor, $foundActor)) {
+                    if ($this->areNamesEqual($actor, $foundActor)) {
                         return true;
                     }
                 }
             } else {
-                if ($this->areStringsEqual($actors, $foundActor)) {
+                if ($this->areNamesEqual($actors, $foundActor)) {
                     return true;
                 }
             }
@@ -243,7 +305,7 @@ class ImdbMovieRatingsRetriever {
             if ($isSameDirector || $hasSameActors) {
                 $ratingValue = $this->getRatingValue($imdbMovieDetailsDom);
                 $ratingCount = $this->getRatingCount($imdbMovieDetailsDom);
-                $possibleMatches[] = array('movie'=>$movieTitle,'director'=>$directors,'year'=>$year,'ratingValue'=>$ratingValue,'ratingCount'=>$ratingCount, 'imdbMovieUrl'=>$imdbMovieUrl);
+                $possibleMatches[] = array('movie'=>$movieTitle,'director'=>$directors,'year'=>$year,'ratingValue'=>$ratingValue,'ratingCount'=>$ratingCount, 'imdbMovieUrl'=>$this->urlImdbMovie);
             }
         }
         if (count($possibleMatches) > 1) {
@@ -362,11 +424,24 @@ class ImdbMovieRatingsRetriever {
         if (is_null($imdbMovieDetails) && (contains($cleanMovieTitle, "&"))) {
             str_replace("&","and",$cleanMovieTitle);
             $imdbMovieDetails = $this->getMovieDetailsFor($cleanMovieTitle);
+            if (is_null($imdbMovieDetails)) {
+                str_replace("and","und",$cleanMovieTitle);
+                $imdbMovieDetails = $this->getMovieDetailsFor($cleanMovieTitle);
+            }
+        } else if (is_null($imdbMovieDetails) && (contains($cleanMovieTitle, "und"))) {
+            // "Stolz und Vorurteil" liefert falsche Ergebnisse, aber "Stolz & Vorurteil" funktioniert
+            str_replace("und","&", $cleanMovieTitle);
+            $imdbMovieDetails = $this->getMovieDetailsFor($cleanMovieTitle);
         }
 
         if (is_null($imdbMovieDetails) && ((contains($cleanMovieTitle, "(")) || (contains($cleanMovieTitle, ")")))) {
             str_replace("(", "", $cleanMovieTitle);
             str_replace(")", "", $cleanMovieTitle);
+            $imdbMovieDetails = $this->getMovieDetailsFor($cleanMovieTitle);
+        }
+
+        if (is_null($imdbMovieDetails) && ($this->containsRomanNumber())) {
+            $cleanMovieTitle = $this->replaceRomanNumber();
             $imdbMovieDetails = $this->getMovieDetailsFor($cleanMovieTitle);
         }
 
@@ -392,6 +467,37 @@ class ImdbMovieRatingsRetriever {
             if ($year != containsYear($movieTitle)) {
                 $year = null;
             }
+        }
+    }
+
+    private function containsRomanNumber() {
+        // 1 to 5
+        return contains($this->movie['movie'], " I ") ||
+            contains($this->movie['movie'], " II ") ||
+            contains($this->movie['movie'], " III ") ||
+            contains($this->movie['movie'], " IV ") ||
+            contains($this->movie['movie'], " V ");
+    }
+
+    private function replaceRomanNumber() {
+        if (contains($this->movie['movie'], " I ")) {
+            return str_replace(" I ", " 1 ", $this->movie['movie']);
+        }
+
+        if (contains($this->movie['movie'], " II ")) {
+            return str_replace(" II ", " 2 ", $this->movie['movie']);
+        }
+
+        if (contains($this->movie['movie'], " III ")) {
+            return str_replace(" III ", " 3 ", $this->movie['movie']);
+        }
+
+        if (contains($this->movie['movie'], " IV ")) {
+            return str_replace(" IV ", " 4 ", $this->movie['movie']);
+        }
+
+        if (contains($this->movie['movie'], " V ")) {
+            return str_replace(" V ", " 5 ", $this->movie['movie']);
         }
     }
 }
