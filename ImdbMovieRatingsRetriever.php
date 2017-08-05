@@ -305,7 +305,7 @@ class ImdbMovieRatingsRetriever {
             if ($isSameDirector || $hasSameActors) {
                 $ratingValue = $this->getRatingValue($imdbMovieDetailsDom);
                 $ratingCount = $this->getRatingCount($imdbMovieDetailsDom);
-                $possibleMatches[] = array('movie'=>$movieTitle,'director'=>$directors,'year'=>$year,'ratingValue'=>$ratingValue,'ratingCount'=>$ratingCount, 'imdbMovieUrl'=>$this->urlImdbMovie);
+                $possibleMatches[] = array('movie'=>$this->movie['movie'],'director'=>$directors,'year'=>$year,'ratingValue'=>$ratingValue,'ratingCount'=>$ratingCount, 'imdbMovieUrl'=>$this->urlImdbMovie);
             }
         }
         if (count($possibleMatches) > 1) {

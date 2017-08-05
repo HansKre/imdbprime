@@ -1,8 +1,16 @@
 <?php
     const ONESECOND = 1000000;
     function nowAsString () {
+        return nowAsStringWithFormat(null);
+    }
+
+    function nowAsStringWithFormat ($format) {
         $now = new DateTime("", new DateTimeZone('Europe/Berlin'));
-        return $now->format('Y-m-d H:i:s');
+        if ($format) {
+            return $now->format($format);
+        } else {
+            return $now->format('Y-m-d H:i:s');
+        }
     }
 
     function myLog($message) {

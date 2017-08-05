@@ -271,7 +271,8 @@ class FileOperations {
     }
 
     public static function removePrimeOutput() {
-        unlink(FileNames::$PRIME_OUTPUT_MOVIES_TXT);
+        $newFileName = nowAsStringWithFormat('Y-m-d-H-i-s') . '_processed_' . FileNames::$PRIME_OUTPUT_MOVIES_TXT;
+        rename(FileNames::$PRIME_OUTPUT_MOVIES_TXT, $newFileName);
     }
 }
 
