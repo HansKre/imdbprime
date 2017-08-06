@@ -48,6 +48,8 @@
                         ratingCountCell.innerHTML = resultsArray[i].ratingCount;
                     }
 
+                    // needs to be inside of the success function, otherwise getResultsDate will reutrn first
+                    // and resultsArray will be empty
                     var resultsFromElem = document.getElementById("resultsFrom");
                     // load from php
                     $.ajax({
