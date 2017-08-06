@@ -13,7 +13,7 @@ class FileNames {
     private static $markExecutionOfPrimeMoviesFileName = 'markExecutionOfPrimeMovies.txt';
 
     // Datadir: /var/lib/openshift/59712c0489f5cf1e5000005a/app-root/data/
-    privat static $dataDir;
+    private static $dataDir;
 
     private static function getOpenshiftDataDir() {
         if (self::$dataDir) {
@@ -33,7 +33,7 @@ class FileNames {
             return $dataDir . $fileName;
         } else {
             // ./output/movies.txt
-            return LOCAL_OUT . $fileName;
+            return self::LOCAL_OUT . $fileName;
         }
     }
 
@@ -274,7 +274,7 @@ class FileOperations {
         }
 
         if ($canRename) {
-            rename(FileNames::imdbQueryMoviesWithRatingsName()_temp, FileNames::imdbQueryMoviesWithRatingsName());
+            rename(FileNames::imdbQueryMoviesWithRatingsName_temp(), FileNames::imdbQueryMoviesWithRatingsName());
         } else {
             myLog("Could not replace " . FileNames::imdbQueryMoviesWithRatingsName());
         }
@@ -283,7 +283,7 @@ class FileOperations {
         if (file_exists(FileNames::imdbQuerySkippedMoviesName())) {
             if (unlink(FileNames::imdbQuerySkippedMoviesName())) {
                 $canRename = true;
-                rename(FileNames::imdbQuerySkippedMoviesName()_temp, FileNames::imdbQuerySkippedMoviesName());
+                rename(FileNames::imdbQuerySkippedMoviesName_temp(), FileNames::imdbQuerySkippedMoviesName());
             } else {
                 myLog("Could not delete " . FileNames::imdbQuerySkippedMoviesName());
             }
@@ -292,7 +292,7 @@ class FileOperations {
         }
 
         if ($canRename) {
-            rename(FileNames::imdbQuerySkippedMoviesName()_temp, FileNames::imdbQuerySkippedMoviesName());
+            rename(FileNames::imdbQuerySkippedMoviesName_temp(), FileNames::imdbQuerySkippedMoviesName());
         } else {
             myLog("Could not replace " . FileNames::imdbQuerySkippedMoviesName());
         }

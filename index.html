@@ -26,7 +26,7 @@
             $.ajax({
                 //only possible on web server
                 url: './getMoviesWithRatings.php?sortBy=ratingValue&order=descending&ratingCountMin=10000',
-                //url: 'http://imdbprime-snah.rhcloud.com/getMoviesWithRatings.php?sortBy=ratingValue&order=descending',
+                //url: 'http://imdbprime-snah.rhcloud.com/getMoviesWithRatings.php?sortBy=ratingValue&order=descending&ratingCountMin=10000',
                 success: function(data) {
                     jArray = JSON.parse(data);
 
