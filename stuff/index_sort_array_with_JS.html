@@ -22,16 +22,27 @@
             var tableElem = document.getElementById("videosTable");
 
             // load from php
-            var resultsArray;
-            var minRatingCount = 10000;
+            var jArray;
             $.ajax({
                 //only possible on web server
-                url: './getMoviesWithRatings.php?sortBy=ratingValue&order=descending&ratingCountMin=' + minRatingCount,
+                url: './getMoviesWithRatings.php?sortBy=ratingValue&order=descending&ratingCountMin=10000',
                 //url: 'http://imdbprime-snah.rhcloud.com/getMoviesWithRatings.php?sortBy=ratingValue&order=descending&ratingCountMin=10000',
                 success: function(data) {
-                    resultsArray = JSON.parse(data);
+                    jArray = JSON.parse(data);
 
-                    for (var i = 0; i < resultsArray.length; i++) {
+                    // remove all rating with count < 10.000
+                    var resultsArray = [];
+                    for (i =0; i < jArray.length; i++) {
+                        var ratingCountString = jArray[i].ratingCount;
+                        // array.join(separator)
+                        ratingCountString = ratingCountString.split(",").join("");
+                        var ratingCount = parseInt(ratingCountString);
+                        if (ratingCount> 10000) {
+                            resultsArray.push(jArray[i]);
+                        }
+                    }
+
+                    for (i = 0; i < resultsArray.length; i++) {
                         // Create an empty <tr> element and add it to the 1st position of the table:
                         var row = tableElem.insertRow(i + 1);
 
@@ -50,13 +61,16 @@
                 }
             });
 
+
+
+
             var resultsFromElem = document.getElementById("resultsFrom");
             // load from php
             $.ajax({
                 //only possible on web server
                 url: './getResultsDate.php',
                 success: function(data) {
-                    resultsFromElem.innerHTML += data + '<br>' + "With min Rating Count: " + minRatingCount + ": "+ resultsArray.length;
+                    resultsFromElem.innerHTML += data;
                 }
             });
         </script>
