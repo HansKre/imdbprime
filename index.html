@@ -47,16 +47,16 @@
                         ratingCell.innerHTML = resultsArray[i].ratingValue;
                         ratingCountCell.innerHTML = resultsArray[i].ratingCount;
                     }
-                }
-            });
 
-            var resultsFromElem = document.getElementById("resultsFrom");
-            // load from php
-            $.ajax({
-                //only possible on web server
-                url: './getResultsDate.php',
-                success: function(data) {
-                    resultsFromElem.innerHTML += data + '<br>' + "With min Rating Count: " + minRatingCount + ": "+ resultsArray.length;
+                    var resultsFromElem = document.getElementById("resultsFrom");
+                    // load from php
+                    $.ajax({
+                        //only possible on web server
+                        url: './getResultsDate.php',
+                        success: function(data) {
+                            resultsFromElem.innerHTML += data + '<br>' + "With min Rating Count: " + minRatingCount + ": "+ resultsArray.length;
+                        }
+                    });
                 }
             });
         </script>

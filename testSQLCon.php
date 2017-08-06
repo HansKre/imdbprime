@@ -9,6 +9,9 @@ require_once ('commons.php');
 Connection URL: mysql://$OPENSHIFT_MYSQL_DB_HOST:$OPENSHIFT_MYSQL_DB_PORT/
  * */
 
+// tutorial: https://www.php-einfach.de/mysql-tutorial/crashkurs-pdo/
+// http://wiki.hashphp.org/PDO_Tutorial_for_MySQL_Developers
+
 
 define('DB_HOST', getenv('OPENSHIFT_MYSQL_DB_HOST'));
 define('DB_PORT',getenv('OPENSHIFT_MYSQL_DB_PORT'));
