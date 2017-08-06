@@ -15,7 +15,7 @@
                 <th class="rating">IMDB Rating</th>
                 <th class="ratingCount">Rating Count</th>
             </tr>
-        </table>
+    </table>
 
         <script>
             // Find a <table> element with id="videosTable":
@@ -25,7 +25,7 @@
             var jArray;
             $.ajax({
                 //only possible on web server
-                url: './getMoviesWithRatings.php?sortBy=ratingValue&order=descending',
+                url: './getMoviesWithRatings.php?sortBy=ratingValue&order=descending&ratingCountMin=10000',
                 //url: 'http://imdbprime-snah.rhcloud.com/getMoviesWithRatings.php?sortBy=ratingValue&order=descending',
                 success: function(data) {
                     jArray = JSON.parse(data);

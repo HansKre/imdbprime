@@ -31,10 +31,10 @@ class ImdbQuery {
 
     private function storeAndReset() {
         if ($this->movieWithRating) {
-            FileOperations::storeToFileThreadSave(FileNames::$imdbQueryMoviesWithRatingsName_temp, $this->movieWithRating);
+            FileOperations::storeToFileThreadSave(FileNames::imdbQueryMoviesWithRatingsName_temp(), $this->movieWithRating);
         }
         if ($this->skippedMovie) {
-            FileOperations::storeToFileThreadSave(FileNames::$imdbQuerySkippedMoviesName_temp, $this->skippedMovie);
+            FileOperations::storeToFileThreadSave(FileNames::imdbQuerySkippedMoviesName_temp(), $this->skippedMovie);
         }
         $this->movieWithRating = null;
         $this->skippedMovie = null;

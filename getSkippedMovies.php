@@ -1,15 +1,53 @@
 <?php
 require_once ('FileOperations.php');
 
-    $videos = unserialize(file_get_contents( FileNames::$imdbQuerySkippedMoviesName ));
+    $movies = unserialize(file_get_contents( FileNames::imdbQuerySkippedMoviesName() ));
 
-    usort($videos, function($a, $b) {
+    usort($movies, function($a, $b) {
         //sort descending by ratingValue
-        return $b['movie'] - $a['movie'];
+        return strcasecmp($a['movie'],$b['movie']);
     });
 
-    // return
-    echo "Skipped videos: " . count($videos) . "<br>";
-    foreach ($videos as $video) {
-        echo $video['movie'] . "<br>";
+
+    // return HTML
+    echo "<table><h1>Skipped Movies</h1>";
+    echo "Skipped: " . count($movies) . "<br>";
+    // table header
+    echo    "<tr>";
+    echo            "<th>Movie</th>";
+    echo            "<th>Director</th>";
+    echo            "<th>Actors</th>";
+    echo            "<th>Year</th>";
+    echo    "</tr>";
+
+    // insert movies as rows into the table
+    foreach ($movies as $movie) {
+        $director = null;
+        if (is_array($movie['director'])) {
+            foreach ($movie['director'] as $dir) {
+                $director = $director . " " . $dir;
+            }
+        } else {
+            $director = $movie['director'];
+        }
+
+        $actors = null;
+        if (is_array($movie['actors'])) {
+            foreach ($movie['actors'] as $actor) {
+                $actors = $actors . " " . $actor;
+            }
+        } else {
+            $actors = $movie['actors'];
+        }
+
+        $movie = $movie['movie'];
+        $year = $movie['year'];
+
+        echo    "<tr>";
+        echo            "<td>$movie</td>";
+        echo            "<td>$director</td>";
+        echo            "<td>$actors</td>";
+        echo            "<td>$year</td>";
+        echo    "</tr>";
     }
+    echo "</table>";

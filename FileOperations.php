@@ -1,13 +1,69 @@
 <?php
 
 class FileNames {
-    public static $PRIME_OUTPUT_MOVIES_TXT = './output/movies.txt';
-    public static $imdbQueryFromFileName = './output/moviesForImdbQuery.txt';
-    public static $imdbQuerySkippedMoviesName = './output/skippedMovies.txt';
-    public static $imdbQueryMoviesWithRatingsName = './output/moviesWithRatings.txt';
-    public static $imdbQuerySkippedMoviesName_temp = './output/_skippedMovies.txt';
-    public static $imdbQueryMoviesWithRatingsName_temp = './output/_moviesWithRatings.txt';
-    public static $markExecutionOfPrimeMoviesFileName = './output/markExecutionOfPrimeMovies.txt';
+    const OPENSHIFT_DATA_DIR = 'OPENSHIFT_DATA_DIR';
+    const LOCAL_OUT = './output/';
+
+    private static $primeOutputName = 'movies.txt';
+    private static $imdbQueryFromFileName = 'moviesForImdbQuery.txt';
+    private static $imdbQuerySkippedMoviesName = 'skippedMovies.txt';
+    private static $imdbQueryMoviesWithRatingsName = 'moviesWithRatings.txt';
+    private static $imdbQuerySkippedMoviesName_temp = '_skippedMovies.txt';
+    private static $imdbQueryMoviesWithRatingsName_temp = '_moviesWithRatings.txt';
+    private static $markExecutionOfPrimeMoviesFileName = 'markExecutionOfPrimeMovies.txt';
+
+    // Datadir: /var/lib/openshift/59712c0489f5cf1e5000005a/app-root/data/
+    privat static $dataDir;
+
+    private static function getOpenshiftDataDir() {
+        if (self::$dataDir) {
+            return self::$dataDir;
+        } else if (isset($_ENV[self::OPENSHIFT_DATA_DIR])) {
+            self::$dataDir = $_ENV[self::OPENSHIFT_DATA_DIR];
+            return self::$dataDir;
+        } else {
+            return "";
+        }
+    }
+
+    private static function getFileNameFor($fileName) {
+        $dataDir = self::getOpenshiftDataDir();
+        if ($dataDir) {
+            // /var/lib/openshift/59712c0489f5cf1e5000005a/app-root/data//output/movies.txt
+            return $dataDir . $fileName;
+        } else {
+            // ./output/movies.txt
+            return LOCAL_OUT . $fileName;
+        }
+    }
+
+    public static function primeOutputMovies() {
+        return self::getFileNameFor(self::$primeOutputName);
+    }
+
+    public static function imdbQueryFromFileName() {
+        return self::getFileNameFor(self::$imdbQueryFromFileName);
+    }
+
+    public static function imdbQuerySkippedMoviesName() {
+        return self::getFileNameFor(self::$imdbQuerySkippedMoviesName);
+    }
+
+    public static function imdbQueryMoviesWithRatingsName() {
+        return self::getFileNameFor(self::$imdbQueryMoviesWithRatingsName);
+    }
+
+    public static function imdbQuerySkippedMoviesName_temp() {
+        return self::getFileNameFor(self::$imdbQuerySkippedMoviesName_temp);
+    }
+
+    public static function imdbQueryMoviesWithRatingsName_temp() {
+        return self::getFileNameFor(self::$imdbQueryMoviesWithRatingsName_temp);
+    }
+
+    public static function markExecutionOfPrimeMoviesFileName() {
+        return self::getFileNameFor(self::$markExecutionOfPrimeMoviesFileName);
+    }
 }
 
 class ReturnValues {
@@ -69,14 +125,14 @@ class FileOperations {
     }
 
     public static function getNextMovieAndRemoveItFromFile() {
-        if (file_exists(FileNames::$imdbQueryFromFileName)) {
-            $file = fopen(FileNames::$imdbQueryFromFileName,"c+");
+        if (file_exists(FileNames::imdbQueryFromFileName())) {
+            $file = fopen(FileNames::imdbQueryFromFileName(),"c+");
             if ($file !== false) {
                 // wait till we have the exclusive lock
                 flock($file,LOCK_EX);
 
                 // read file content
-                $movies = unserialize( file_get_contents(FileNames::$imdbQueryFromFileName) );
+                $movies = unserialize( file_get_contents(FileNames::imdbQueryFromFileName()) );
 
                 // store and remove last entry
                 $lastLine = 0;
@@ -87,9 +143,9 @@ class FileOperations {
 
                 // delete if empty
                 if (count($movies) == 0) {
-                    unlink(FileNames::$imdbQueryFromFileName);
+                    unlink(FileNames::imdbQueryFromFileName());
                 } else {
-                    file_put_contents(FileNames::$imdbQueryFromFileName, serialize($movies));
+                    file_put_contents(FileNames::imdbQueryFromFileName(), serialize($movies));
                 }
                 // release lock
                 flock($file,LOCK_UN);
@@ -108,12 +164,12 @@ class FileOperations {
     }
 
     public static function duplicatePrimeMoviesOutputForImdbQuery() {
-        copy(FileNames::$PRIME_OUTPUT_MOVIES_TXT, FileNames::$imdbQueryFromFileName);
+        copy(FileNames::primeOutputMovies(), FileNames::imdbQueryFromFileName());
     }
 
     public static function markExecutionAs($markString) {
         $file = null;
-        $fileName = FileNames::$markExecutionOfPrimeMoviesFileName;
+        $fileName = FileNames::markExecutionOfPrimeMoviesFileName();
         $data = null;
         if (!file_exists($fileName)) {
             // create
@@ -146,7 +202,7 @@ class FileOperations {
 
     public static function didRunPrimeMoviesToday() {
         $file = null;
-        $fileName = FileNames::$markExecutionOfPrimeMoviesFileName;
+        $fileName = FileNames::markExecutionOfPrimeMoviesFileName();
         $data = null;
         $returnValue = null;
         if (!file_exists($fileName)) {
@@ -198,55 +254,59 @@ class FileOperations {
     }
 
     public static function deletePrimeMoviesOutputFile() {
-        return unlink(FileNames::$PRIME_OUTPUT_MOVIES_TXT);
+        if (file_exists(FileNames::primeOutputMovies())) {
+            return unlink(FileNames::primeOutputMovies());
+        } else {
+            return true;
+        }
     }
 
     public static function replaceOldImdbQueryResults() {
         $canRename = false;
-        if (file_exists(FileNames::$imdbQueryMoviesWithRatingsName)) {
-            if (unlink(FileNames::$imdbQueryMoviesWithRatingsName)) {
+        if (file_exists(FileNames::imdbQueryMoviesWithRatingsName())) {
+            if (unlink(FileNames::imdbQueryMoviesWithRatingsName())) {
                 $canRename = true;
             }  else {
-                myLog("Could not delete " . FileNames::$imdbQueryMoviesWithRatingsName);
+                myLog("Could not delete " . FileNames::imdbQueryMoviesWithRatingsName());
             }
         } else {
             $canRename = true;
         }
 
         if ($canRename) {
-            rename(FileNames::$imdbQueryMoviesWithRatingsName_temp, FileNames::$imdbQueryMoviesWithRatingsName);
+            rename(FileNames::imdbQueryMoviesWithRatingsName()_temp, FileNames::imdbQueryMoviesWithRatingsName());
         } else {
-            myLog("Could not replace " . FileNames::$imdbQueryMoviesWithRatingsName);
+            myLog("Could not replace " . FileNames::imdbQueryMoviesWithRatingsName());
         }
 
         $canRename = false;
-        if (file_exists(FileNames::$imdbQuerySkippedMoviesName)) {
-            if (unlink(FileNames::$imdbQuerySkippedMoviesName)) {
+        if (file_exists(FileNames::imdbQuerySkippedMoviesName())) {
+            if (unlink(FileNames::imdbQuerySkippedMoviesName())) {
                 $canRename = true;
-                rename(FileNames::$imdbQuerySkippedMoviesName_temp, FileNames::$imdbQuerySkippedMoviesName);
+                rename(FileNames::imdbQuerySkippedMoviesName()_temp, FileNames::imdbQuerySkippedMoviesName());
             } else {
-                myLog("Could not delete " . FileNames::$imdbQuerySkippedMoviesName);
+                myLog("Could not delete " . FileNames::imdbQuerySkippedMoviesName());
             }
         } else {
             $canRename = true;
         }
 
         if ($canRename) {
-            rename(FileNames::$imdbQuerySkippedMoviesName_temp, FileNames::$imdbQuerySkippedMoviesName);
+            rename(FileNames::imdbQuerySkippedMoviesName()_temp, FileNames::imdbQuerySkippedMoviesName());
         } else {
-            myLog("Could not replace " . FileNames::$imdbQuerySkippedMoviesName);
+            myLog("Could not replace " . FileNames::imdbQuerySkippedMoviesName());
         }
     }
 
     public static function whereToContinueAmazonQuery() {
-        if (file_exists(FileNames::$PRIME_OUTPUT_MOVIES_TXT)) {
-            $file = fopen(FileNames::$PRIME_OUTPUT_MOVIES_TXT,"c+");
+        if (file_exists(FileNames::primeOutputMovies())) {
+            $file = fopen(FileNames::primeOutputMovies(),"c+");
             if ($file !== false) {
                 // wait till we have the exclusive lock
                 flock($file,LOCK_EX);
 
                 // read file content
-                $movies = unserialize( file_get_contents(FileNames::$PRIME_OUTPUT_MOVIES_TXT) );
+                $movies = unserialize( file_get_contents(FileNames::primeOutputMovies()) );
 
                 // store and remove last entry
                 $lastPage = 0;
@@ -271,8 +331,8 @@ class FileOperations {
     }
 
     public static function removePrimeOutput() {
-        $newFileName = nowAsStringWithFormat('Y-m-d-H-i-s') . '_processed_' . FileNames::$PRIME_OUTPUT_MOVIES_TXT;
-        rename(FileNames::$PRIME_OUTPUT_MOVIES_TXT, $newFileName);
+        $newFileName = str_replace('.txt', '', FileNames::primeOutputMovies()) . '_processed_' . nowAsStringWithFormat('Y-m-d-H-i-s') . '.txt';
+        rename(FileNames::primeOutputMovies(), $newFileName);
     }
 }
 

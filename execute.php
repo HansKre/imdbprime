@@ -30,7 +30,7 @@ myLog("=====Starting Execution.php with: $didRunPrimeMoviesToday =====");
 if ($didRunPrimeMoviesToday === ReturnValues::$shouldStart) {
     if (FileOperations::markExecutionAs(ExecutionMarks::$started)) {
         if (!FileOperations::deletePrimeMoviesOutputFile()) {
-            myLog("Could not delete " . FileNames::$PRIME_OUTPUT_MOVIES_TXT);
+            myLog("Could not delete " . FileNames::primeOutputMovies());
             return;
         }
         $myPrimeMovies = new PrimeMovies($myExecutionId);
@@ -53,9 +53,9 @@ $didRunPrimeMoviesToday = FileOperations::didRunPrimeMoviesToday();
 myLog("===== Execution Decision for IMDB Query is: $didRunPrimeMoviesToday =====");
 
 if ($didRunPrimeMoviesToday === ReturnValues::$succeeded) {
-    if (!file_exists(FileNames::$imdbQueryFromFileName)) {
-        if (!file_exists(FileNames::$PRIME_OUTPUT_MOVIES_TXT)) {
-            myLog(FileNames::$PRIME_OUTPUT_MOVIES_TXT . " does not exist");
+    if (!file_exists(FileNames::imdbQueryFromFileName())) {
+        if (!file_exists(FileNames::primeOutputMovies())) {
+            myLog(FileNames::primeOutputMovies() . " does not exist");
             echo "Status 900";
             return;
         }
