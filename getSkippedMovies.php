@@ -40,11 +40,11 @@ require_once ('FileOperations.php');
             $actors = $movie['actors'];
         }
 
-        $movie = $movie['movie'];
+        $movieTitle = $movie['movie'];
         $year = $movie['year'];
 
         echo    "<tr>";
-        echo            "<td>$movie</td>";
+        echo            "<td>$movieTitle</td>";
         echo            "<td>$director</td>";
         echo            "<td>$actors</td>";
         echo            "<td>$year</td>";
