@@ -6,10 +6,11 @@
   "apps": [
     {
       "root": "src",
-      "outDir": "dist",
+      "outDir": "../ng",
       "assets": [
         "assets",
-        "favicon.ico"
+        "favicon.ico",
+        ".htaccess"
       ],
       "index": "index.html",
       "main": "main.ts",
