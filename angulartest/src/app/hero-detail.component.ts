@@ -30,7 +30,7 @@ export class HeroDetailComponent implements OnInit{
             .subscribe(hero => this.hero = hero);
     }
 
-    gotBack(): void {
+    goBack(): void {
         this.location.back();
     }
 
