@@ -4,6 +4,7 @@ require_once ('queryimdb.php');
 require_once('primemovies.php');
 require_once ('FileOperations.php');
 const STATUS_200 = "Status 200";
+const STATUS_400 = "Status 400";
 ini_set('max_execution_time', '36000');
 ini_set('max_input_time', '36000');
 
