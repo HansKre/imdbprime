@@ -4,10 +4,10 @@ require_once ('FileOperations.php');
 if (file_exists(FileNames::imdbQueryMoviesWithRatingsName())) {
     $videos = unserialize(file_get_contents( FileNames::imdbQueryMoviesWithRatingsName()));
     if (count($videos) < 100) {
-        echo "Status 400";
+        //empty reply
     } else {
-        echo "Status 200";
+        echo "200 OK";
     }
 } else {
-    echo "Status 400";
+    //empty reply
 }
