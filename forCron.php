@@ -6,7 +6,7 @@ if (file_exists(FileNames::imdbQueryMoviesWithRatingsName())) {
     if (count($videos) < 100) {
         http_response_code(400);
     } else {
-        http_response_code(400);
+        http_response_code(200);
     }
 } else {
     http_response_code(400);
