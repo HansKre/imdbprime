@@ -1,1 +1,2 @@
 ErrorDocument 404 /index.html
+Header set Access-Control-Allow-Origin *
