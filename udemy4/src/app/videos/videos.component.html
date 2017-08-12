@@ -1,8 +1,46 @@
 
+<!--
 <h2>I'm the Videos Component:</h2>
 <p>
   server works!
 </p>
-<button [disabled]="!allowNewServer" class="btn btn-primary" (click)="sendGetRequest()">Send Get Request</button>
+<button [disabled]="!allowNewServer" class="btn btn-primary" (click)="registerForWebRequest()">Send Get Request</button>
 <button class="btn btn-primary" (click)="refresh()">Refresh</button>
-<div *ngFor="let movie of movies">- {{ movie.movie }}</div>
+-->
+<table class="table table-striped table-responsive">
+    <thead class="thead-inverse">
+        <tr>
+            <th class="col-xs-8">Movie</th>
+            <th class="col-xs-1">Year</th>
+            <th class="col-xs-1">IMDB Rating</th>
+            <th class="col-xs-2">Rating Count</th>
+        </tr>
+    </thead>
+
+    <!--First Solution with ng-template and ngFor
+    advantage: you don't need to put ngFor into a parent tag like "tbody" anymore -->
+    <tbody>
+    <ng-template ngFor let-movie [ngForOf]="movies">
+        <tr>
+            <td>
+                <a target="_blank" href= "{{ movie.imdbMovieUrl }}" > {{ movie.movie }} </a>
+            </td>
+            <td>{{ movie.year }}</td>
+            <td>{{ movie.ratingValue }}</td>
+            <td>{{ movie.ratingCount }}</td>
+        </tr>
+    </ng-template>
+
+    <!--Alternative Solution with only ngFor
+    <tbody *ngFor="let movie of movies">
+        <tr>
+            <td>{{ movie.movie }}</td>
+            <td>{{ movie.year }}</td>
+            <td>{{ movie.ratingValue }}</td>
+            <td>{{ movie.ratingCount }}</td>
+        </tr>
+    </tbody>
+
+    -->
+    </tbody>
+</table>

@@ -10,6 +10,11 @@ export class WebService {
 
     constructor(private http: Http) { }
 
+    getObservable() {
+        let url = 'http://imdbprime-snah.rhcloud.com/getMoviesWithRatings.php?sortBy=ratingValue&order=descending&ratingCountMin=10000';
+        return this.http.get(url);
+    }
+
     getPromise() {
         let url = 'http://imdbprime-snah.rhcloud.com/getMoviesWithRatings.php?sortBy=ratingValue&order=descending&ratingCountMin=10000';
         //let url = './getMoviesWithRatings.php?sortBy=ratingValue&order=descending&ratingCountMin=10000';
@@ -22,7 +27,7 @@ export class WebService {
                 this.http.get(url)
                     .subscribe(
                         response => this.handleResponse(response),
-                        error => console.log(error),
+                        error => reject(error),
                         () => resolve(this.movies)
                     );
             }.bind(this));

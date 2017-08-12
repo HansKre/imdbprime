@@ -16,15 +16,15 @@ export class VideosComponent implements OnInit {
     }
 
     ngOnInit() {
+        this.registerForWebRequest();
+    }
+
+    registerForWebRequest() {
         this.webService.getPromise().then(function (movies) {
             this.movies = movies as any as Movie[];
         }.bind(this), function (error) {
             console.log(error);
         }.bind(this));
-    }
-
-    sendGetRequest() {
-      console.log("do something");
     }
 
     refresh() {
