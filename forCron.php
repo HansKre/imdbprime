@@ -16,13 +16,15 @@ if (file_exists(FileNames::imdbQueryMoviesWithRatingsName())) {
  * Use following code to query on external webserver
 
 <?php
-file_get_contents('http://imdbprime-snah.rhcloud.com/forCron.php');
+$headers = get_headers('http://imdbprime-snah.rhcloud.com/forCron.php');
 
-if ($http_response_header) {
-    if (substr($http_response_header[0], 9, 3) == 200) {
+if ($headers) {
+    if (substr($headers[0], 9, 3) == 200) {
         http_response_code(200);
+        echo "200";
     } else {
         http_response_code(400);
+        echo "400";
     }
 }
 */

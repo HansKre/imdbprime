@@ -24,7 +24,7 @@
             // load from php
             var jArray;
             $.ajax({
-                //only possible on web server
+                //only possible on web videos
                 url: './getMoviesWithRatings.php?sortBy=ratingValue&order=descending&ratingCountMin=10000',
                 //url: 'http://imdbprime-snah.rhcloud.com/getMoviesWithRatings.php?sortBy=ratingValue&order=descending&ratingCountMin=10000',
                 success: function(data) {
@@ -67,7 +67,7 @@
             var resultsFromElem = document.getElementById("resultsFrom");
             // load from php
             $.ajax({
-                //only possible on web server
+                //only possible on web videos
                 url: './getResultsDate.php',
                 success: function(data) {
                     resultsFromElem.innerHTML += data;

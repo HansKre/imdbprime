@@ -25,7 +25,7 @@
             var resultsArray;
             var minRatingCount = 10000;
             $.ajax({
-                //only possible on web server
+                //only possible on web videos
                 url: './getMoviesWithRatings.php?sortBy=ratingValue&order=descending&ratingCountMin=' + minRatingCount,
                 //url: 'http://imdbprime-snah.rhcloud.com/getMoviesWithRatings.php?sortBy=ratingValue&order=descending&ratingCountMin=10000',
                 success: function(data) {
@@ -53,7 +53,7 @@
                     var resultsFromElem = document.getElementById("resultsFrom");
                     // load from php
                     $.ajax({
-                        //only possible on web server
+                        //only possible on web videos
                         url: './getResultsDate.php',
                         success: function(data) {
                             resultsFromElem.innerHTML += data + '<br>' + "With min Rating Count: " + minRatingCount + ": "+ resultsArray.length;

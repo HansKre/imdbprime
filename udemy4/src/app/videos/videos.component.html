@@ -1,0 +1,8 @@
+
+<h2>I'm the Videos Component:</h2>
+<p>
+  server works!
+</p>
+<button [disabled]="!allowNewServer" class="btn btn-primary" (click)="sendGetRequest()">Send Get Request</button>
+<button class="btn btn-primary" (click)="refresh()">Refresh</button>
+<div *ngFor="let movie of movies">- {{ movie.movie }}</div>
