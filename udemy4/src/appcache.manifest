@@ -6,7 +6,7 @@ CACHE MANIFEST
 
 CACHE:
 #what to cache in application cache
-*
+index.html
 
 NETWORK:
 #what to NOT cache if network is online
