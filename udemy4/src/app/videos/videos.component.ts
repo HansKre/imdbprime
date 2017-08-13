@@ -23,12 +23,8 @@ export class VideosComponent implements OnInit {
         this.webService.getPromise().then(function (movies) {
             this.movies = movies as any as Movie[];
         }.bind(this), function (error) {
+            alert("Movies could not be retrieved from the web service.");
             console.log(error);
         }.bind(this));
     }
-
-    refresh() {
-        console.log("Refresh: " + this.movies);
-    }
-
 }
