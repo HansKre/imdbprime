@@ -7,10 +7,23 @@ CACHE MANIFEST
 CACHE:
 #what to cache in application cache
 index.html
+favicon.ico
+glyphicons-halflings-regular.448c34a56d699c29117a.woff2
+glyphicons-halflings-regular.89889688147bd7575d63.svg
+glyphicons-halflings-regular.e18bbf611f2a2e43afc0.ttf
+glyphicons-halflings-regular.f4769f9bdb7466be6508.eot
+glyphicons-halflings-regular.fa2772327f55d8198301.woff
+inline.d6cbc41f868c04e10f4c.bundle.js
+main.61e696cdf0e04b4eb527.bundle.js
+polyfills.991e140ab27557bb5853.bundle.js
+styles.c6bb9e4cf89362d60f8a.bundle.css
+vendor.186cd6e6c17815c906a8.bundle.js
+http://imdbprime-snah.rhcloud.com/getMoviesWithRatings.php
 
 NETWORK:
 #what to NOT cache if network is online
 #star means, load everything if network is online
+#star is only allowed for online!
 *
 
 FALLBACK
