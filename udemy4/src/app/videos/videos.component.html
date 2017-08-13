@@ -7,40 +7,76 @@
 
 <p *ngIf="!wasOnline()"> Running in offline mode! </p>
 
-<table class="table table-striped table-responsive">
-    <thead class="thead-inverse">
-        <tr>
-            <th class="col-xs-8">Movie</th>
-            <th class="col-xs-1">Year</th>
-            <th class="col-xs-1">IMDB Rating</th>
-            <th class="col-xs-2">Rating Count</th>
-        </tr>
-    </thead>
+<div class="row">
+    <div class="span5">
+        <table class="table table-striped table-condensed">
+            <thead class="thead-inverse">
+            <tr>
+                <th class="col-xs-8">Movie</th>
+                <th class="col-xs-1">Year</th>
+                <th class="col-xs-1">IMDB Rating</th>
+                <th class="col-xs-2">Rating Count</th>
+            </tr>
+            </thead>
 
-    <!--First Solution with ng-template and ngFor
-    advantage: you don't need to put ngFor into a parent tag like "tbody" anymore -->
-    <tbody>
-    <ng-template ngFor let-movie [ngForOf]="movies">
-        <tr>
-            <td>
-                <a target="_blank" href= "{{ movie.imdbMovieUrl }}" > {{ movie.movie }} </a>
-            </td>
-            <td>{{ movie.year }}</td>
-            <td>{{ movie.ratingValue }}</td>
-            <td>{{ movie.ratingCount }}</td>
-        </tr>
+            <!--First Solution with ng-template and ngFor
+            advantage: you don't need to put ngFor into a parent tag like "tbody" anymore -->
+            <tbody>
+            <ng-template ngFor let-movie [ngForOf]="movies">
+                <tr>
+                    <td>
+                        <a target="_blank" href= "{{ movie.imdbMovieUrl }}" > {{ movie.movie }} </a>
+                    </td>
+                    <td>{{ movie.year }}</td>
+                    <td>
+                        <ng-template [ngIf]="movie.ratingValue > 6.7">
+                            <span class="label label-success"> {{ movie.ratingValue }} </span>
+                        </ng-template>
+                        <ng-template [ngIf]="((movie.ratingValue <= 6.7) &&  (movie.ratingValue > 6))">
+                            <span class="label label-warning"> {{ movie.ratingValue }} </span>
+                        </ng-template>
+                        <ng-template [ngIf]="(movie.ratingValue <= 6.0)">
+                            <span class="label label-danger"> {{ movie.ratingValue }} </span>
+                        </ng-template>
+                    </td>
+                    <td>{{ movie.ratingCount }}</td>
+                </tr>
+            </ng-template>
+
+            <!--Alternative Solution with only ngFor
+            <tbody *ngFor="let movie of movies">
+                <tr>
+                    <td>{{ movie.movie }}</td>
+                    <td>{{ movie.year }}</td>
+                    <td>{{ movie.ratingValue }}</td>
+                    <td>{{ movie.ratingCount }}</td>
+                </tr>
+            </tbody>
+
+            -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- EXAMPLE HOW TO USE ngIf WITH TEMPLATES
+
+<ng-template ngFor let-movie [ngForOf]="movies">
+    <ng-template #good>
+        <span class="label label-success"> {{ movie.ratingValue }} </span>
+    </ng-template>
+    <ng-template #bad>
+        <span class="label label-success"> {{ movie.ratingValue }} </span>
     </ng-template>
 
-    <!--Alternative Solution with only ngFor
-    <tbody *ngFor="let movie of movies">
-        <tr>
-            <td>{{ movie.movie }}</td>
-            <td>{{ movie.year }}</td>
-            <td>{{ movie.ratingValue }}</td>
-            <td>{{ movie.ratingCount }}</td>
-        </tr>
-    </tbody>
+    <tr>
+        <td>
+            <a target="_blank" href= "{{ movie.imdbMovieUrl }}" > {{ movie.movie }} </a>
+        </td>
+        <td>{{ movie.year }}</td>
+        <td *ngIf="movie.ratingValue > 6.7; then good else bad"></td>
+        <td>{{ movie.ratingCount }}</td>
+    </tr>
+</ng-template>
 
-    -->
-    </tbody>
-</table>
+-->

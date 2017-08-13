@@ -6,7 +6,8 @@ CACHE MANIFEST
 
 CACHE:
 #what to cache in application cache
-#index.html
+#index.html -> not necessary, as all html files with "manifest" in them are cached anyway
+#we have some kind of lazy loading if we leave it out here
 favicon.ico
 glyphicons-halflings-regular.448c34a56d699c29117a.woff2
 glyphicons-halflings-regular.89889688147bd7575d63.svg
@@ -23,7 +24,7 @@ NETWORK:
 #what to NOT cache if network is online
 #star means, load everything if network is online
 #star is only allowed for online!
-#*
+*
 
 FALLBACK
 #just an example how to use: if the ressource /api is offline then the cached ressource offline.html shall be used

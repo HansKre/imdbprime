@@ -6,18 +6,19 @@ CACHE MANIFEST
 
 CACHE:
 #what to cache in application cache
-#index.html
+#index.html -> not necessary, as all html files with "manifest" in them are cached anyway
+#we have some kind of lazy loading if we leave it out here
 favicon.ico
 glyphicons-halflings-regular.448c34a56d699c29117a.woff2
 glyphicons-halflings-regular.89889688147bd7575d63.svg
 glyphicons-halflings-regular.e18bbf611f2a2e43afc0.ttf
 glyphicons-halflings-regular.f4769f9bdb7466be6508.eot
 glyphicons-halflings-regular.fa2772327f55d8198301.woff
-inline.81ed7181a89d6d658d5f.bundle.js
-main.a7b17a14c9b237345d60.bundle.js
+inline.e6b21014c81d85d0d85d.bundle.js
+main.59b5bb6efd42a45d8b35.bundle.js
 polyfills.991e140ab27557bb5853.bundle.js
-styles.c6bb9e4cf89362d60f8a.bundle.css
-vendor.78c6ce303972e411e614.bundle.js
+styles.176e4d821cc3a21887b2.bundle.css
+vendor.07963ee135337abdd16e.bundle.js
 
 NETWORK:
 #what to NOT cache if network is online
