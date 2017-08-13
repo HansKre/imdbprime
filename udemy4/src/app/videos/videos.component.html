@@ -1,12 +1,12 @@
 
 <!--
 <h2>I'm the Videos Component:</h2>
-<p>
-  server works!
-</p>
 <button [disabled]="!allowNewServer" class="btn btn-primary" (click)="registerForWebRequest()">Send Get Request</button>
--->
 <button class="btn btn-primary" (click)="useLocalStorage()">Use Local Storage</button>
+-->
+
+<p *ngIf="!wasOnline()"> Running in offline mode! </p>
+
 <table class="table table-striped table-responsive">
     <thead class="thead-inverse">
         <tr>

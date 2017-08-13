@@ -17,7 +17,6 @@ export class WebService {
 
     getPromise() {
         let url = 'http://imdbprime-snah.rhcloud.com/getMoviesWithRatings.php?sortBy=ratingValue&order=descending&ratingCountMin=10000';
-        //let url = './getMoviesWithRatings.php?sortBy=ratingValue&order=descending&ratingCountMin=10000';
 
         if (this.promise) {
             console.log("Retruning cached promise");

@@ -10,6 +10,7 @@ import { Movie } from "../structures/movie";
 export class VideosComponent implements OnInit {
     allowNewServer: boolean = false;
     movies: Movie[];
+    updatedMovies = false;
 
     constructor(private webService: WebService) {
       setTimeout(() => {this.allowNewServer = true}, 2000);
@@ -38,6 +39,7 @@ export class VideosComponent implements OnInit {
         this.webService.getPromise().then(function (movies) {
             this.movies = movies as any as Movie[];
             this.storeMoviesToLocalStorage();
+            this.updatedMovies = true;
         }.bind(this), function (error) {
             alert("Movies could not be retrieved from the web service.");
             console.log(error);
@@ -50,5 +52,9 @@ export class VideosComponent implements OnInit {
         }
         localStorage.pageLoadCount = parseInt(localStorage.pageLoadCount) + 1;
         alert(localStorage.pageLoadCount);
+    }
+
+    wasOnline() {
+        return this.updatedMovies;
     }
 }
