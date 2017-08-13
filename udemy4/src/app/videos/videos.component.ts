@@ -17,6 +17,9 @@ export class VideosComponent implements OnInit {
     }
 
     ngOnInit() {
+        if (window.applicationCache.status === window.applicationCache.UPDATEREADY) {
+            window.applicationCache.swapCache();
+        }
         this.preLoadMoviesFromLocalStorage();
         this.registerForWebRequest();
     }
