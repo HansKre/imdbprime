@@ -23,8 +23,7 @@ NETWORK:
 #what to NOT cache if network is online
 #star means, load everything if network is online
 #star is only allowed for online!
-#*
-index.html
+*
 
 FALLBACK
 #just an example how to use: if the ressource /api is offline then the cached ressource offline.html shall be used
