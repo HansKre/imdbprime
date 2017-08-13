@@ -4,7 +4,7 @@ class FileNames {
     const OPENSHIFT_DATA_DIR = 'OPENSHIFT_DATA_DIR';
     const LOCAL_OUT = './output/';
 
-    private static $primeOutputName = 'movies.txt';
+    private static $primeOutputName = 'displayedMovies.txt';
     private static $imdbQueryFromFileName = 'moviesForImdbQuery.txt';
     private static $imdbQuerySkippedMoviesName = 'skippedMovies.txt';
     private static $imdbQueryMoviesWithRatingsName = 'moviesWithRatings.txt';
@@ -29,10 +29,10 @@ class FileNames {
     private static function getFileNameFor($fileName) {
         $dataDir = self::getOpenshiftDataDir();
         if ($dataDir) {
-            // /var/lib/openshift/59712c0489f5cf1e5000005a/app-root/data//output/movies.txt
+            // /var/lib/openshift/59712c0489f5cf1e5000005a/app-root/data//output/displayedMovies.txt
             return $dataDir . $fileName;
         } else {
-            // ./output/movies.txt
+            // ./output/displayedMovies.txt
             return self::LOCAL_OUT . $fileName;
         }
     }
@@ -103,7 +103,7 @@ class FileOperations {
                 $movies = unserialize( file_get_contents($fileName) );
             }
 
-            // add movie/movies as last array entry/entries
+            // add movie/displayedMovies as last array entry/entries
             if (isset($movie['movie'])) {
                 $movies[] = $movie;
             } else {

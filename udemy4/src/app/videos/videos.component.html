@@ -7,6 +7,10 @@
 
 <p *ngIf="!wasOnline()"> Running in offline mode! </p>
 
+<input #slider type="range" name="points" id="points" value="10000" min="10000"
+       max="2000000" data-show-value="true" data-popup-enabled="true" step="10000"
+       [(ngModel)]="this.sliderVal" (ngModelChange)="sliderChanged(slider.value)"/>
+
 <div class="row">
     <div class="span5">
         <table class="table table-striped table-condensed">
@@ -22,7 +26,7 @@
             <!--First Solution with ng-template and ngFor
             advantage: you don't need to put ngFor into a parent tag like "tbody" anymore -->
             <tbody>
-            <ng-template ngFor let-movie [ngForOf]="movies">
+            <ng-template ngFor let-movie [ngForOf]="displayedMovies">
                 <tr>
                     <td>
                         <a target="_blank" href= "{{ movie.imdbMovieUrl }}" > {{ movie.movie }} </a>
@@ -44,7 +48,7 @@
             </ng-template>
 
             <!--Alternative Solution with only ngFor
-            <tbody *ngFor="let movie of movies">
+            <tbody *ngFor="let movie of displayedMovies">
                 <tr>
                     <td>{{ movie.movie }}</td>
                     <td>{{ movie.year }}</td>
@@ -61,7 +65,7 @@
 
 <!-- EXAMPLE HOW TO USE ngIf WITH TEMPLATES
 
-<ng-template ngFor let-movie [ngForOf]="movies">
+<ng-template ngFor let-movie [ngForOf]="displayedMovies">
     <ng-template #good>
         <span class="label label-success"> {{ movie.ratingValue }} </span>
     </ng-template>

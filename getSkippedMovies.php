@@ -20,7 +20,7 @@ require_once ('FileOperations.php');
     echo            "<th>Year</th>";
     echo    "</tr>";
 
-    // insert movies as rows into the table
+    // insert displayedMovies as rows into the table
     foreach ($movies as $movie) {
         $director = null;
         if (is_array($movie['director'])) {

@@ -9,17 +9,16 @@ import { Movie } from "../structures/movie";
 })
 export class VideosComponent implements OnInit {
     allowNewServer: boolean = false;
-    movies: Movie[];
+    displayedMovies: Movie[];
+    allMovies: Movie[];
     updatedMovies = false;
+    sliderVal: number = 0;
 
     constructor(private webService: WebService) {
       setTimeout(() => {this.allowNewServer = true}, 2000);
     }
 
     ngOnInit() {
-        if (window.applicationCache.status === window.applicationCache.UPDATEREADY) {
-            window.applicationCache.swapCache();
-        }
         this.preLoadMoviesFromLocalStorage();
         this.registerForWebRequest();
     }
@@ -27,20 +26,22 @@ export class VideosComponent implements OnInit {
     preLoadMoviesFromLocalStorage() {
         if (localStorage) {
             if (localStorage.movies) {
-                this.movies = JSON.parse(localStorage.movies);
+                this.displayedMovies = JSON.parse(localStorage.movies);
+                this.allMovies = this.displayedMovies;
             }
         }
     }
 
     storeMoviesToLocalStorage() {
         if (localStorage) {
-            localStorage.movies = JSON.stringify(this.movies);
+            localStorage.movies = JSON.stringify(this.displayedMovies);
         }
     }
 
     registerForWebRequest() {
         this.webService.getPromise().then(function (movies) {
-            this.movies = movies as any as Movie[];
+            this.displayedMovies = movies as any as Movie[];
+            this.allMovies = movies as any as Movie[];
             this.storeMoviesToLocalStorage();
             this.updatedMovies = true;
         }.bind(this), function (error) {
@@ -59,5 +60,15 @@ export class VideosComponent implements OnInit {
 
     wasOnline() {
         return this.updatedMovies;
+    }
+
+    sliderChanged(sliderValue: number) {
+        let newDisplayedMovies: Movie[] = new Array();
+        this.allMovies.forEach(function (entry) {
+            if (parseInt(entry.ratingCount.replace(/,/g, "")) > sliderValue) {
+                newDisplayedMovies.push(entry);
+            }
+        });
+        this.displayedMovies = newDisplayedMovies;
     }
 }
