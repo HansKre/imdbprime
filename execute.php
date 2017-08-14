@@ -27,6 +27,13 @@ ini_set('max_input_time', '36000');
  * 7. No scripts get executed if:
  *          -> Amazon query does not restart if Amazon query was successful in the last 24h
  *          -> IMDB query does not start if the Amazon-result has been processed already.
+ *
+ * To RESTART all the query:
+ *
+ * 1. Login to Openshift: rhc ssh -a imdbprime
+ * 2. go to DATA DIR: cd $OEPNSHIFT_DATA_DIR
+ * 3. delete markExecutionOfPrimeMovies.txt: rm markExecutionOfPrimeMovies.txt
+ * 4. wait ... (after some seconds the very next cron job starts the Amazon query)
  */
 
 

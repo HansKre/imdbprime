@@ -13,6 +13,20 @@ export class VideosComponent implements OnInit {
     allMovies: Movie[];
     updatedMovies = false;
     sliderVal: number = 0;
+    maxRatingCount: number = 0;
+
+    getMaxRatingCount() {
+        if (this.maxRatingCount == 0) {
+            let max = 0;
+            this.allMovies.forEach(function (entry) {
+                if (entry.ratingCount > max) {
+                    max = entry.ratingCount;
+                }
+            });
+            this.maxRatingCount = max;
+        }
+        return this.maxRatingCount;
+    }
 
     constructor(private webService: WebService) {
       setTimeout(() => {this.allowNewServer = true}, 2000);
@@ -50,22 +64,22 @@ export class VideosComponent implements OnInit {
         }.bind(this));
     }
 
-    useLocalStorage() {
+    /*useLocalStorage() {
         if (!localStorage.pageLoadCount) {
             localStorage.pageLoadCount = 0;
         }
         localStorage.pageLoadCount = parseInt(localStorage.pageLoadCount) + 1;
         alert(localStorage.pageLoadCount);
-    }
+    }*/
 
     wasOnline() {
         return this.updatedMovies;
     }
 
     sliderChanged(sliderValue: number) {
-        let newDisplayedMovies: Movie[] = new Array();
+        let newDisplayedMovies: Movie[] = [];
         this.allMovies.forEach(function (entry) {
-            if (parseInt(entry.ratingCount.replace(/,/g, "")) > sliderValue) {
+            if (entry.ratingCount > sliderValue) {
                 newDisplayedMovies.push(entry);
             }
         });

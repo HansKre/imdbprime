@@ -279,7 +279,7 @@ class ImdbMovieRatingsRetriever {
             $ratingCount = "0";
         } else {
             // we recieve the ratingCount as a string with commas: "123,456,789"
-            $ratingCount = str_replace("," ,"", $ratingCountElemsArray[0]->nodeValue);
+            $ratingCount = intval(str_replace("," ,"", $ratingCountElemsArray[0]->nodeValue));
         }
 
         return $ratingCount;
@@ -306,7 +306,11 @@ class ImdbMovieRatingsRetriever {
             if ($isSameDirector || $hasSameActors) {
                 $ratingValue = $this->getRatingValue($imdbMovieDetailsDom);
                 $ratingCount = $this->getRatingCount($imdbMovieDetailsDom);
-                $possibleMatches[] = array('movie'=>$this->movie['movie'],'director'=>$directors,'year'=>$year,'ratingValue'=>$ratingValue,'ratingCount'=>$ratingCount, 'imdbMovieUrl'=>$this->urlImdbMovie);
+
+                $possibleMatches[] = array('movie'=>$this->movie['movie'],
+                    'director'=>$directors,'year'=>intval($year),
+                    'ratingValue'=>$ratingValue,'ratingCount'=>$ratingCount,
+                    'imdbMovieUrl'=>$this->urlImdbMovie);
             }
         }
         if (count($possibleMatches) > 1) {

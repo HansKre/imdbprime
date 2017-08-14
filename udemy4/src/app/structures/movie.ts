@@ -4,5 +4,5 @@ export class Movie {
     imdbMovieUrl: string = "";
     year: string = "";
     ratingValue: string = "";
-    ratingCount: string = "";
+    ratingCount: number = 0;
 }
