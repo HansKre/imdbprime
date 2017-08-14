@@ -13,7 +13,10 @@ export class AppComponent implements OnInit{
 
     private swapApplicationCache() {
         if (window.applicationCache.status === window.applicationCache.UPDATEREADY) {
+            // replace the current cache with the newer
             window.applicationCache.swapCache();
+            // page content needs to be reloaded after this
+            window.location.reload();
         }
     }
 }

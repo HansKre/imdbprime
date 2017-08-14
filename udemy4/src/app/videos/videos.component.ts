@@ -15,9 +15,9 @@ export class VideosComponent implements OnInit {
     sliderVal: number = 0;
     maxRatingCount: number = 0;
 
-    getMaxRatingCount() {
-        if (this.maxRatingCount == 0) {
-            let max = 0;
+    setMaxRatingCount() {
+        if (this.allMovies) {
+            let max:number = 0;
             this.allMovies.forEach(function (entry) {
                 if (entry.ratingCount > max) {
                     max = entry.ratingCount;
@@ -25,7 +25,6 @@ export class VideosComponent implements OnInit {
             });
             this.maxRatingCount = max;
         }
-        return this.maxRatingCount;
     }
 
     constructor(private webService: WebService) {
@@ -41,7 +40,10 @@ export class VideosComponent implements OnInit {
         if (localStorage) {
             if (localStorage.movies) {
                 this.displayedMovies = JSON.parse(localStorage.movies);
-                this.allMovies = this.displayedMovies;
+                if (this.displayedMovies) {
+                    this.allMovies = this.displayedMovies;
+                    this.setMaxRatingCount();
+                }
             }
         }
     }
@@ -54,14 +56,19 @@ export class VideosComponent implements OnInit {
 
     registerForWebRequest() {
         this.webService.getPromise().then(function (movies) {
-            this.displayedMovies = movies as any as Movie[];
-            this.allMovies = movies as any as Movie[];
-            this.storeMoviesToLocalStorage();
-            this.updatedMovies = true;
+            this.resolvePromisedRequest(movies);
         }.bind(this), function (error) {
             alert("Movies could not be retrieved from the web service.");
             console.log(error);
         }.bind(this));
+    }
+
+    private resolvePromisedRequest(movies) {
+        this.displayedMovies = movies as any as Movie[];
+        this.allMovies = this.displayedMovies;
+        this.storeMoviesToLocalStorage();
+        this.updatedMovies = true;
+        this.setMaxRatingCount();
     }
 
     /*useLocalStorage() {

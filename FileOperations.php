@@ -4,7 +4,7 @@ class FileNames {
     const OPENSHIFT_DATA_DIR = 'OPENSHIFT_DATA_DIR';
     const LOCAL_OUT = './output/';
 
-    private static $primeOutputName = 'displayedMovies.txt';
+    private static $primeOutputName = 'primeOutputMovies.txt';
     private static $imdbQueryFromFileName = 'moviesForImdbQuery.txt';
     private static $imdbQuerySkippedMoviesName = 'skippedMovies.txt';
     private static $imdbQueryMoviesWithRatingsName = 'moviesWithRatings.txt';

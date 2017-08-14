@@ -258,7 +258,7 @@ class ImdbMovieRatingsRetriever {
         return $ratingValue;
     }
 
-    private function getRatingCount($imdbMovieDetailsDom) {
+    private function getRatingCountString($imdbMovieDetailsDom) {
         /*<div class="ratings_wrapper">
             <div class="imdbRating" itemtype="http://schema.org/AggregateRating" itemscope="" itemprop="aggregateRating">
                     <div class="ratingValue">
@@ -278,8 +278,7 @@ class ImdbMovieRatingsRetriever {
         if (empty($ratingCountElemsArray)) {
             $ratingCount = "0";
         } else {
-            // we recieve the ratingCount as a string with commas: "123,456,789"
-            $ratingCount = intval(str_replace("," ,"", $ratingCountElemsArray[0]->nodeValue));
+            $ratingCount = $ratingCountElemsArray[0]->nodeValue;
         }
 
         return $ratingCount;
@@ -305,12 +304,20 @@ class ImdbMovieRatingsRetriever {
 
             if ($isSameDirector || $hasSameActors) {
                 $ratingValue = $this->getRatingValue($imdbMovieDetailsDom);
-                $ratingCount = $this->getRatingCount($imdbMovieDetailsDom);
+                $ratingCountString = $this->getRatingCountString($imdbMovieDetailsDom);
 
-                $possibleMatches[] = array('movie'=>$this->movie['movie'],
-                    'director'=>$directors,'year'=>intval($year),
-                    'ratingValue'=>$ratingValue,'ratingCount'=>$ratingCount,
-                    'imdbMovieUrl'=>$this->urlImdbMovie);
+                // we recieve the ratingCount as a string with commas: "123,456,789"
+                $ratingCount = intval(str_replace("," ,"", $ratingCountString));
+
+                $possibleMatches[] = array(
+                    'movie'=>$this->movie['movie'],
+                    'director'=>$directors,
+                    'year'=>intval($year),
+                    'ratingValue'=>$ratingValue,
+                    'ratingCount'=>$ratingCount,
+                    'ratingCountString'=>$ratingCountString,
+                    'imdbMovieUrl'=>$this->urlImdbMovie
+                );
             }
         }
         if (count($possibleMatches) > 1) {
