@@ -274,11 +274,12 @@ class ImdbMovieRatingsRetriever {
                     <div class="notEnoughRatings">Needs 5 Ratings</div>
             </div>*/
 
-        $ratingCount;
+        $ratingCount = null;
         if (empty($ratingCountElemsArray)) {
             $ratingCount = "0";
         } else {
-            $ratingCount = $ratingCountElemsArray[0]->nodeValue;
+            // we recieve the ratingCount as a string with commas: "123,456,789"
+            $ratingCount = str_replace("," ,"", $ratingCountElemsArray[0]->nodeValue);
         }
 
         return $ratingCount;

@@ -41,7 +41,7 @@ class ImdbQuery {
         $this->movie = null;
     }
 
-    private function getMovieRating() {
+    private function getMovieDetails() {
         $imdbMovieRatingsRetriever = new ImdbMovieRatingsRetriever($this->movie);
         $movieWithRating = $imdbMovieRatingsRetriever->getImdbMovieDetails();
 
@@ -70,7 +70,7 @@ class ImdbQuery {
             //$this->movie = array('year' => "2016", 'movie' => "Borderline - 1950 [OV]", 'director' => "Unavailable", 'actors' => array("Fred MacMurray", "Claire Trevor"));
             //$hasMoviesToProcess = false;
             if ($this->movie) { // not empty & not null
-                $this->getMovieRating();
+                $this->getMovieDetails();
             } else {
                 $hasMoviesToProcess = false;
             }
