@@ -47,8 +47,8 @@ export class WebService {
                   (entry.imdbMovieUrl === undefined) ||
                   (entry.director === undefined) ||
                   (entry.ratingValue === undefined) ||
-                  (entry.ratingCount === undefined) //||
-                  //(entry.ratingCountString === undefined)
+                  (entry.ratingCount === undefined) ||
+                  (entry.ratingCountString === undefined)
               ) {
                   console.log("Unknown type: " + entry.valueOf());
                   correctType = false;

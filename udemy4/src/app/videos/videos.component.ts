@@ -71,14 +71,6 @@ export class VideosComponent implements OnInit {
         this.setMaxRatingCount();
     }
 
-    /*useLocalStorage() {
-        if (!localStorage.pageLoadCount) {
-            localStorage.pageLoadCount = 0;
-        }
-        localStorage.pageLoadCount = parseInt(localStorage.pageLoadCount) + 1;
-        alert(localStorage.pageLoadCount);
-    }*/
-
     wasOnline() {
         return this.updatedMovies;
     }

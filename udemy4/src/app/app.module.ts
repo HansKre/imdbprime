@@ -5,13 +5,15 @@ import { HttpModule } from "@angular/http";
 
 import { AppComponent } from './app.component';
 import { VideosComponent } from './videos/videos.component';
+import { SliderComponent } from './slider/slider.component';
 
 import { WebService } from "./services/web.service";
 
 @NgModule({
   declarations: [
       AppComponent,
-      VideosComponent
+      VideosComponent,
+      SliderComponent
   ],
   imports: [
       BrowserModule,
