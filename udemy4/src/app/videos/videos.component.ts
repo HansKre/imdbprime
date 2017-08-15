@@ -8,6 +8,20 @@ import { Movie } from "../structures/movie";
   styleUrls: ['./videos.component.css']
 })
 export class VideosComponent implements OnInit {
+
+    autoTicks = false;
+    disabled = false;
+    invert = false;
+    max = 100;
+    min = 0;
+    showTicks = false;
+    step = 1;
+    thumbLabel = false;
+    value = 0;
+    vertical = false;
+
+
+
     allowNewServer: boolean = false;
     displayedMovies: Movie[];
     allMovies: Movie[];
@@ -37,14 +51,13 @@ export class VideosComponent implements OnInit {
     }
 
     preLoadMoviesFromLocalStorage() {
-        if (localStorage) {
-            if (localStorage.movies) {
+        if (localStorage && localStorage.movies
+            && (localStorage.movies != "undefined")) {
                 this.displayedMovies = JSON.parse(localStorage.movies);
                 if (this.displayedMovies) {
                     this.allMovies = this.displayedMovies;
                     this.setMaxRatingCount();
                 }
-            }
         }
     }
 
@@ -58,8 +71,7 @@ export class VideosComponent implements OnInit {
         this.webService.getPromise().then(function (movies) {
             this.resolvePromisedRequest(movies);
         }.bind(this), function (error) {
-            alert("Movies could not be retrieved from the web service.");
-            console.log(error);
+            console.log("Promise rejected:" + error.toString());
         }.bind(this));
     }
 

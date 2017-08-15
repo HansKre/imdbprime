@@ -9,6 +9,9 @@ import { SliderComponent } from './slider/slider.component';
 
 import { WebService } from "./services/web.service";
 
+import { MdCheckboxModule, MdSliderModule } from '@angular/material';
+import 'hammerjs';
+
 @NgModule({
   declarations: [
       AppComponent,
@@ -18,7 +21,9 @@ import { WebService } from "./services/web.service";
   imports: [
       BrowserModule,
       FormsModule,
-      HttpModule
+      HttpModule,
+      MdCheckboxModule,
+      MdSliderModule
   ],
   providers: [WebService],
   bootstrap: [AppComponent]

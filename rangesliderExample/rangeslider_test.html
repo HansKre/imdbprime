@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <title>Bootstrap Pricing Slider Fully Touch Compatible - Bootsnipp.com</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link rel="stylesheet" href="rangeslider.css">
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<div class="container">
+	<div class="row text-center">
+		<h2>Bootstrap Pricing Slider Fully Touch Compatible</h2>
+		<hr>
+		<span class="h1" id="amount-label">
+            <span class="pricing__dollar">€</span>
+        </span>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <div class="row">
+            <div class="col-xs-10 col-xs-offset-1">
+                <!-- As seen here https://bootsnipp.com/snippets/featured/bootstrap-pricing-slider-donations -->
+                <input id="range-slider" type="range" min="0" max="100" step="10" value="0">
+            </div>
+        </div>
+	</div>
+</div>
+<!-- http://rangeslider.js.org/ -->
+<script src="https://cdn.jsdelivr.net/rangeslider.js/2.3.0/rangeslider.min.js"></script>
+	<script type="text/javascript">
+	$(document).ready(function() {
+
+    var $element = $('input[type="range"]');
+    var $handle;
+
+    $element.rangeslider({
+        polyfill: false,
+        onInit: function() {
+            $handle = $('.rangeslider__handle', this.$range);
+            updateHandle($handle[0], this.value);
+            $("#amount-label").html('<span class="pricing__dollar">€</span>' + this.value);
+        }
+    }).on('input', function() {
+        updateHandle($handle[0], this.value);
+        $("#amount-label").html('<span class="pricing__dollar">€</span>' + this.value);
+    });
+
+    function updateHandle(el, val) {
+        el.textContent = val;
+    }
+
+    $('input[type="range"]').rangeslider();
+    
+});
+	</script>
+</body>
+</html>
+
