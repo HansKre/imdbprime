@@ -2,6 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import { WebService } from "../services/web.service";
 import { Movie } from "../structures/movie";
 import {MdSliderChange, MdSnackBar} from "@angular/material";
+import {Direction} from "@angular/cdk";
 
 @Component({
   selector: 'app-server',
@@ -17,6 +18,11 @@ export class VideosComponent implements OnInit {
 
     shouldLoad:boolean = true;
     onlineString:string;
+
+    showOptions:boolean = false;
+
+    ratingCountSliderValue:number = 10000;
+    ratingValueSliderValue:number = 0;
 
     setMaxRatingCount() {
         if (this.allMovies) {
@@ -104,25 +110,52 @@ export class VideosComponent implements OnInit {
         }
     }
 
-    mdSliderInput(changeEvent: MdSliderChange) {
-        let sliderValue: number = changeEvent.value;
-
-        this.snackBar.open(sliderValue.toString(), '', {
-            duration: 500,
+    private showSnackbar(message:string, sliderValue: number) {
+        this.snackBar.open(message + " " + sliderValue.toLocaleString('en'), '', {
+            duration: 1000,
         });
-
-        let newDisplayedMovies: Movie[] = [];
-        this.allMovies.forEach(function (entry) {
-            if (entry.ratingCount > sliderValue) {
-                newDisplayedMovies.push(entry);
-            }
-        });
-        this.displayedMovies = newDisplayedMovies;
     }
 
-    mdSliderChange(changeEvent: MdSliderChange) {
-        this.snackBar.open("New Value " + changeEvent.value, '', {
-            duration: 500,
-        });
+    mdSliderInput_RatingCount(changeEvent: MdSliderChange) {
+        this.ratingCountSliderValue = changeEvent.value;
+        console.log("value: " + this.ratingValueSliderValue + " count: " + this.ratingCountSliderValue);
+
+        this.showSnackbar("Minimum Rating Count set to:", this.ratingCountSliderValue);
+
+        this.displayedMovies =
+            this.allMovies.filter(
+                movie =>
+                (
+                    (movie.ratingCount > this.ratingCountSliderValue) &&
+                    ((parseFloat(movie.ratingValue) * 10) > (this.ratingValueSliderValue * 10))
+                )
+            );
+    }
+
+    mdSliderChange_RatingCount(changeEvent: MdSliderChange) {
+        this.showSnackbar("Minimum Rating Count set to:", changeEvent.value);
+    }
+
+    mdSliderInput_RatingValue(changeEvent: MdSliderChange) {
+        this.ratingValueSliderValue = changeEvent.value;
+        console.log("value: " + this.ratingValueSliderValue + " count: " + this.ratingCountSliderValue);
+
+        if (this.ratingValueSliderValue === 6) {
+            this.displayedMovies = this.allMovies;
+        } else {
+            this.displayedMovies =
+                this.allMovies.filter(
+                    movie =>
+                        (
+                            (movie.ratingCount > this.ratingCountSliderValue) &&
+                            ((parseFloat(movie.ratingValue) * 10) > (this.ratingValueSliderValue * 10))
+                        )
+                );
+
+        }
+    }
+
+    mdSliderChange_RatingValue(changeEvent: MdSliderChange) {
+        this.showSnackbar("Minimum Rating Value set to:", changeEvent.value);
     }
 }

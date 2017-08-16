@@ -1,13 +1,12 @@
-
-<!--
-<h2>I'm the Videos Component:</h2>
-<button [disabled]="!allowNewServer" class="btn btn-primary" (click)="registerForWebRequest()">Send Get Request</button>
-<button class="btn btn-primary" (click)="useLocalStorage()">Use Local Storage</button>
--->
-
 <div id="page"></div>
 
-<p>Current network status: <span id="status" [ngClass] = this.onlineString>{{this.onlineString}}</span></p>
+<div class="row">
+    <div class="col-xs-12">
+        <p>Current network status: <span id="status" [ngClass] = this.onlineString>{{this.onlineString}}</span></p>
+    </div>
+</div>
+
+<hr>
 
 <div *ngIf="shouldShowProgressBar()" >
     <hr>
@@ -15,18 +14,55 @@
     <hr>
 </div>
 
-<md-slider
-        min="0"
-        [max]="maxRatingCount"
-        step="10000"
-        value="10000"
-        thumbLabel="false"
-        (input)="mdSliderInput($event)"
-        (change)="mdSliderChange($event)"
-></md-slider>
 
-<hr>
+<div class="options-container">
+    <md-slide-toggle (change)="this.showOptions = !this.showOptions" >Options</md-slide-toggle>
+    <hr>
+    <div *ngIf="this.showOptions" class="options">
+        <div id="ratingCountContainer">
+            <label>Minimum Rating Count:
+                <span class="label label-info">{{ratingCountSliderValue.toLocaleString('en')}}</span>
+            </label>
+            <md-slider
+                    min="0"
+                    [max]="maxRatingCount"
+                    step="100000"
+                    tickInterval="1"
+                    value="10000"
+                    thumbLabel="false"
+                    (input)="mdSliderInput_RatingCount($event)"
+                    (change)="mdSliderChange_RatingCount($event)"
+            ></md-slider>
+            <hr>
+        </div>
 
+        <div id="ratingValueContainer">
+            <label>Minimum Rating Value:
+                <span class="label label-info">{{ratingValueSliderValue}}</span>
+            </label>
+            <md-slider
+                    min="6"
+                    [max]="9.3"
+                    step="0.1"
+                    tickInterval="1"
+                    value="auto"
+                    thumbLabel="false"
+                    (input)="mdSliderInput_RatingValue($event)"
+                    (change)="mdSliderChange_RatingValue($event)"
+            ></md-slider>
+            <hr>
+        </div>
+    </div>
+
+    <div *ngIf="!this.showOptions" class="settings">
+            <label>Minimum Rating Count:
+                <span class="label label-info">{{ratingCountSliderValue.toLocaleString('en')}}</span>
+            </label>
+            <label>Minimum Rating Value:
+                <span class="label label-info">{{ratingValueSliderValue}}</span>
+            </label>
+    </div>
+</div>
 
 <div class="row">
     <div class="span5">
@@ -100,4 +136,9 @@
     </tr>
 </ng-template>
 
+-->
+
+
+<!--
+<button [disabled]="!allowNewServer" class="btn btn-primary" (click)="registerForWebRequest()">Send Get Request</button>
 -->
