@@ -5,11 +5,11 @@
 <button class="btn btn-primary" (click)="useLocalStorage()">Use Local Storage</button>
 -->
 
-<!--<p *ngIf="!this.isOnline">{{this.onlineString}}</p>-->
+<div id="page"></div>
 
 <p>Current network status: <span id="status" [ngClass] = this.onlineString>{{this.onlineString}}</span></p>
 
-<div *ngIf="showProgressBar()" >
+<div *ngIf="shouldShowProgressBar()" >
     <hr>
     <md-progress-bar mode="indeterminate"></md-progress-bar>
     <hr>
@@ -20,8 +20,9 @@
         [max]="maxRatingCount"
         step="10000"
         value="10000"
-        thumbLabel="true"
-        (input)="mdSliderChanged($event)"
+        thumbLabel="false"
+        (input)="mdSliderInput($event)"
+        (change)="mdSliderChange($event)"
 ></md-slider>
 
 <hr>

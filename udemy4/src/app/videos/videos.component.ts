@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import { WebService } from "../services/web.service";
 import { Movie } from "../structures/movie";
-import {MdSliderChange} from "@angular/material";
+import {MdSliderChange, MdSnackBar} from "@angular/material";
 
 @Component({
   selector: 'app-server',
@@ -9,12 +9,13 @@ import {MdSliderChange} from "@angular/material";
   styleUrls: ['./videos.component.css']
 })
 export class VideosComponent implements OnInit {
+    @Input() isParentLoading:boolean = true;
+
     displayedMovies: Movie[];
     allMovies: Movie[];
-    @Input() isParentLoading:boolean = true;
-    shouldLoad:boolean = true;
     maxRatingCount: number = 0;
-    isOnline:boolean = false;
+
+    shouldLoad:boolean = true;
     onlineString:string;
 
     setMaxRatingCount() {
@@ -29,7 +30,8 @@ export class VideosComponent implements OnInit {
         }
     }
 
-    constructor(private webService: WebService) {
+    constructor(private webService: WebService,
+                public snackBar: MdSnackBar) {
       //setTimeout(() => {this.allowNewServer = true}, 2000);
     }
 
@@ -44,24 +46,18 @@ export class VideosComponent implements OnInit {
     }
 
     setInitialOnlineStatus() {
-        this.isOnline = navigator.onLine;
         this.onlineString = navigator.onLine ? "online" : "offline";
 
     }
 
     onOnline() {
-        console.log("_onOnline");
-        this.isOnline = true;
         this.onlineString = "online";
         if (this.shouldLoad) {
             this.registerForWebRequest();
-            // TODO: wird wohl nicht aufgerufen
         }
     }
 
     onOffline() {
-        console.log("_onOffline");
-        this.isOnline = false;
         this.onlineString = "offline";
     }
 
@@ -83,7 +79,6 @@ export class VideosComponent implements OnInit {
     }
 
     registerForWebRequest() {
-        console.log("registering Web Request");
         this.webService.getPromise().then(function (movies) {
             this.resolvePromisedRequest(movies);
         }.bind(this), function (error) {
@@ -99,7 +94,7 @@ export class VideosComponent implements OnInit {
         this.setMaxRatingCount();
     }
 
-    showProgressBar() {
+    shouldShowProgressBar() {
         if (navigator.onLine) {
             console.log("parent: " + (this.isParentLoading ? "loading" : "not loading"));
             console.log("self: " + (this.shouldLoad ? "loading" : "not loading"));
@@ -109,7 +104,13 @@ export class VideosComponent implements OnInit {
         }
     }
 
-    sliderChanged(sliderValue: number) {
+    mdSliderInput(changeEvent: MdSliderChange) {
+        let sliderValue: number = changeEvent.value;
+
+        this.snackBar.open(sliderValue.toString(), '', {
+            duration: 500,
+        });
+
         let newDisplayedMovies: Movie[] = [];
         this.allMovies.forEach(function (entry) {
             if (entry.ratingCount > sliderValue) {
@@ -119,14 +120,9 @@ export class VideosComponent implements OnInit {
         this.displayedMovies = newDisplayedMovies;
     }
 
-    mdSliderChanged(changeEvent: MdSliderChange) {
-        let sliderValue: number = changeEvent.value;
-        let newDisplayedMovies: Movie[] = [];
-        this.allMovies.forEach(function (entry) {
-            if (entry.ratingCount > sliderValue) {
-                newDisplayedMovies.push(entry);
-            }
+    mdSliderChange(changeEvent: MdSliderChange) {
+        this.snackBar.open("New Value " + changeEvent.value, '', {
+            duration: 500,
         });
-        this.displayedMovies = newDisplayedMovies;
     }
 }

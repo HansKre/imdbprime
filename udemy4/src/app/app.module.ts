@@ -9,8 +9,9 @@ import { SliderComponent } from './slider/slider.component';
 
 import { WebService } from "./services/web.service";
 
-import {MdProgressBarModule, MdSliderModule} from '@angular/material';
+import {MdProgressBarModule, MdSliderModule, MdSnackBarModule} from '@angular/material';
 import 'hammerjs';
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 
 @NgModule({
   declarations: [
@@ -23,7 +24,9 @@ import 'hammerjs';
       FormsModule,
       HttpModule,
       MdSliderModule,
-      MdProgressBarModule
+      MdProgressBarModule,
+      MdSnackBarModule,
+      BrowserAnimationsModule
   ],
   providers: [WebService],
   bootstrap: [AppComponent]
