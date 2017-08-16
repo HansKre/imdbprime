@@ -1,20 +1,10 @@
-<div id="page"></div>
-
-<div class="row">
-    <div class="col-xs-12">
-        <p>Current network status: <span id="status" [ngClass] = this.onlineString>{{this.onlineString}}</span></p>
-    </div>
-</div>
-
-<hr>
-
 <div *ngIf="shouldShowProgressBar()" >
     <hr>
     <md-progress-bar mode="indeterminate"></md-progress-bar>
     <hr>
 </div>
 
-
+<hr>
 <div class="options-container">
     <md-slide-toggle (change)="this.showOptions = !this.showOptions" >Options</md-slide-toggle>
     <hr>
@@ -28,7 +18,7 @@
                     [max]="maxRatingCount"
                     step="100000"
                     tickInterval="1"
-                    value="10000"
+                    [value]=this.ratingCountSliderValue
                     thumbLabel="false"
                     (input)="mdSliderInput_RatingCount($event)"
                     (change)="mdSliderChange_RatingCount($event)"
@@ -45,7 +35,7 @@
                     [max]="9.3"
                     step="0.1"
                     tickInterval="1"
-                    value="auto"
+                    [value]="this.ratingValueSliderValue"
                     thumbLabel="false"
                     (input)="mdSliderInput_RatingValue($event)"
                     (change)="mdSliderChange_RatingValue($event)"
@@ -85,7 +75,7 @@
                         <a target="_blank" href= "{{ movie.imdbMovieUrl }}" > {{ movie.movie }} </a>
                     </td>
                     <td>{{ movie.year }}</td>
-                    <td>
+                    <td class="text-center">
                         <ng-template [ngIf]="movie.ratingValue > 6.7">
                             <span class="label label-success"> {{ movie.ratingValue }} </span>
                         </ng-template>
@@ -141,4 +131,8 @@
 
 <!--
 <button [disabled]="!allowNewServer" class="btn btn-primary" (click)="registerForWebRequest()">Send Get Request</button>
+-->
+
+<!--
+<p>Current network status: <span id="status" [ngClass] = this.onlineString>{{this.onlineString}}</span></p>
 -->

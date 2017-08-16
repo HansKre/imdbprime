@@ -3,9 +3,10 @@ import { WebService } from "../services/web.service";
 import { Movie } from "../structures/movie";
 import {MdSliderChange, MdSnackBar} from "@angular/material";
 import {Direction} from "@angular/cdk";
+import {IsOnlineService} from "../services/is-online.service";
 
 @Component({
-  selector: 'app-server',
+  selector: 'app-movies',
   templateUrl: './videos.component.html',
   styleUrls: ['./videos.component.css']
 })
@@ -17,7 +18,6 @@ export class VideosComponent implements OnInit {
     maxRatingCount: number = 0;
 
     shouldLoad:boolean = true;
-    onlineString:string;
 
     showOptions:boolean = false;
 
@@ -37,34 +37,21 @@ export class VideosComponent implements OnInit {
     }
 
     constructor(private webService: WebService,
+                private isOnlineService: IsOnlineService,
                 public snackBar: MdSnackBar) {
-      //setTimeout(() => {this.allowNewServer = true}, 2000);
     }
 
     ngOnInit() {
-        this.setInitialOnlineStatus();
-        window.addEventListener('online', this.onOnline.bind(this));
-        window.addEventListener( 'offline', this.onOffline.bind(this));
+        this.isOnlineService.isOnlineObserveable()
+            .subscribe((isOnline:boolean) => this.onlineChanged(isOnline));
         this.preLoadMoviesFromLocalStorage();
         this.registerForWebRequest();
-        //TODO: wird 2x aufgerufen?
-        //TODO: muss das promise neu initiiert werden, wenn es beim ersten Mal gescheitert ist?
     }
 
-    setInitialOnlineStatus() {
-        this.onlineString = navigator.onLine ? "online" : "offline";
-
-    }
-
-    onOnline() {
-        this.onlineString = "online";
-        if (this.shouldLoad) {
+    onlineChanged(isOnline:boolean) {
+        if (isOnline && this.shouldLoad) {
             this.registerForWebRequest();
         }
-    }
-
-    onOffline() {
-        this.onlineString = "offline";
     }
 
     preLoadMoviesFromLocalStorage() {

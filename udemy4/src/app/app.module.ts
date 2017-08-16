@@ -15,8 +15,11 @@ import { AppComponent } from './app.component';
 import { VideosComponent } from './videos/videos.component';
 import { SliderComponent } from './slider/slider.component';
 import { ResultsComponent } from './results/results.component';
+import { OnlineIndicatorComponent } from './online-indicator/online-indicator.component';
 
+// Services
 import { WebService } from "./services/web.service";
+import { IsOnlineService } from "./services/is-online.service";
 
 // needed for some gesture support
 import 'hammerjs';
@@ -26,7 +29,8 @@ import 'hammerjs';
       AppComponent,
       VideosComponent,
       SliderComponent,
-      ResultsComponent
+      ResultsComponent,
+      OnlineIndicatorComponent
   ],
   imports: [
       BrowserModule,
@@ -38,7 +42,10 @@ import 'hammerjs';
       BrowserAnimationsModule,
       MdSlideToggleModule
   ],
-  providers: [WebService],
+  providers: [
+      WebService,
+      IsOnlineService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
