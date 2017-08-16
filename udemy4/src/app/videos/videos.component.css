@@ -1,5 +1,35 @@
+/*
 p {
     padding: 20px;
     background-color: palegreen;
     border: 1px solid green;
+}
+*/
+
+md-slider {
+    min-width: 100% !important;
+    width: 100vw !important;
+    max-width: 100% !important;
+}
+
+#status {
+    padding: 5px;
+    color: #fff;
+    background: #ccc;
+}
+
+#status.fail {
+    background: #c00;
+}
+
+#status.success {
+    background: #0c0;
+}
+
+#status.offline {
+    background: #c00;
+}
+
+#status.online {
+    background: #0c0;
 }

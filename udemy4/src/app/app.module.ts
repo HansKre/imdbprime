@@ -9,7 +9,7 @@ import { SliderComponent } from './slider/slider.component';
 
 import { WebService } from "./services/web.service";
 
-import { MdCheckboxModule, MdSliderModule } from '@angular/material';
+import {MdProgressBarModule, MdSliderModule} from '@angular/material';
 import 'hammerjs';
 
 @NgModule({
@@ -22,8 +22,8 @@ import 'hammerjs';
       BrowserModule,
       FormsModule,
       HttpModule,
-      MdCheckboxModule,
-      MdSliderModule
+      MdSliderModule,
+      MdProgressBarModule
   ],
   providers: [WebService],
   bootstrap: [AppComponent]

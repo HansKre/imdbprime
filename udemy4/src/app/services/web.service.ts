@@ -6,7 +6,6 @@ import { Movie } from "../structures/movie";
 export class WebService {
 
     movies: Movie[];
-    promise: Promise<any>;
 
     constructor(private http: Http) { }
 
@@ -18,20 +17,14 @@ export class WebService {
     getPromise() {
         let url = 'http://imdbprime-snah.rhcloud.com/getMoviesWithRatings.php?sortBy=ratingValue&order=descending&ratingCountMin=10000';
 
-        if (this.promise) {
-            console.log("Retruning cached promise");
-            return this.promise;
-        } else {
-            this.promise = new Promise(function (resolve, reject) {
-                this.http.get(url)
-                    .subscribe(
-                        response => this.handleResponse(response),
-                        error => reject(error),
-                        () => resolve(this.movies)
-                    );
-            }.bind(this));
-            return this.promise;
-        }
+        return new Promise(function (resolve, reject) {
+            this.http.get(url)
+                .subscribe(
+                    response => this.handleResponse(response),
+                    error => reject(error),
+                    () => resolve(this.movies)
+                );
+        }.bind(this));
     }
 
     handleResponse(response: any) {
