@@ -58,17 +58,15 @@
 
     <div *ngIf="!this.showOptions" class="settings row">
         <hr>
-        <div class="col-xs-4">
+        <div class="col-xs-7">
             <label> Year:
                 <span class="label label-info">{{yearSliderValue.toString()}}</span>
             </label>
-        </div>
-        <div class="col-xs-4">
             <label> Value:
                 <span class="label label-info">{{ratingValueSliderValue.toLocaleString('en')}}</span>
             </label>
         </div>
-        <div class="col-xs-4">
+        <div class="col-xs-5">
             <label>Count:
                 <span class="label label-info">{{ratingCountSliderValue.toLocaleString('en')}}</span>
             </label>
