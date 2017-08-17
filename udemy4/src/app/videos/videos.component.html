@@ -7,14 +7,44 @@
 <hr>
 <div class="options-container">
     <md-slide-toggle (change)="this.showOptions = !this.showOptions" >Options</md-slide-toggle>
-    <hr>
     <div *ngIf="this.showOptions" class="options">
+        <br>
+        <div id="yearContainer">
+            <label>Year:
+                <span class="label label-info">{{yearSliderValue.toString()}}</span>
+            </label>
+            <md-slider
+                    min="1950"
+                    max="2017"
+                    step="1"
+                    tickInterval="auto"
+                    [value]="this.yearSliderValue"
+                    thumbLabel="false"
+                    (input)="mdSliderInput_Year($event)"
+                    (change)="mdSliderChange_Year($event)"
+            ></md-slider>
+        </div>
+        <div id="ratingValueContainer">
+            <label>Rating Value:
+                <span class="label label-info">{{ratingValueSliderValue.toLocaleString('en')}}</span>
+            </label>
+            <md-slider
+                    min="1"
+                    max="9.3"
+                    step="0.1"
+                    tickInterval="auto"
+                    [value]="this.ratingValueSliderValue"
+                    thumbLabel="false"
+                    (input)="mdSliderInput_RatingValue($event)"
+                    (change)="mdSliderChange_RatingValue($event)"
+            ></md-slider>
+        </div>
         <div id="ratingCountContainer">
-            <label>Minimum Rating Count:
+            <label>Rating Count:
                 <span class="label label-info">{{ratingCountSliderValue.toLocaleString('en')}}</span>
             </label>
             <md-slider
-                    min="0"
+                    min="10000"
                     [max]="maxRatingCount"
                     step="100000"
                     tickInterval="1"
@@ -23,34 +53,26 @@
                     (input)="mdSliderInput_RatingCount($event)"
                     (change)="mdSliderChange_RatingCount($event)"
             ></md-slider>
-            <hr>
-        </div>
-
-        <div id="ratingValueContainer">
-            <label>Minimum Rating Value:
-                <span class="label label-info">{{ratingValueSliderValue}}</span>
-            </label>
-            <md-slider
-                    min="6"
-                    [max]="9.3"
-                    step="0.1"
-                    tickInterval="1"
-                    [value]="this.ratingValueSliderValue"
-                    thumbLabel="false"
-                    (input)="mdSliderInput_RatingValue($event)"
-                    (change)="mdSliderChange_RatingValue($event)"
-            ></md-slider>
-            <hr>
         </div>
     </div>
 
-    <div *ngIf="!this.showOptions" class="settings">
-            <label>Minimum Rating Count:
+    <div *ngIf="!this.showOptions" class="settings row">
+        <hr>
+        <div class="col-xs-4">
+            <label> Year:
+                <span class="label label-info">{{yearSliderValue.toString()}}</span>
+            </label>
+        </div>
+        <div class="col-xs-4">
+            <label> Value:
+                <span class="label label-info">{{ratingValueSliderValue.toLocaleString('en')}}</span>
+            </label>
+        </div>
+        <div class="col-xs-4">
+            <label>Count:
                 <span class="label label-info">{{ratingCountSliderValue.toLocaleString('en')}}</span>
             </label>
-            <label>Minimum Rating Value:
-                <span class="label label-info">{{ratingValueSliderValue}}</span>
-            </label>
+        </div>
     </div>
 </div>
 
@@ -70,7 +92,7 @@
             advantage: you don't need to put ngFor into a parent tag like "tbody" anymore -->
             <tbody>
             <ng-template ngFor let-movie [ngForOf]="displayedMovies">
-                <tr>
+                <tr [@optionsTrigger]>
                     <td>
                         <a target="_blank" href= "{{ movie.imdbMovieUrl }}" > {{ movie.movie }} </a>
                     </td>

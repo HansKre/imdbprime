@@ -4,9 +4,10 @@ import { FormsModule } from "@angular/forms";
 import { HttpModule } from "@angular/http";
 
 //Angular Material Modules
-import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+
 import {
-    MdProgressBarModule, MdSliderModule, MdSlideToggle, MdSlideToggleModule,
+    MdProgressBarModule, MdSliderModule, MdSlideToggleModule,
     MdSnackBarModule
 } from '@angular/material';
 
@@ -23,6 +24,9 @@ import { IsOnlineService } from "./services/is-online.service";
 
 // needed for some gesture support
 import 'hammerjs';
+// needed to support animations in Safari and Firefox
+// https://github.com/angular/angular/issues/10420
+import 'web-animations-js';
 
 @NgModule({
   declarations: [

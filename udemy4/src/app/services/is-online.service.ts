@@ -1,10 +1,10 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import {Observable} from "rxjs/Observable";
 import {Subject} from "rxjs/Subject";
 
 
 @Injectable()
-export class IsOnlineService implements OnInit {
+export class IsOnlineService {
 
     private _isOnline: boolean = false;
     private isOnlineSubject: Subject<boolean>;
@@ -13,6 +13,11 @@ export class IsOnlineService implements OnInit {
     constructor() {
         this.isOnlineSubject = new Subject<boolean>();
         this.isOnline$ = this.isOnlineSubject.asObservable();
+
+        this.isOnline = navigator.onLine;
+
+        window.addEventListener('online', this.onOnline.bind(this));
+        window.addEventListener( 'offline', this.onOffline.bind(this));
     }
 
     set isOnline(value: boolean) {
@@ -25,16 +30,13 @@ export class IsOnlineService implements OnInit {
     }
 
     onOnline() {
+        console.log("online");
         this.isOnline = true;
     }
 
     onOffline() {
+        console.log("offline");
         this.isOnline = false;
-    }
-
-    ngOnInit(): void {
-        window.addEventListener('online', this.onOnline.bind(this));
-        window.addEventListener( 'offline', this.onOffline.bind(this));
     }
 
     isOnlineObserveable() {
