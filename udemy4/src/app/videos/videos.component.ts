@@ -3,7 +3,8 @@ import { WebService } from "../services/web.service";
 import { Movie } from "../structures/movie";
 import { MdSliderChange, MdSnackBar } from "@angular/material";
 import { IsOnlineService } from "../services/is-online.service";
-import {animate, state, style, transition, trigger} from "@angular/animations";
+import { animate, state, style, transition, trigger } from "@angular/animations";
+import {DialogRatingValueService} from "../dialog-rating-value/dialog-rating-value.service";
 
 @Component({
     selector: 'app-movies',
@@ -19,16 +20,16 @@ import {animate, state, style, transition, trigger} from "@angular/animations";
                 // specify starting style for animation
                 style({
                     opacity: 0,
-                    transform: 'translateY(-70%)'
+                    transform: 'translateY(-100%)'
                 }),
-                animate(500)
+                animate(300)
             ]),
             transition('* => void', [
                 // specify end state after animation
-                animate(500,
+                animate(300,
                     style({
                         opacity: 0,
-                        transform: 'translateY(-70%)'
+                        transform: 'translateY(-100%)'
                     })
                 )
             ])
@@ -56,6 +57,8 @@ export class VideosComponent implements OnInit {
     ratingValueSliderValue:number = 6;
     yearSliderValue:number = 1950;
 
+    searchString:string ="";
+
     setMaxRatingCount() {
         if (this.allMovies) {
             let max:number = 0;
@@ -70,7 +73,8 @@ export class VideosComponent implements OnInit {
 
     constructor(private webService: WebService,
                 private isOnlineService: IsOnlineService,
-                public snackBar: MdSnackBar) {
+                public snackBar: MdSnackBar,
+                public dialogRatingValueService: DialogRatingValueService) {
     }
 
     ngOnInit() {
@@ -91,7 +95,7 @@ export class VideosComponent implements OnInit {
             && (localStorage.movies != "undefined")) {
                 this.allMovies = JSON.parse(localStorage.movies);
                 if (this.allMovies) {
-                    this.filterMoviesByCountAndValue();
+                    this.filterMovies();
                     this.setMaxRatingCount();
                 }
         }
@@ -113,7 +117,7 @@ export class VideosComponent implements OnInit {
 
     private resolvePromisedRequest(movies) {
         this.allMovies = movies as any as Movie[];
-        this.filterMoviesByCountAndValue();
+        this.filterMovies();
         this.storeMoviesToLocalStorage();
         this.shouldLoad = false;
         this.setMaxRatingCount();
@@ -134,14 +138,16 @@ export class VideosComponent implements OnInit {
         });
     }
 
-    private filterMoviesByCountAndValue() {
+    public filterMovies() {
+        let filter:string = this.searchString.toUpperCase();
         this.displayedMovies =
             this.allMovies.filter(
                 movie =>
                     (
                         (movie.ratingCount >= this.ratingCountSliderValue) &&
                         ((parseFloat(movie.ratingValue) * 10) >= (this.ratingValueSliderValue * 10)) &&
-                        movie.year >= this.yearSliderValue
+                        (movie.year >= this.yearSliderValue) &&
+                        (movie.movie.toUpperCase().indexOf(filter) > -1)
                     )
             );
     }
@@ -151,7 +157,7 @@ export class VideosComponent implements OnInit {
 
         this.showSnackbar("Minimum Rating Count set to:", this.ratingCountSliderValue, true);
 
-        this.filterMoviesByCountAndValue();
+        this.filterMovies();
     }
 
     mdSliderChange_RatingCount(changeEvent: MdSliderChange) {
@@ -163,7 +169,7 @@ export class VideosComponent implements OnInit {
 
         this.showSnackbar("Minimum Rating Value set to:", this.ratingValueSliderValue, true);
 
-        this.filterMoviesByCountAndValue();
+        this.filterMovies();
     }
 
     mdSliderChange_RatingValue(changeEvent: MdSliderChange) {
@@ -175,10 +181,16 @@ export class VideosComponent implements OnInit {
 
         this.showSnackbar("Minimum Year set to:", this.yearSliderValue, false);
 
-        this.filterMoviesByCountAndValue();
+        this.filterMovies();
     }
 
     mdSliderChange_Year(changeEvent: MdSliderChange) {
         this.showSnackbar("Minimum Year set to:", changeEvent.value, false);
+    }
+
+    openDialog() {
+        this.dialogRatingValueService
+            .confirm('Confirm Dialog', 'Foo Bar')
+            .subscribe(res => console.log(res));
     }
 }

@@ -7,6 +7,7 @@ import { HttpModule } from "@angular/http";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 import {
+    MdButtonModule, MdDialogModule,
     MdProgressBarModule, MdSliderModule, MdSlideToggleModule,
     MdSnackBarModule
 } from '@angular/material';
@@ -17,10 +18,12 @@ import { VideosComponent } from './videos/videos.component';
 import { SliderComponent } from './slider/slider.component';
 import { ResultsComponent } from './results/results.component';
 import { OnlineIndicatorComponent } from './online-indicator/online-indicator.component';
+import { DialogRatingValueComponent } from './dialog-rating-value/dialog-rating-value.component';
 
 // Services
 import { WebService } from "./services/web.service";
 import { IsOnlineService } from "./services/is-online.service";
+import { DialogRatingValueService } from "./dialog-rating-value/dialog-rating-value.service";
 
 // needed for some gesture support
 import 'hammerjs';
@@ -29,27 +32,34 @@ import 'hammerjs';
 import 'web-animations-js';
 
 @NgModule({
-  declarations: [
-      AppComponent,
-      VideosComponent,
-      SliderComponent,
-      ResultsComponent,
-      OnlineIndicatorComponent
-  ],
-  imports: [
-      BrowserModule,
-      FormsModule,
-      HttpModule,
-      MdSliderModule,
-      MdProgressBarModule,
-      MdSnackBarModule,
-      BrowserAnimationsModule,
-      MdSlideToggleModule
-  ],
-  providers: [
-      WebService,
-      IsOnlineService
-  ],
-  bootstrap: [AppComponent]
+    declarations: [
+        AppComponent,
+        VideosComponent,
+        SliderComponent,
+        ResultsComponent,
+        OnlineIndicatorComponent,
+        DialogRatingValueComponent
+    ],
+    imports: [
+        BrowserModule,
+        FormsModule,
+        HttpModule,
+        MdSliderModule,
+        MdProgressBarModule,
+        MdSnackBarModule,
+        BrowserAnimationsModule,
+        MdSlideToggleModule,
+        MdButtonModule,
+        MdDialogModule
+    ],
+    providers: [
+        WebService,
+        IsOnlineService,
+        DialogRatingValueService
+    ],
+    entryComponents: [
+        DialogRatingValueComponent
+    ],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }

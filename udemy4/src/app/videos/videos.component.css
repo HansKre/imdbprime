@@ -33,3 +33,14 @@ md-slider {
 #status.online {
     background: #0c0;
 }
+
+.childWrapper {
+    height: 500px;
+    width: 100%;
+    overflow-y: auto;
+}
+
+.filterInput {
+    width: 100%;
+    color: grey;
+}

@@ -4,8 +4,8 @@
     <hr>
 </div>
 
-<hr>
-<div class="options-container">
+<hr *ngIf="false">
+<div *ngIf="false" class="options-container">
     <md-slide-toggle (change)="this.showOptions = !this.showOptions" >Options</md-slide-toggle>
     <div *ngIf="this.showOptions" class="options">
         <br>
@@ -79,10 +79,24 @@
         <table class="table table-striped table-condensed">
             <thead class="thead-inverse">
             <tr>
-                <th class="col-xs-8">Movie</th>
-                <th class="col-xs-1">Year</th>
-                <th class="col-xs-1">IMDB Rating</th>
-                <th class="col-xs-2">Rating Count</th>
+                <th class="col-xs-8">Movie <br>
+                    <input class="filterInput" [(ngModel)]="searchString" (ngModelChange)="filterMovies()" placeholder="Search for movie..">
+                </th>
+                <th class="col-xs-1">Year <br>
+                    <label><span
+                            class="label label-info" (click)="openDialog()">{{yearSliderValue.toString()}}</span>
+                    </label>
+                </th>
+                <th class="col-xs-1 text-center">IMDB Rating <br>
+                    <label><span
+                            class="label label-info" (click)="openDialog()">{{ratingValueSliderValue.toLocaleString('en')}}</span>
+                    </label>
+                </th>
+                <th class="col-xs-2 text-right">Rating Count <br>
+                    <label><span
+                            class="label label-info" (click)="openDialog()">{{ratingCountSliderValue.toLocaleString('en')}}</span>
+                    </label>
+                </th>
             </tr>
             </thead>
 

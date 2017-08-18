@@ -14,11 +14,11 @@ glyphicons-halflings-regular.89889688147bd7575d63.svg
 glyphicons-halflings-regular.e18bbf611f2a2e43afc0.ttf
 glyphicons-halflings-regular.f4769f9bdb7466be6508.eot
 glyphicons-halflings-regular.fa2772327f55d8198301.woff
-inline.2655e8864650de2d9fd1.bundle.js
-main.d345121ce977c1e447a3.bundle.js
+inline.db1c95ab78ad3ba247e1.bundle.js
+main.17359f77fa69ae416110.bundle.js
 polyfills.991e140ab27557bb5853.bundle.js
 styles.aa2d50561c9368600af0.bundle.css
-vendor.058ddc70c3fdde7309a7.bundle.js
+vendor.196d55219e9b0cb6323b.bundle.js
 
 NETWORK:
 #what to NOT cache if network is online
