@@ -75,7 +75,14 @@
 </div>
 
 <div class="row">
-    <div class="span5">
+    <div class="span5 search-results"
+    infiniteScroll
+    [infiniteScrollDistance]="2"
+    [infiniteScrollThrottle]="10"
+    [scrollWindow]="false"
+    (scrolled)="onScrollDown()"
+    (scrolledUp)="onScrollUp()">
+
         <table class="table table-striped table-condensed">
             <thead class="thead-inverse">
             <tr>

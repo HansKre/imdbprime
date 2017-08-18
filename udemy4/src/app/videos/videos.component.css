@@ -44,3 +44,9 @@ md-slider {
     width: 100%;
     color: grey;
 }
+
+/* Infinite Scroll */
+.search-results {
+    height: 500px;
+    overflow: scroll;
+}

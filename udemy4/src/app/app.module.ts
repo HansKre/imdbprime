@@ -31,6 +31,8 @@ import 'hammerjs';
 // https://github.com/angular/angular/issues/10420
 import 'web-animations-js';
 
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+
 @NgModule({
     declarations: [
         AppComponent,
@@ -50,7 +52,8 @@ import 'web-animations-js';
         BrowserAnimationsModule,
         MdSlideToggleModule,
         MdButtonModule,
-        MdDialogModule
+        MdDialogModule,
+        InfiniteScrollModule
     ],
     providers: [
         WebService,

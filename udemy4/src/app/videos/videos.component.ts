@@ -193,4 +193,13 @@ export class VideosComponent implements OnInit {
             .confirm('Confirm Dialog', 'Foo Bar')
             .subscribe(res => console.log(res));
     }
+
+    onScrollDown () {
+        console.log('scrolled down!!')
+    }
+
+    onScrollUp () {
+        console.log('scrolled up!!')
+    }
+
 }
