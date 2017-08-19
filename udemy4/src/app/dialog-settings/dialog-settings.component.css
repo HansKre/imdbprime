@@ -1,0 +1,10 @@
+.slider {
+    width: 100%;
+}
+
+/* Center the button inside of the wrapper */
+.buttonWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

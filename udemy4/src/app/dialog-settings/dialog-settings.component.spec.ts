@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DialogRatingValueComponent } from './dialog-rating-value.component';
+import { DialogSettingsComponent } from './dialog-settings.component';
 
-describe('DialogRatingValueComponent', () => {
-  let component: DialogRatingValueComponent;
-  let fixture: ComponentFixture<DialogRatingValueComponent>;
+describe('DialogSettingsComponent', () => {
+  let component: DialogSettingsComponent;
+  let fixture: ComponentFixture<DialogSettingsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DialogRatingValueComponent ]
+      declarations: [ DialogSettingsComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DialogRatingValueComponent);
+    fixture = TestBed.createComponent(DialogSettingsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

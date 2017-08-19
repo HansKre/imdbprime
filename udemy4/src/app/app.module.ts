@@ -7,7 +7,7 @@ import { HttpModule } from "@angular/http";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import {
     MdButtonModule, MdDialogModule, MdInputModule /* for Md-Container-Input */,
-    MdProgressBarModule, MdSliderModule, MdSlideToggleModule,
+    MdProgressBarModule, MdSliderModule,
     MdSnackBarModule
 } from '@angular/material';
 
@@ -17,12 +17,12 @@ import { VideosComponent } from './videos/videos.component';
 import { SliderComponent } from './slider/slider.component';
 import { ResultsComponent } from './results/results.component';
 import { OnlineIndicatorComponent } from './online-indicator/online-indicator.component';
-import { DialogRatingValueComponent } from './dialog-rating-value/dialog-rating-value.component';
+import { DialogSettingsComponent } from './dialog-settings/dialog-settings.component';
 
 // Services
 import { WebService } from "./services/web.service";
 import { IsOnlineService } from "./services/is-online.service";
-import { DialogRatingValueService } from "./dialog-rating-value/dialog-rating-value.service";
+import { DialogSettingsService } from "./dialog-settings/dialog-settings.service";
 
 // needed for some gesture support
 import 'hammerjs';
@@ -39,7 +39,7 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
         SliderComponent,
         ResultsComponent,
         OnlineIndicatorComponent,
-        DialogRatingValueComponent
+        DialogSettingsComponent
     ],
     imports: [
         BrowserModule,
@@ -49,7 +49,6 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
         MdProgressBarModule,
         MdSnackBarModule,
         BrowserAnimationsModule,
-        MdSlideToggleModule,
         MdButtonModule,
         MdDialogModule,
         InfiniteScrollModule,
@@ -58,10 +57,10 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
     providers: [
         WebService,
         IsOnlineService,
-        DialogRatingValueService
+        DialogSettingsService
     ],
     entryComponents: [
-        DialogRatingValueComponent
+        DialogSettingsComponent
     ],
     bootstrap: [AppComponent]
 })

@@ -4,7 +4,7 @@ import { Movie } from "../structures/movie";
 import { MdSliderChange, MdSnackBar } from "@angular/material";
 import { IsOnlineService } from "../services/is-online.service";
 import { animate, state, style, transition, trigger } from "@angular/animations";
-import {DialogRatingValueService} from "../dialog-rating-value/dialog-rating-value.service";
+import {DialogSettingsService} from "../dialog-settings/dialog-settings.service";
 
 @Component({
     selector: 'app-movies',
@@ -86,7 +86,7 @@ export class VideosComponent implements OnInit {
     constructor(private webService: WebService,
                 private isOnlineService: IsOnlineService,
                 public snackBar: MdSnackBar,
-                public dialogRatingValueService: DialogRatingValueService) {
+                public dialogSettingsService: DialogSettingsService) {
     }
 
     ngOnInit() {
@@ -173,46 +173,46 @@ export class VideosComponent implements OnInit {
         this.setDisplayedMovies();
     }
 
-    mdSliderInput_RatingCount(changeEvent: MdSliderChange) {
-        this.ratingCountSliderValue = changeEvent.value;
+    onRatingCountChanged(newValue:number) {
+        this.ratingCountSliderValue = newValue;
 
         this.showSnackbar("Minimum Rating Count set to:", this.ratingCountSliderValue, true);
 
         this.filterMovies();
     }
 
-    mdSliderChange_RatingCount(changeEvent: MdSliderChange) {
-        this.showSnackbar("Minimum Rating Count set to:", changeEvent.value, true);
-    }
-
-    mdSliderInput_RatingValue(changeEvent: MdSliderChange) {
-        this.ratingValueSliderValue = changeEvent.value;
+    onRatingValueChanged(newValue:number) {
+        this.ratingValueSliderValue = newValue;
 
         this.showSnackbar("Minimum Rating Value set to:", this.ratingValueSliderValue, true);
 
         this.filterMovies();
     }
 
-    mdSliderChange_RatingValue(changeEvent: MdSliderChange) {
-        this.showSnackbar("Minimum Rating Value set to:", changeEvent.value, true);
-    }
-
-    mdSliderInput_Year(changeEvent: MdSliderChange) {
-        this.yearSliderValue = changeEvent.value;
+    onYearChanged(newValue:number) {
+        this.yearSliderValue = newValue;
 
         this.showSnackbar("Minimum Year set to:", this.yearSliderValue, false);
 
         this.filterMovies();
     }
 
-    mdSliderChange_Year(changeEvent: MdSliderChange) {
-        this.showSnackbar("Minimum Year set to:", changeEvent.value, false);
+    openRatingValueDialog() {
+        this.dialogSettingsService
+            .openRatingValueDialog()
+            .subscribe(newValue => this.onRatingValueChanged(newValue));
     }
 
-    openDialog() {
-        this.dialogRatingValueService
-            .confirm('Confirm Dialog', 'Foo Bar')
-            .subscribe(res => console.log(res));
+    openRatingCountDialog() {
+        this.dialogSettingsService
+            .openRatingCountDialog()
+            .subscribe(newValue => this.onRatingCountChanged(newValue));
+    }
+
+    openYearDialog() {
+        this.dialogSettingsService
+            .openYearDialog()
+            .subscribe(newValue => this.onYearChanged(newValue));
     }
 
     onScrollDown () {
