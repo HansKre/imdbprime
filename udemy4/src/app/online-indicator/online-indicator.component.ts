@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { IsOnlineService } from "../services/is-online.service";
-import {animate, keyframes, state, style, transition, trigger} from "@angular/animations";
+import { animate, keyframes, state, style, transition, trigger } from "@angular/animations";
 
 @Component({
     selector: 'app-online-indicator',

@@ -6,7 +6,8 @@
 <p *ngIf="message">{{message}}</p>
 
 
-<div class="row">
+<div class="row myModalDialog">
+    <!-- YEAR -->
     <div *ngIf="yearShow" id="yearContainer">
         <label>Year:
             <span class="label label-info">{{yearSliderValue.toString()}}</span>
@@ -23,10 +24,14 @@
                 (change)="mdSliderChange_Year($event)"
         ></md-slider>
     </div>
+    <!-- RATING VALUE -->
     <div *ngIf="ratingValueShow" id="ratingValueContainer">
-        <label>Rating Value:
-            <span class="label label-info">{{ratingValueSliderValue.toLocaleString('en')}}</span>
-        </label>
+        <label>Rating Value:</label>
+        <div class="centerWrapper">
+            <label class="prominentValue" [@scalingTrigger]="scalingState">
+                <span class="label label-info">{{ratingValueSliderValue.toLocaleString('en')}}</span>
+            </label>
+        </div>
         <md-slider
                 class="slider"
                 min="1"
@@ -39,6 +44,7 @@
                 (change)="mdSliderChange_RatingValue($event)"
         ></md-slider>
     </div>
+    <!-- RATING COUNT -->
     <div *ngIf="ratingCountShow" id="ratingCountContainer">
         <label>Rating Count:
             <span class="label label-info">{{ratingCountSliderValue.toLocaleString('en')}}</span>
@@ -56,7 +62,7 @@
         ></md-slider>
     </div>
 
-    <div class="buttonWrapper">
+    <div class="centerWrapper">
         <button type="button" md-raised-button (click)="dialogRef.close(true)">Ok</button>
         <!--<button type="button" md-button (click)="dialogRef.close()">Cancel</button>-->
     </div>

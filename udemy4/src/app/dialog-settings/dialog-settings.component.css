@@ -3,8 +3,20 @@
 }
 
 /* Center the button inside of the wrapper */
-.buttonWrapper {
+.centerWrapper {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.prominentValue {
+    font-size: 45px;
+}
+
+#ratingValueContainer {
+    height: 208px;
+}
+
+.myModalDialog {
+    width: 208px;
 }

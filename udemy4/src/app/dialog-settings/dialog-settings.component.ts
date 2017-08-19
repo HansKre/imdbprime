@@ -1,14 +1,41 @@
 import { Component } from '@angular/core';
-import {MdDialogRef, MdSliderChange} from "@angular/material";
-import {Subject} from "rxjs/Subject";
-import {Observable} from "rxjs/Observable";
+import { MdDialogRef, MdSliderChange } from "@angular/material";
+import { Subject } from "rxjs/Subject";
+import { Observable } from "rxjs/Observable";
+import { animate, keyframes, state, style, transition, trigger } from "@angular/animations";
 
 @Component({
   selector: 'dialog-settings-component',
   templateUrl: './dialog-settings.component.html',
-  styleUrls: ['./dialog-settings.component.css']
+  styleUrls: ['./dialog-settings.component.css'],
+    animations: [
+        /* SCALE IN_OUT */
+        trigger('scalingTrigger', [
+            state('normal1', style({
+                opacity: 1,
+                transform: 'scale(1)'
+            })),
+            state('normal2', style({
+                opacity: 1,
+                transform: 'scale(1)'
+            })),
+            transition('normal1 <=> normal2', [
+                animate(300, keyframes([
+                    style({opacity: 1, transform: 'scale(1)', offset: 0}),
+                    style({opacity: 0.5, transform: 'scale(1.6)', offset: 0.5}),
+                    style({opacity: 1, transform: 'scale(1)', offset: 1}),
+                ]))
+            ])
+        ]),
+    ]
 })
 export class DialogSettingsComponent {
+
+    scalingState:string = "normal1";
+
+    animate() {
+        this.scalingState = (this.scalingState === "normal1" ? "normal2" : "normal1");
+    }
 
     public title: string;
     public message: string;
@@ -49,6 +76,7 @@ export class DialogSettingsComponent {
 
     mdSliderInput_RatingValue(changeEvent: MdSliderChange) {
         this.ratingValueSliderValue = changeEvent.value;
+        this.animate();
     }
 
     mdSliderChange_RatingValue(changeEvent: MdSliderChange) {
