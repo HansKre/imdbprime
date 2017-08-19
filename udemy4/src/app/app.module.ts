@@ -25,7 +25,7 @@ import { IsOnlineService } from "./services/is-online.service";
 import { DialogSettingsService } from "./dialog-settings/dialog-settings.service";
 
 // needed for some gesture support
-import 'hammerjs';
+//import 'hammerjs';
 // needed to support animations in Safari and Firefox
 // https://github.com/angular/angular/issues/10420
 import 'web-animations-js';
