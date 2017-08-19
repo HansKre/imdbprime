@@ -11,6 +11,7 @@ import {DialogSettingsService} from "../dialog-settings/dialog-settings.service"
     templateUrl: './videos.component.html',
     styleUrls: ['./videos.component.css'],
     animations: [
+        /* FADE IN_OUT */
         trigger('optionsTrigger', [
             state('in', style({
                     opacity: 1,

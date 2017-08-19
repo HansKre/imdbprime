@@ -1,2 +1,10 @@
-<span *ngIf="globalService.isOnline" class="label label-success"> </span>
-<span *ngIf="!globalService.isOnline" class="label label-danger"> </span>
+<label [@isOnlineTrigger]="isOnlineAnimationState">
+    <span *ngIf="!isOnlineService.isOnline" class="label label-danger"> </span>
+    <span *ngIf="isOnlineService.isOnline" class="label label-success"> </span>
+</label>
+
+
+<!-- FOR DEBUGGING THE ANIMATION
+<hr>
+<button class="btn btn-info" (click)="simulateOnlineStatusChange()">Anim</button>
+-->
