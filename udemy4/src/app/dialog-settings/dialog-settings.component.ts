@@ -13,6 +13,10 @@ export class DialogSettingsComponent {
     public title: string;
     public message: string;
 
+    maxRatingCount:number;
+    minYear:number;
+    maxYear:number;
+
     constructor(public dialogRef: MdDialogRef<DialogSettingsComponent>) {
         this.ratingValueSliderValueObserveable = this.ratingValueSliderValueSubject.asObservable();
         this.ratingCountSliderValueObserveable = this.ratingCountSliderValueSubject.asObservable();
@@ -70,8 +74,9 @@ export class DialogSettingsComponent {
         return this.ratingCountSliderValueObserveable;
     }
 
-    public openRatingCountDialog(initWith:number) {
+    public openRatingCountDialog(initWith:number, maxRatingCount:number) {
         this.ratingCountSliderValue = initWith;
+        this.maxRatingCount = maxRatingCount;
         this.ratingCountShow = true;
     }
 
@@ -103,8 +108,10 @@ export class DialogSettingsComponent {
         return this.yearSliderValueObserveable;
     }
 
-    public openYearDialog(initWith:number) {
+    public openYearDialog(initWith:number, minYear:number, maxYear:number) {
         this.yearSliderValue = initWith;
+        this.minYear = minYear;
+        this.maxYear = maxYear;
         this.yearShow = true;
     }
 

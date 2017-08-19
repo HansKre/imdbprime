@@ -27,20 +27,20 @@ export class DialogSettingsService {
       return dialogRef.componentInstance.ratingValueObserveable();
   }
 
-    public openRatingCountDialog(initWith:number): Observable<number> {
+    public openRatingCountDialog(initWith:number, maxRatingCount:number): Observable<number> {
         let dialogRef: MdDialogRef<DialogSettingsComponent>;
 
         dialogRef = this.dialog.open(DialogSettingsComponent);
-        dialogRef.componentInstance.openRatingCountDialog(initWith)
+        dialogRef.componentInstance.openRatingCountDialog(initWith, maxRatingCount);
 
         return dialogRef.componentInstance.ratingCountObserveable();
     }
 
-    public openYearDialog(initWith:number): Observable<number> {
+    public openYearDialog(initWith:number, minYear:number, maxYear:number): Observable<number> {
         let dialogRef: MdDialogRef<DialogSettingsComponent>;
 
         dialogRef = this.dialog.open(DialogSettingsComponent);
-        dialogRef.componentInstance.openYearDialog(initWith);
+        dialogRef.componentInstance.openYearDialog(initWith, minYear, maxYear);
 
         return dialogRef.componentInstance.yearObserveable();
     }

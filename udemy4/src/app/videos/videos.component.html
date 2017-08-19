@@ -7,7 +7,7 @@
 <p>{{ this.scrolls }}</p>
 
 <div class="row infiniteScrollWrapper">
-    <--![infiniteScrollContainer]='infiniteScrollWrapper'-->
+    <!--[infiniteScrollContainer]='infiniteScrollWrapper'-->
     <div class="span5 search-results"
         infiniteScroll
         [infiniteScrollDistance]="2"
@@ -31,17 +31,17 @@
                 </th>
                 <th class="col-xs-1">Year <br>
                     <label><span
-                            class="label label-info" (click)="openYearDialog()">{{yearSliderValue.toString()}}</span>
+                            class="label label-info" (click)="openYearDialog()">{{minYearValueFilter.toString()}}</span>
                     </label>
                 </th>
                 <th class="col-xs-1 text-center">IMDB Rating <br>
                     <label><span
-                            class="label label-info" (click)="openRatingValueDialog()">{{ratingValueSliderValue.toLocaleString('en')}}</span>
+                            class="label label-info" (click)="openRatingValueDialog()">{{minRatingValueFilter.toLocaleString('en')}}</span>
                     </label>
                 </th>
                 <th class="col-xs-2 text-right">Rating Count <br>
                     <label><span
-                            class="label label-info" (click)="openRatingCountDialog()">{{ratingCountSliderValue.toLocaleString('en')}}</span>
+                            class="label label-info" (click)="openRatingCountDialog()">{{minRatingCountFilter.toLocaleString('en')}}</span>
                     </label>
                 </th>
             </tr>

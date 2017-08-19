@@ -54,22 +54,23 @@ export class VideosComponent implements OnInit {
     minEntries:number = 48;
     displayedEntries:number = this.minEntries;
 
-    maxRatingCount: number = 0;
-    //TODO: maxValue
-    //TODO: min/max Year
+    shouldLoadMoviesFromServer:boolean = true;
 
-    shouldLoad:boolean = true;
+    maxRatingCount: number;
+    maxYear: number;
+    minYear: number;
 
-    ratingCountSliderValue:number = 10000;
-    ratingValueSliderValue:number = 6;
-    yearSliderValue:number = 2000;
+    minRatingCountFilter:number = 10000;
+    minRatingValueFilter:number = 6;
+    maxYearValueFilter:number = 2000;
+    minYearValueFilter:number = 2000;
 
     searchString:string =" ";
 
     //TODO: remove after debugging
     scrolls:number = 0;
 
-    setMaxRatingCount() {
+    calcMaxRatingCount() {
         if (this.allMovies) {
             let max:number = 0;
             this.allMovies.forEach(function (entry) {
@@ -79,6 +80,32 @@ export class VideosComponent implements OnInit {
             });
             this.maxRatingCount = max;
         }
+    }
+
+    calcMinMaxYear() {
+        if (this.allMovies) {
+            let maxY:number = 0;
+            let minY:number = 10000;
+            this.allMovies.forEach(function (entry) {
+                // MAX
+                if (entry.year > maxY) {
+                    maxY = entry.year;
+                }
+                // MIN
+                if ((entry.year > 1900) && (entry.year < minY)) {
+                    minY = entry.year;
+                    console.log(entry.year + " , " + entry.movie);
+                }
+            });
+            console.log("Year: " + minY + " , " + maxY);
+            this.maxYear = maxY;
+            this.minYear = minY;
+        }
+    }
+
+    calcMinMaxValues() {
+        this.calcMaxRatingCount();
+        this.calcMinMaxYear();
     }
 
     constructor(private webService: WebService,
@@ -95,7 +122,7 @@ export class VideosComponent implements OnInit {
     }
 
     onlineChanged(isOnline:boolean) {
-        if (isOnline && this.shouldLoad) {
+        if (isOnline && this.shouldLoadMoviesFromServer) {
             this.registerForWebRequest();
         }
     }
@@ -106,7 +133,7 @@ export class VideosComponent implements OnInit {
                 this.allMovies = JSON.parse(localStorage.movies);
                 if (this.allMovies) {
                     this.filterMovies();
-                    this.setMaxRatingCount();
+                    this.calcMinMaxValues();
                 }
         }
     }
@@ -129,13 +156,13 @@ export class VideosComponent implements OnInit {
         this.allMovies = movies as any as Movie[];
         this.filterMovies();
         this.storeMoviesToLocalStorage();
-        this.shouldLoad = false;
-        this.setMaxRatingCount();
+        this.shouldLoadMoviesFromServer = false;
+        this.calcMinMaxValues();
     }
 
     shouldShowProgressBar() {
         if (navigator.onLine) {
-            return this.shouldLoad || this.isParentLoading;
+            return this.shouldLoadMoviesFromServer || this.isParentLoading;
         } else {
             return false;
         }
@@ -154,9 +181,9 @@ export class VideosComponent implements OnInit {
             this.allMovies.filter(
                 movie =>
                     (
-                        (movie.ratingCount >= this.ratingCountSliderValue) &&
-                        ((parseFloat(movie.ratingValue) * 10) >= (this.ratingValueSliderValue * 10)) &&
-                        (movie.year >= this.yearSliderValue) &&
+                        (movie.ratingCount >= this.minRatingCountFilter) &&
+                        ((parseFloat(movie.ratingValue) * 10) >= (this.minRatingValueFilter * 10)) &&
+                        (movie.year >= this.minYearValueFilter) &&
                         (movie.movie.toUpperCase().indexOf(filter) > -1)
                     )
             );
@@ -167,49 +194,48 @@ export class VideosComponent implements OnInit {
             //TODO: revise this condition
             this.displayedEntries = Math.min(this.filteredMovies.length, this.minEntries);
         }
-        console.log(filter + " ");
         this.setDisplayedMovies();
     }
 
     onRatingCountChanged(newValue:number) {
-        this.ratingCountSliderValue = newValue;
+        this.minRatingCountFilter = newValue;
 
-        this.showSnackbar("Minimum Rating Count set to:", this.ratingCountSliderValue, true);
+        this.showSnackbar("Minimum Rating Count set to:", this.minRatingCountFilter, true);
 
         this.filterMovies();
     }
 
     onRatingValueChanged(newValue:number) {
-        this.ratingValueSliderValue = newValue;
+        this.minRatingValueFilter = newValue;
 
-        this.showSnackbar("Minimum Rating Value set to:", this.ratingValueSliderValue, true);
+        this.showSnackbar("Minimum Rating Value set to:", this.minRatingValueFilter, true);
 
         this.filterMovies();
     }
 
     onYearChanged(newValue:number) {
-        this.yearSliderValue = newValue;
+        this.minYearValueFilter = newValue;
 
-        this.showSnackbar("Minimum Year set to:", this.yearSliderValue, false);
+        this.showSnackbar("Minimum Year set to:", this.minYearValueFilter, false);
 
         this.filterMovies();
     }
 
     openRatingValueDialog() {
         this.dialogSettingsService
-            .openRatingValueDialog(this.ratingValueSliderValue)
+            .openRatingValueDialog(this.minRatingValueFilter)
             .subscribe(newValue => this.onRatingValueChanged(newValue));
     }
 
     openRatingCountDialog() {
         this.dialogSettingsService
-            .openRatingCountDialog(this.ratingCountSliderValue)
+            .openRatingCountDialog(this.minRatingCountFilter, this.maxRatingCount)
             .subscribe(newValue => this.onRatingCountChanged(newValue));
     }
 
     openYearDialog() {
         this.dialogSettingsService
-            .openYearDialog(this.yearSliderValue)
+            .openYearDialog(this.minYearValueFilter, this.minYear, this.maxYear)
             .subscribe(newValue => this.onYearChanged(newValue));
     }
 

@@ -7,31 +7,47 @@ import {Component, OnInit} from '@angular/core';
 })
 export class AppComponent implements OnInit{
     isCacheLoading:boolean = false;
+    cacheEvent:string = "";
 
     ngOnInit(): void {
-        this.swapApplicationCache();
+        // swapcache if already in UPDATEREADY state
+        if (window.applicationCache.status === window.applicationCache.UPDATEREADY) {
+            this.swapCacheAndReloadContent();
+        }
+
+        this.registerApplicationCacheEvents();
     }
 
-    swapCache() {
-        console.log("onupdateready fired");
+    private registerApplicationCacheEvents() {
+        this.registerForDOWNLOADING();
+        this.registerForUPDEATEREADY();
+    }
+
+    private registerForDOWNLOADING() {
+        window.applicationCache.ondownloading = function () {
+            alert("Downloading Cache now");
+            this.isCacheLoading = true;
+        }.bind(this);
+    }
+
+    private registerForUPDEATEREADY() {
+        window.applicationCache.onupdateready = function () {
+            alert("Going to swap cache now");
+            this.swapCacheAndReloadContent();
+        }.bind(this);
+    }
+
+    swapCacheAndReloadContent() {
         this.isCacheLoading = true;
+        this.cacheEvent = 'swapping';
+
         // replace the current cache with the newer
         window.applicationCache.swapCache();
+
         // page content needs to be reloaded after this
         window.location.reload();
+
         this.isCacheLoading = false;
-    }
-
-    private swapApplicationCache() {
-        // register for UPDATEREADY event
-        window.applicationCache.onupdateready = function() {
-            console.log("onupdateready fired");
-            this.swapCache();
-        }.bind(this);
-
-        // swapcache if already in that state
-        if (window.applicationCache.status === window.applicationCache.UPDATEREADY) {
-            this.swapCache();
-        }
+        this.cacheEvent = '';
     }
 }

@@ -1,6 +1,7 @@
 <md-sidenav-container>
     <div class="container-fluid">
         <h4>Prime Movies with IMDB Rating  <app-online-indicator></app-online-indicator></h4>
+        <p *ngIf="isCacheLoading">{{ this.cacheEvent }}</p>
         <app-movies [isParentLoading]="isCacheLoading">Loading ...</app-movies>
     </div>
 </md-sidenav-container>

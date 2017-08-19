@@ -7,23 +7,23 @@
 
 
 <div class="row">
-    <div *ngIf="this.yearShow" id="yearContainer">
+    <div *ngIf="yearShow" id="yearContainer">
         <label>Year:
             <span class="label label-info">{{yearSliderValue.toString()}}</span>
         </label>
         <md-slider
                 class="slider"
-                min="1950"
-                max="2017"
+                [min]="minYear"
+                [max]="maxYear"
                 step="1"
                 tickInterval="auto"
-                [value]="this.yearSliderValue"
+                [value]="yearSliderValue"
                 thumbLabel="false"
                 (input)="mdSliderInput_Year($event)"
                 (change)="mdSliderChange_Year($event)"
         ></md-slider>
     </div>
-    <div *ngIf="this.ratingValueShow" id="ratingValueContainer">
+    <div *ngIf="ratingValueShow" id="ratingValueContainer">
         <label>Rating Value:
             <span class="label label-info">{{ratingValueSliderValue.toLocaleString('en')}}</span>
         </label>
@@ -33,23 +33,23 @@
                 max="9.3"
                 step="0.1"
                 tickInterval="auto"
-                [value]="this.ratingValueSliderValue"
+                [value]="ratingValueSliderValue"
                 thumbLabel="false"
                 (input)="mdSliderInput_RatingValue($event)"
                 (change)="mdSliderChange_RatingValue($event)"
         ></md-slider>
     </div>
-    <div *ngIf="this.ratingCountShow" id="ratingCountContainer">
+    <div *ngIf="ratingCountShow" id="ratingCountContainer">
         <label>Rating Count:
             <span class="label label-info">{{ratingCountSliderValue.toLocaleString('en')}}</span>
         </label>
         <md-slider
                 class="slider"
                 min="10000"
-                max="2000000"
+                [max]="maxRatingCount"
                 step="100000"
                 tickInterval="1"
-                [value]=this.ratingCountSliderValue
+                [value]="ratingCountSliderValue"
                 thumbLabel="false"
                 (input)="mdSliderInput_RatingCount($event)"
                 (change)="mdSliderChange_RatingCount($event)"
