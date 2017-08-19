@@ -68,6 +68,9 @@ export class VideosComponent implements OnInit {
 
     searchString:string =" ";
 
+    //TODO: remove after debugging
+    scrolls:number = 0;
+
     setMaxRatingCount() {
         if (this.allMovies) {
             let max:number = 0;
@@ -215,11 +218,13 @@ export class VideosComponent implements OnInit {
     onScrollDown () {
         console.log('scrolled down!!')
         this.addDisplayedMovies();
+        this.scrolls += 1;
     }
 
     onScrollUp () {
         console.log('scrolled up!!')
         this.removeDisplayedMovies();
+        this.scrolls -= 1;
     }
 
     setDisplayedMovies() {
