@@ -66,7 +66,7 @@ export class VideosComponent implements OnInit {
     ratingValueSliderValue:number = 6;
     yearSliderValue:number = 1950;
 
-    searchString:string ="";
+    searchString:string =" ";
 
     setMaxRatingCount() {
         if (this.allMovies) {
@@ -148,7 +148,7 @@ export class VideosComponent implements OnInit {
     }
 
     public filterMovies() {
-        let filter:string = this.searchString.toUpperCase();
+        let filter:string = this.searchString.toUpperCase().trim();
         this.filteredMovies =
             this.allMovies.filter(
                 movie =>

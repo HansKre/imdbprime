@@ -91,7 +91,11 @@
             <tr>
                 <th class="col-xs-8">Movie <br>
                     <md-input-container>
-                        <input mdInput [(ngModel)]="searchString" (ngModelChange)="filterMovies()" placeholder="Search for movie..">
+                        <input class="filterInput"
+                               mdInput [(ngModel)]="searchString"
+                               (ngModelChange)="filterMovies()"
+                               placeholder="Search for movie.."
+                        >
                     </md-input-container>
                 </th>
                 <th class="col-xs-1">Year <br>
