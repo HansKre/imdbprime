@@ -45,9 +45,18 @@ import {DialogRatingValueService} from "../dialog-rating-value/dialog-rating-val
 export class VideosComponent implements OnInit {
     @Input() isParentLoading:boolean = true;
 
-    displayedMovies: Movie[];
+    displayedMovies: Movie[] = [];
+    filteredMovies: Movie[];
     allMovies: Movie[];
+
+    //TODO: calc this dynamically
+    //TODO: minEntries should correspond with scrollDistance?
+    minEntries:number = 24;
+    displayedEntries:number = this.minEntries;
+
     maxRatingCount: number = 0;
+    //TODO: maxValue
+    //TODO: min/max Year
 
     shouldLoad:boolean = true;
 
@@ -103,7 +112,7 @@ export class VideosComponent implements OnInit {
 
     storeMoviesToLocalStorage() {
         if (localStorage) {
-            localStorage.movies = JSON.stringify(this.displayedMovies);
+            localStorage.movies = JSON.stringify(this.allMovies);
         }
     }
 
@@ -140,7 +149,7 @@ export class VideosComponent implements OnInit {
 
     public filterMovies() {
         let filter:string = this.searchString.toUpperCase();
-        this.displayedMovies =
+        this.filteredMovies =
             this.allMovies.filter(
                 movie =>
                     (
@@ -150,6 +159,11 @@ export class VideosComponent implements OnInit {
                         (movie.movie.toUpperCase().indexOf(filter) > -1)
                     )
             );
+        if (this.filteredMovies.length < this.displayedEntries) {
+            this.displayedEntries = this.filteredMovies.length;
+        }
+        console.log(filter + " ");
+        this.setDisplayedMovies();
     }
 
     mdSliderInput_RatingCount(changeEvent: MdSliderChange) {
@@ -196,10 +210,49 @@ export class VideosComponent implements OnInit {
 
     onScrollDown () {
         console.log('scrolled down!!')
+        this.addDisplayedMovies();
     }
 
     onScrollUp () {
         console.log('scrolled up!!')
+        this.removeDisplayedMovies();
     }
 
+    setDisplayedMovies() {
+        this.displayedMovies = [];
+
+        for (let i = 0; i < this.displayedEntries; i++) {
+            this.displayedMovies.push(this.filteredMovies[i]);
+        }
+        this.displayedEntries = this.displayedMovies.length;
+    }
+
+    addDisplayedMovies() {
+        //TODO: remove from beginning instead of adding only
+        let target:number = this.displayedEntries + 2 * this.minEntries;
+        let max:number;
+        max = Math.min(target, this.filteredMovies.length);
+
+        console.log("add" + max);
+
+        for (let i = this.displayedEntries; i < max; i++) {
+            this.displayedMovies.push(this.filteredMovies[i]);
+        }
+        //this.displayedEntries += 2 * this.minEntries;
+        this.displayedEntries = this.displayedMovies.length;
+    }
+
+    removeDisplayedMovies() {
+        //TODO: add on top
+        /*for (let i = 0; i < this.minEntries; i++) {
+            this.displayedMovies.pop();
+        }
+        this.displayedEntries -= this.minEntries;*/
+
+
+        //TODO: fix this workaround
+        this.displayedEntries = this.minEntries;
+        this.setDisplayedMovies();
+        this.displayedEntries = this.displayedMovies.length;
+    }
 }
