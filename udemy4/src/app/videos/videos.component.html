@@ -6,14 +6,16 @@
     {{ this.filteredMovies.length }} | total {{ this.allMovies.length }}</p>
 <p>{{ this.scrolls }}</p>
 
-<div class="row">
+<div class="row infiniteScrollWrapper">
+    <--![infiniteScrollContainer]='infiniteScrollWrapper'-->
     <div class="span5 search-results"
-    infiniteScroll
-    [infiniteScrollDistance]="2"
-    [infiniteScrollThrottle]="10"
-    [scrollWindow]="false"
-    (scrolled)="onScrollDown()"
-    (scrolledUp)="onScrollUp()">
+        infiniteScroll
+        [infiniteScrollDistance]="2"
+        [infiniteScrollUpDistance]="2"
+        [infiniteScrollThrottle]="10"
+        [scrollWindow]="false"
+        (scrolled)="onScrollDown()"
+        (scrolledUp)="onScrollUp()">
 
         <table class="table table-striped table-condensed">
             <thead class="thead-inverse">

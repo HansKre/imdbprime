@@ -21,7 +21,7 @@ export class DialogSettingsComponent {
 
     /* RATING VALUE */
     ratingValueShow:boolean = false;
-    _ratingValueSliderValue:number = 6;
+    _ratingValueSliderValue:number;
     ratingValueSliderValueSubject:Subject<number> = new Subject<number>();
     ratingValueSliderValueObserveable:Observable<number>;
 
@@ -38,7 +38,8 @@ export class DialogSettingsComponent {
         return this.ratingValueSliderValueObserveable;
     }
 
-    public openRatingValueDialog() {
+    public openRatingValueDialog(initWith:number) {
+        this.ratingValueSliderValue = initWith;
         this.ratingValueShow = true;
     }
 
@@ -52,7 +53,7 @@ export class DialogSettingsComponent {
 
     /* RATING COUNT*/
     ratingCountShow:boolean = false;
-    _ratingCountSliderValue:number = 10000;
+    _ratingCountSliderValue:number;
     ratingCountSliderValueSubject:Subject<number> = new Subject<number>();
     ratingCountSliderValueObserveable:Observable<number>;
 
@@ -69,7 +70,8 @@ export class DialogSettingsComponent {
         return this.ratingCountSliderValueObserveable;
     }
 
-    public openRatingCountDialog() {
+    public openRatingCountDialog(initWith:number) {
+        this.ratingCountSliderValue = initWith;
         this.ratingCountShow = true;
     }
 
@@ -84,7 +86,7 @@ export class DialogSettingsComponent {
 
     /* YEAR */
     yearShow:boolean = false;
-    _yearSliderValue:number = 1950;
+    _yearSliderValue:number;
     yearSliderValueSubject:Subject<number> = new Subject<number>();
     yearSliderValueObserveable:Observable<number>;
 
@@ -101,7 +103,8 @@ export class DialogSettingsComponent {
         return this.yearSliderValueObserveable;
     }
 
-    public openYearDialog() {
+    public openYearDialog(initWith:number) {
+        this.yearSliderValue = initWith;
         this.yearShow = true;
     }
 

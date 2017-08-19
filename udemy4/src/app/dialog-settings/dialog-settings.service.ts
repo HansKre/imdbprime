@@ -18,29 +18,29 @@ export class DialogSettingsService {
       return dialogRef.afterClosed();
   }
 
-  public openRatingValueDialog(): Observable<number> {
+  public openRatingValueDialog(initWith:number): Observable<number> {
       let dialogRef: MdDialogRef<DialogSettingsComponent>;
 
       dialogRef = this.dialog.open(DialogSettingsComponent);
-      dialogRef.componentInstance.openRatingValueDialog();
+      dialogRef.componentInstance.openRatingValueDialog(initWith);
 
       return dialogRef.componentInstance.ratingValueObserveable();
   }
 
-    public openRatingCountDialog(): Observable<number> {
+    public openRatingCountDialog(initWith:number): Observable<number> {
         let dialogRef: MdDialogRef<DialogSettingsComponent>;
 
         dialogRef = this.dialog.open(DialogSettingsComponent);
-        dialogRef.componentInstance.openRatingCountDialog()
+        dialogRef.componentInstance.openRatingCountDialog(initWith)
 
         return dialogRef.componentInstance.ratingCountObserveable();
     }
 
-    public openYearDialog(): Observable<number> {
+    public openYearDialog(initWith:number): Observable<number> {
         let dialogRef: MdDialogRef<DialogSettingsComponent>;
 
         dialogRef = this.dialog.open(DialogSettingsComponent);
-        dialogRef.componentInstance.openYearDialog();
+        dialogRef.componentInstance.openYearDialog(initWith);
 
         return dialogRef.componentInstance.yearObserveable();
     }

@@ -1,7 +1,7 @@
 import {Component, Input, OnInit} from '@angular/core';
 import { WebService } from "../services/web.service";
 import { Movie } from "../structures/movie";
-import { MdSliderChange, MdSnackBar } from "@angular/material";
+import { MdSnackBar } from "@angular/material";
 import { IsOnlineService } from "../services/is-online.service";
 import { animate, state, style, transition, trigger } from "@angular/animations";
 import {DialogSettingsService} from "../dialog-settings/dialog-settings.service";
@@ -51,7 +51,7 @@ export class VideosComponent implements OnInit {
 
     //TODO: calc this dynamically
     //TODO: minEntries should correspond with scrollDistance?
-    minEntries:number = 24;
+    minEntries:number = 48;
     displayedEntries:number = this.minEntries;
 
     maxRatingCount: number = 0;
@@ -60,11 +60,9 @@ export class VideosComponent implements OnInit {
 
     shouldLoad:boolean = true;
 
-    showOptions:boolean = false;
-
     ratingCountSliderValue:number = 10000;
     ratingValueSliderValue:number = 6;
-    yearSliderValue:number = 1950;
+    yearSliderValue:number = 2000;
 
     searchString:string =" ";
 
@@ -199,19 +197,19 @@ export class VideosComponent implements OnInit {
 
     openRatingValueDialog() {
         this.dialogSettingsService
-            .openRatingValueDialog()
+            .openRatingValueDialog(this.ratingValueSliderValue)
             .subscribe(newValue => this.onRatingValueChanged(newValue));
     }
 
     openRatingCountDialog() {
         this.dialogSettingsService
-            .openRatingCountDialog()
+            .openRatingCountDialog(this.ratingCountSliderValue)
             .subscribe(newValue => this.onRatingCountChanged(newValue));
     }
 
     openYearDialog() {
         this.dialogSettingsService
-            .openYearDialog()
+            .openYearDialog(this.yearSliderValue)
             .subscribe(newValue => this.onYearChanged(newValue));
     }
 
