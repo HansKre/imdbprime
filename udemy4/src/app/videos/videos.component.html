@@ -90,7 +90,9 @@
             <thead class="thead-inverse">
             <tr>
                 <th class="col-xs-8">Movie <br>
-                    <input class="filterInput" [(ngModel)]="searchString" (ngModelChange)="filterMovies()" placeholder="Search for movie..">
+                    <md-input-container>
+                        <input mdInput [(ngModel)]="searchString" (ngModelChange)="filterMovies()" placeholder="Search for movie..">
+                    </md-input-container>
                 </th>
                 <th class="col-xs-1">Year <br>
                     <label><span

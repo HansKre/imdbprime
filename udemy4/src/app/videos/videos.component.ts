@@ -160,7 +160,11 @@ export class VideosComponent implements OnInit {
                     )
             );
         if (this.filteredMovies.length < this.displayedEntries) {
+            // the filter is very narrow
             this.displayedEntries = this.filteredMovies.length;
+        } else if (this.displayedEntries < this.minEntries) {
+            //TODO: revise this condition
+            this.displayedEntries = Math.min(this.filteredMovies.length, this.minEntries);
         }
         console.log(filter + " ");
         this.setDisplayedMovies();

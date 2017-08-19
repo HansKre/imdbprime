@@ -5,9 +5,8 @@ import { HttpModule } from "@angular/http";
 
 //Angular Material Modules
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-
 import {
-    MdButtonModule, MdDialogModule,
+    MdButtonModule, MdDialogModule, MdInputModule /* for Md-Container-Input */,
     MdProgressBarModule, MdSliderModule, MdSlideToggleModule,
     MdSnackBarModule
 } from '@angular/material';
@@ -53,7 +52,8 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
         MdSlideToggleModule,
         MdButtonModule,
         MdDialogModule,
-        InfiniteScrollModule
+        InfiniteScrollModule,
+        MdInputModule
     ],
     providers: [
         WebService,
