@@ -117,10 +117,8 @@ export class VideosComponent implements OnInit {
                 // MIN
                 if ((entry.year > 1900) && (entry.year < minY)) {
                     minY = entry.year;
-                    console.log(entry.year + " , " + entry.movie);
                 }
             });
-            console.log("Year: " + minY + " , " + maxY);
             this.maxYear = maxY;
             this.minYear = minY;
         }
