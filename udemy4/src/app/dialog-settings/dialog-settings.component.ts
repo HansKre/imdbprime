@@ -38,7 +38,7 @@ import { animate, keyframes, state, style, transition, trigger } from "@angular/
                 transform: 'scale(1)'
             })),
             transition('normal3 <=> normal4, * => normal3, * => normal4', [
-                animate(100, keyframes([
+                animate(300, keyframes([
                     style({opacity: 1, transform: 'scale(1)', offset: 0}),
                     style({opacity: 0.5, transform: 'scale(1.6)', offset: 0.5}),
                     style({opacity: 1, transform: 'scale(1)', offset: 1}),
@@ -73,9 +73,10 @@ export class DialogSettingsComponent {
         } else if (this.scalingState === "normal2") {
             this.scalingState = "normal1";
         } else if (this.scalingState === "normal3") {
-            this.scalingState = "normal2";
+            // we don't want to trigger a second (and different) animation
+            // this.scalingState = "normal2";
         } else if (this.scalingState === "normal4") {
-            this.scalingState = "normal1";
+            // this.scalingState = "normal1";
         }
     }
 
