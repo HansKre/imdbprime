@@ -3,7 +3,7 @@ import { WebService } from "../services/web.service";
 import { Movie } from "../structures/movie";
 import { MdSnackBar } from "@angular/material";
 import { IsOnlineService } from "../services/is-online.service";
-import { animate, state, style, transition, trigger } from "@angular/animations";
+import {animate, keyframes, state, style, transition, trigger} from "@angular/animations";
 import {DialogSettingsService} from "../dialog-settings/dialog-settings.service";
 
 @Component({
@@ -33,6 +33,24 @@ import {DialogSettingsService} from "../dialog-settings/dialog-settings.service"
                         transform: 'translateY(-100%)'
                     })
                 )
+            ])
+        ]),
+        /* SCALE IN_OUT SLOW */
+        trigger('scalingTrigger', [
+            state('normal1', style({
+                opacity: 1,
+                transform: 'scale(1)'
+            })),
+            state('normal2', style({
+                opacity: 1,
+                transform: 'scale(1)'
+            })),
+            transition('normal1 <=> normal2', [
+                animate(300, keyframes([
+                    style({opacity: 1, transform: 'scale(1)', offset: 0}),
+                    style({opacity: 0.5, transform: 'scale(3)', offset: 0.2}),
+                    style({opacity: 1, transform: 'scale(1)', offset: 1}),
+                ]))
             ])
         ]),
     ]
@@ -66,10 +84,14 @@ export class VideosComponent implements OnInit {
     maxYearValueFilter:number = 2000;
     minYearValueFilter:number = 2000;
 
-    searchString:string =" ";
+    searchString:string ="";
 
     //TODO: remove after debugging
     scrolls:number = 0;
+
+    animationYearScalingState:string = "normal1";
+    animationRatingValueScalingState:string = "normal1";
+    animationRatingCountScalingState:string = "normal1";
 
     calcMaxRatingCount() {
         if (this.allMovies) {
@@ -223,18 +245,21 @@ export class VideosComponent implements OnInit {
     }
 
     openRatingValueDialog() {
+        this.animateRatingValueScalingTrigger();
         this.dialogSettingsService
             .openRatingValueDialog(this.minRatingValueFilter)
             .subscribe(newValue => this.onRatingValueChanged(newValue));
     }
 
     openRatingCountDialog() {
+        this.animateRatingCountScalingTrigger();
         this.dialogSettingsService
             .openRatingCountDialog(this.minRatingCountFilter, this.maxRatingCount)
             .subscribe(newValue => this.onRatingCountChanged(newValue));
     }
 
     openYearDialog() {
+        this.animateYearScalingTrigger();
         this.dialogSettingsService
             .openYearDialog(this.minYearValueFilter, this.minYear, this.maxYear)
             .subscribe(newValue => this.onYearChanged(newValue));
@@ -288,5 +313,17 @@ export class VideosComponent implements OnInit {
         this.displayedEntries = this.minEntries;
         this.setDisplayedMovies();
         this.displayedEntries = this.displayedMovies.length;
+    }
+
+    animateYearScalingTrigger() {
+        this.animationYearScalingState = (this.animationYearScalingState === "normal1" ? this.animationYearScalingState = "normal2" : this.animationYearScalingState = "normal1");
+    }
+
+    animateRatingValueScalingTrigger() {
+        this.animationRatingValueScalingState = (this.animationRatingValueScalingState === "normal1" ? this.animationRatingValueScalingState = "normal2" : this.animationRatingValueScalingState = "normal1");
+    }
+
+    animateRatingCountScalingTrigger() {
+        this.animationRatingCountScalingState = (this.animationRatingCountScalingState === "normal1" ? this.animationRatingCountScalingState = "normal2" : this.animationRatingCountScalingState = "normal1");
     }
 }

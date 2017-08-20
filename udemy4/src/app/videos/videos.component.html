@@ -30,17 +30,17 @@
                     </md-input-container>
                 </th>
                 <th class="col-xs-1">Year <br>
-                    <label><span
+                    <label [@scalingTrigger]="animationYearScalingState"><span
                             class="label label-info" (click)="openYearDialog()">{{minYearValueFilter.toString()}}</span>
                     </label>
                 </th>
                 <th class="col-xs-1 text-center">IMDB Rating <br>
-                    <label><span
+                    <label [@scalingTrigger]="animationRatingValueScalingState"><span
                             class="label label-info" (click)="openRatingValueDialog()">{{minRatingValueFilter.toLocaleString('en')}}</span>
                     </label>
                 </th>
                 <th class="col-xs-2 text-right">Rating Count <br>
-                    <label><span
+                    <label [@scalingTrigger]="animationRatingCountScalingState"><span
                             class="label label-info" (click)="openRatingCountDialog()">{{minRatingCountFilter.toLocaleString('en')}}</span>
                     </label>
                 </th>
