@@ -12,7 +12,7 @@ import {DialogSettingsService} from "../dialog-settings/dialog-settings.service"
     styleUrls: ['./videos.component.css'],
     animations: [
         /* FADE IN_OUT */
-        trigger('optionsTrigger', [
+        trigger('fadeInOutTrigger', [
             state('in', style({
                     opacity: 1,
                     transform: 'translateY(0)'

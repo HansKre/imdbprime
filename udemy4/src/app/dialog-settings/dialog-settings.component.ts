@@ -5,9 +5,9 @@ import { Observable } from "rxjs/Observable";
 import { animate, keyframes, state, style, transition, trigger } from "@angular/animations";
 
 @Component({
-  selector: 'dialog-settings-component',
-  templateUrl: './dialog-settings.component.html',
-  styleUrls: ['./dialog-settings.component.css'],
+    selector: 'dialog-settings-component',
+    templateUrl: './dialog-settings.component.html',
+    styleUrls: ['./dialog-settings.component.css'],
     animations: [
         /* SCALE IN_OUT SLOW */
         trigger('scalingSlowTrigger', [

@@ -51,7 +51,7 @@
             advantage: you don't need to put ngFor into a parent tag like "tbody" anymore -->
             <tbody>
             <ng-template ngFor let-movie [ngForOf]="displayedMovies">
-                <tr [@optionsTrigger]>
+                <tr [@fadeInOutTrigger]>
                     <td>
                         <a target="_blank" href= "{{ movie.imdbMovieUrl }}" > {{ movie.movie }} </a>
                     </td>
