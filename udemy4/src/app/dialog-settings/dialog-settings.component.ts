@@ -9,8 +9,8 @@ import { animate, keyframes, state, style, transition, trigger } from "@angular/
   templateUrl: './dialog-settings.component.html',
   styleUrls: ['./dialog-settings.component.css'],
     animations: [
-        /* SCALE IN_OUT */
-        trigger('scalingTrigger', [
+        /* SCALE IN_OUT SLOW */
+        trigger('scalingSlowTrigger', [
             state('normal1', style({
                 opacity: 1,
                 transform: 'scale(1)'
@@ -19,8 +19,26 @@ import { animate, keyframes, state, style, transition, trigger } from "@angular/
                 opacity: 1,
                 transform: 'scale(1)'
             })),
-            transition('normal1 <=> normal2', [
+            transition('normal1 <=> normal2, * => normal1, * => normal2', [
                 animate(300, keyframes([
+                    style({opacity: 1, transform: 'scale(1)', offset: 0}),
+                    style({opacity: 0.5, transform: 'scale(1.6)', offset: 0.5}),
+                    style({opacity: 1, transform: 'scale(1)', offset: 1}),
+                ]))
+            ])
+        ]),
+        /* SCALE IN_OUT FAST */
+        trigger('scalingFastTrigger', [
+            state('normal3', style({
+                opacity: 1,
+                transform: 'scale(1)'
+            })),
+            state('normal4', style({
+                opacity: 1,
+                transform: 'scale(1)'
+            })),
+            transition('normal3 <=> normal4, * => normal3, * => normal4', [
+                animate(100, keyframes([
                     style({opacity: 1, transform: 'scale(1)', offset: 0}),
                     style({opacity: 0.5, transform: 'scale(1.6)', offset: 0.5}),
                     style({opacity: 1, transform: 'scale(1)', offset: 1}),
@@ -33,8 +51,44 @@ export class DialogSettingsComponent {
 
     scalingState:string = "normal1";
 
-    animate() {
+    animateSlowly() {
+        /*
+        This does not work with two different animations:
         this.scalingState = (this.scalingState === "normal1" ? "normal2" : "normal1");
+
+        When clicking on the slider, a single (input) event is triggered,
+        this changes the state from normal1 to normal3:
+            mdSliderInput_RatingValue: normal1
+            from: normal1 to: normal3
+
+        Immediately after that, even before animation is started, the (change) event gets triggered,
+        this changes the state from normal3 back to normal1:
+            mdSliderChange_RatingValue: normal3
+            from: normal3 to: normal2
+
+        Therefore, no state transition and no animation is triggered!
+         */
+        if (this.scalingState === "normal1") {
+            this.scalingState = "normal2";
+        } else if (this.scalingState === "normal2") {
+            this.scalingState = "normal1";
+        } else if (this.scalingState === "normal3") {
+            this.scalingState = "normal2";
+        } else if (this.scalingState === "normal4") {
+            this.scalingState = "normal1";
+        }
+    }
+
+    animateFast() {
+        if (this.scalingState === "normal3") {
+            this.scalingState = "normal4";
+        } else if (this.scalingState === "normal4") {
+            this.scalingState = "normal3";
+        } else if (this.scalingState === "normal2") {
+            this.scalingState = "normal4";
+        } else if (this.scalingState === "normal1") {
+            this.scalingState = "normal3";
+        }
     }
 
     public title: string;
@@ -75,12 +129,15 @@ export class DialogSettingsComponent {
     }
 
     mdSliderInput_RatingValue(changeEvent: MdSliderChange) {
+        console.log("mdSliderInput_RatingValue: " + this.scalingState);
         this.ratingValueSliderValue = changeEvent.value;
-        this.animate();
+        this.animateFast();
     }
 
     mdSliderChange_RatingValue(changeEvent: MdSliderChange) {
+        console.log("mdSliderChange_RatingValue: " + this.scalingState);
         this.ratingValueSliderValue = changeEvent.value;
+        this.animateSlowly();
     }
 
     /* RATING COUNT*/

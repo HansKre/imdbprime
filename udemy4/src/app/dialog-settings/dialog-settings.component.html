@@ -28,7 +28,7 @@
     <div *ngIf="ratingValueShow" id="ratingValueContainer">
         <label>Rating Value:</label>
         <div class="centerWrapper">
-            <label class="prominentValue" [@scalingTrigger]="scalingState">
+            <label class="prominentValue" [@scalingFastTrigger]="scalingState" [@scalingSlowTrigger]="scalingState">
                 <span class="label label-info">{{ratingValueSliderValue.toLocaleString('en')}}</span>
             </label>
         </div>
