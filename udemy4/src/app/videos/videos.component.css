@@ -50,3 +50,17 @@ md-slider {
     height: 500px;
     overflow: scroll;
 }
+
+/* Select and style an Dropdown-List (<select>),
+<textarea>, input fields and the class="filterInput" when they get focus,
+ change their font-size to prevent iOS Safari to zoom in and change the background
+ */
+@media screen and (max-width: 415px) {
+    select:focus,
+    textarea:focus,
+    input:focus,
+    .filterInput:focus {
+        font-size: 16px !important;
+        background: #eee;
+    }
+}
