@@ -153,7 +153,7 @@ export class VideosComponent implements OnInit {
             && (localStorage.movies != "undefined")) {
                 this.allMovies = JSON.parse(localStorage.movies);
                 if (this.allMovies) {
-                    this.filterMovies();
+                    this.filterAndSetMovies();
                     this.calcMinMaxValues();
                 }
         }
@@ -175,7 +175,7 @@ export class VideosComponent implements OnInit {
 
     private resolvePromisedRequest(movies) {
         this.allMovies = movies as any as Movie[];
-        this.filterMovies();
+        this.filterAndSetMovies(true);
         this.storeMoviesToLocalStorage();
         this.shouldLoadMoviesFromServer = false;
         this.calcMinMaxValues();
@@ -196,7 +196,7 @@ export class VideosComponent implements OnInit {
         });
     }
 
-    public filterMovies() {
+    public filterAndSetMovies(incrementally?:boolean) {
         let filter:string = this.searchString.toUpperCase().trim();
         this.filteredMovies =
             this.allMovies.filter(
@@ -215,7 +215,11 @@ export class VideosComponent implements OnInit {
             //TODO: revise this condition
             this.displayedEntries = Math.min(this.filteredMovies.length, this.minEntries);
         }
-        this.setDisplayedMovies();
+        if (incrementally) {
+            this.setDisplayedMoviesIncrementally();
+        } else {
+            this.setDisplayedMovies();
+        }
     }
 
     onRatingCountChanged(newValue:number) {
@@ -223,7 +227,7 @@ export class VideosComponent implements OnInit {
 
         this.showSnackbar("Minimum Rating Count set to:", this.minRatingCountFilter, true);
 
-        this.filterMovies();
+        this.filterAndSetMovies();
     }
 
     onRatingValueChanged(newValue:number) {
@@ -231,7 +235,7 @@ export class VideosComponent implements OnInit {
 
         this.showSnackbar("Minimum Rating Value set to:", this.minRatingValueFilter, true);
 
-        this.filterMovies();
+        this.filterAndSetMovies();
     }
 
     onYearChanged(newValue:number) {
@@ -239,7 +243,7 @@ export class VideosComponent implements OnInit {
 
         this.showSnackbar("Minimum Year set to:", this.minYearValueFilter, false);
 
-        this.filterMovies();
+        this.filterAndSetMovies();
     }
 
     openRatingValueDialog() {
@@ -275,12 +279,41 @@ export class VideosComponent implements OnInit {
         this.scrolls -= 1;
     }
 
+    setDisplayedMoviesIncrementally() {
+        // since displayedMovies is in a binding-relation to the data-table:
+        // if the original displyedMovies array is resetted, the the DOM elements get resetted too
+        // this looks like a reload of the whole page
+        // if this happens after the request-Promise is returned, the user sees a reload
+        // we wan't to avoid this unexpected reload
+        
+        let indicesOfFoundDisplayedMovies:number[] = [];
+
+        for (let i = 0; i < this.displayedMovies.length; i++) {
+            // try to find old elemt-i in new array
+            let movie:Movie = this.filteredMovies.find(element => element.movie === this.displayedMovies[i].movie);
+            if (movie) {
+                indicesOfFoundDisplayedMovies.push(this.filteredMovies.indexOf(movie));
+            } else {
+                // remove movie
+                this.displayedMovies.slice(i, 1);
+            }
+        }
+        // add movies to displayedMovies, if they are new in the filtered list
+        for (let i = 0; i < this.filteredMovies.length; i++) {
+            if (indicesOfFoundDisplayedMovies.indexOf(i) == -1) {
+                this.displayedMovies.push(this.filteredMovies[i]);
+            }
+        }
+        this.displayedEntries = this.displayedMovies.length;
+    }
+
     setDisplayedMovies() {
         this.displayedMovies = [];
 
         for (let i = 0; i < this.displayedEntries; i++) {
             this.displayedMovies.push(this.filteredMovies[i]);
         }
+
         this.displayedEntries = this.displayedMovies.length;
     }
 
