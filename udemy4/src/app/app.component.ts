@@ -25,14 +25,12 @@ export class AppComponent implements OnInit{
 
     private registerForDOWNLOADING() {
         window.applicationCache.ondownloading = function () {
-            alert("Downloading Cache now");
             this.isCacheLoading = true;
         }.bind(this);
     }
 
     private registerForUPDEATEREADY() {
         window.applicationCache.onupdateready = function () {
-            alert("Going to swap cache now");
             this.swapCacheAndReloadContent();
         }.bind(this);
     }
