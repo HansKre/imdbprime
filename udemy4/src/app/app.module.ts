@@ -30,7 +30,7 @@ import 'hammerjs';
 // https://github.com/angular/angular/issues/10420
 import 'web-animations-js';
 
-import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { VirtualScrollModule } from 'angular2-virtual-scroll';
 
 @NgModule({
     declarations: [
@@ -51,7 +51,7 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
         BrowserAnimationsModule,
         MdButtonModule,
         MdDialogModule,
-        InfiniteScrollModule,
+        VirtualScrollModule,
         MdInputModule
     ],
     providers: [

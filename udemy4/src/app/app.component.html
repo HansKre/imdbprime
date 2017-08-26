@@ -1,7 +1,9 @@
-<md-sidenav-container>
-    <div class="container-fluid">
+<div class="container-fluid">
+    <div class="header">
         <h4>Prime Movies with IMDB Rating  <app-online-indicator></app-online-indicator></h4>
         <p>Cache Event: {{ this.cacheEvent }}</p>
+    </div>
+    <div class="content">
         <app-movies [isParentLoading]="isCacheLoading">Loading ...</app-movies>
     </div>
-</md-sidenav-container>
+</div>

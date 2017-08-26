@@ -10,3 +10,8 @@
  * Consider the @import here unsafe, as building does not check
  * if the template file actually exists!
 @import "assets/my_indigo-pink.css";*/
+
+
+html, body {
+    height: 100%;
+}

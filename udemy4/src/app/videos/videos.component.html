@@ -1,80 +1,103 @@
-<div *ngIf="shouldShowProgressBar()" >
-    <md-progress-bar mode="indeterminate"></md-progress-bar>
-</div>
+<div class="flexBox">
+    <div class="moviesHeader">
+        <div *ngIf="shouldShowProgressBar()" >
+            <md-progress-bar mode="indeterminate"></md-progress-bar>
+        </div>
 
-<p>Showing {{ this.displayedMovies.length }} | matching
-    {{ this.filteredMovies.length }} | total {{ this.allMovies.length }}</p>
-<p>{{ this.scrolls }}</p>
-
-<div class="row infiniteScrollWrapper">
-    <!--[infiniteScrollContainer]='infiniteScrollWrapper'-->
-    <div class="span5 search-results"
-        infiniteScroll
-        [infiniteScrollDistance]="2"
-        [infiniteScrollUpDistance]="2"
-        [infiniteScrollThrottle]="10"
-        [scrollWindow]="false"
-        (scrolled)="onScrollDown()"
-        (scrolledUp)="onScrollUp()">
-
-        <table class="table table-striped table-condensed">
-            <thead class="thead-inverse">
-            <tr>
-                <th class="col-xs-8">Movie <br>
-                    <md-input-container>
-                        <input class="filterInput"
-                               mdInput [(ngModel)]="searchString"
-                               (ngModelChange)="filterAndSetMovies()"
-                               placeholder="Search for movie.."
-                        >
-                    </md-input-container>
-                </th>
-                <th class="col-xs-1">Year <br>
-                    <label [@scalingTrigger]="animationYearScalingState"><span
-                            class="label label-info" (click)="openYearDialog()">{{minYearValueFilter.toString()}}</span>
-                    </label>
-                </th>
-                <th class="col-xs-1 text-center">IMDB Rating <br>
-                    <label [@scalingTrigger]="animationRatingValueScalingState"><span
-                            class="label label-info" (click)="openRatingValueDialog()">{{minRatingValueFilter.toLocaleString('en')}}</span>
-                    </label>
-                </th>
-                <th class="col-xs-2 text-right">Rating Count <br>
-                    <label [@scalingTrigger]="animationRatingCountScalingState"><span
-                            class="label label-info" (click)="openRatingCountDialog()">{{minRatingCountFilter.toLocaleString('en')}}</span>
-                    </label>
-                </th>
-            </tr>
-            </thead>
-
-            <!--First Solution with ng-template and ngFor
-            advantage: you don't need to put ngFor into a parent tag like "tbody" anymore -->
-            <tbody>
-            <ng-template ngFor let-movie [ngForOf]="displayedMovies">
-                <tr [@fadeInOutTrigger]>
-                    <td>
-                        <a target="_blank" href= "{{ movie.imdbMovieUrl }}" > {{ movie.movie }} </a>
-                    </td>
-                    <td>{{ movie.year }}</td>
-                    <td class="text-center">
-                        <ng-template [ngIf]="movie.ratingValue > 6.7">
-                            <span class="label label-success"> {{ movie.ratingValue }} </span>
-                        </ng-template>
-                        <ng-template [ngIf]="((movie.ratingValue <= 6.7) &&  (movie.ratingValue > 6))">
-                            <span class="label label-warning"> {{ movie.ratingValue }} </span>
-                        </ng-template>
-                        <ng-template [ngIf]="(movie.ratingValue <= 6.0)">
-                            <span class="label label-danger"> {{ movie.ratingValue }} </span>
-                        </ng-template>
-                    </td>
-                    <td class="text-right">{{ movie.ratingCountString }}</td>
+        <p>Showing {{ viewPortMovies.length }} | matching
+            {{ filteredMovies.length }} | total {{ allMovies.length }}</p>
+    </div>
+    <table class="table table-striped table-condensed" id="moviesTable">
+        <thead class="thead-inverse">
+        <tr>
+            <th class="col-xs-8">Movie <br>
+                <md-input-container>
+                    <input class="filterInput"
+                           mdInput [(ngModel)]="searchString"
+                           (ngModelChange)="filterAndSetMovies()"
+                           placeholder="Search for movie.."
+                    >
+                </md-input-container>
+            </th>
+            <th class="col-xs-1">Year <br>
+                <label [@scalingTrigger]="animationYearScalingState"><span
+                        class="label label-info" (click)="openYearDialog()">{{minYearValueFilter.toString()}}</span>
+                </label>
+            </th>
+            <th class="col-xs-1 text-center">IMDB Rating <br>
+                <label [@scalingTrigger]="animationRatingValueScalingState"><span
+                        class="label label-info" (click)="openRatingValueDialog()">{{minRatingValueFilter.toLocaleString('en')}}</span>
+                </label>
+            </th>
+            <th class="col-xs-2 text-right">Rating Count <br>
+                <label [@scalingTrigger]="animationRatingCountScalingState"><span
+                        class="label label-info" (click)="openRatingCountDialog()">{{minRatingCountFilter.toLocaleString('en')}}</span>
+                </label>
+            </th>
+        </tr>
+        </thead>
+    </table>
+    <div class="tableWrapper">
+        <virtual-scroll [items]="displayedMovies" (update)="viewPortMovies = $event" [childHeight]="31">
+            <table class="table table-striped table-condensed" id="moviesTable">
+                <thead class="thead-inverse" style="display: none">
+                <tr>
+                    <th class="col-xs-8">Movie <br>
+                        <md-input-container>
+                            <input class="filterInput"
+                                   mdInput [(ngModel)]="searchString"
+                                   (ngModelChange)="filterAndSetMovies()"
+                                   placeholder="Search for movie.."
+                            >
+                        </md-input-container>
+                    </th>
+                    <th class="col-xs-1">Year <br>
+                        <label [@scalingTrigger]="animationYearScalingState"><span
+                                class="label label-info" (click)="openYearDialog()">{{minYearValueFilter.toString()}}</span>
+                        </label>
+                    </th>
+                    <th class="col-xs-1 text-center">IMDB Rating <br>
+                        <label [@scalingTrigger]="animationRatingValueScalingState"><span
+                                class="label label-info" (click)="openRatingValueDialog()">{{minRatingValueFilter.toLocaleString('en')}}</span>
+                        </label>
+                    </th>
+                    <th class="col-xs-2 text-right">Rating Count <br>
+                        <label [@scalingTrigger]="animationRatingCountScalingState"><span
+                                class="label label-info" (click)="openRatingCountDialog()">{{minRatingCountFilter.toLocaleString('en')}}</span>
+                        </label>
+                    </th>
                 </tr>
-            </ng-template>
+                </thead>
 
-            </tbody>
-        </table>
+                <!--First Solution with ng-template and ngFor
+                advantage: you don't need to put ngFor into a parent tag like "tbody" anymore -->
+                <tbody>
+                <ng-template ngFor let-movie [ngForOf]="viewPortMovies">
+                    <tr [@fadeInOutTrigger]>
+                        <td>
+                            <a target="_blank" href= "{{ movie.imdbMovieUrl }}" > {{ movie.movie }} </a>
+                        </td>
+                        <td>{{ movie.year }}</td>
+                        <td class="text-center">
+                            <ng-template [ngIf]="movie.ratingValue > 6.7">
+                                <span class="label label-success"> {{ movie.ratingValue }} </span>
+                            </ng-template>
+                            <ng-template [ngIf]="((movie.ratingValue <= 6.7) &&  (movie.ratingValue > 6))">
+                                <span class="label label-warning"> {{ movie.ratingValue }} </span>
+                            </ng-template>
+                            <ng-template [ngIf]="(movie.ratingValue <= 6.0)">
+                                <span class="label label-danger"> {{ movie.ratingValue }} </span>
+                            </ng-template>
+                        </td>
+                        <td class="text-right">{{ movie.ratingCountString }}</td>
+                    </tr>
+                </ng-template>
+                </tbody>
+            </table>
+        </virtual-scroll>
     </div>
 </div>
+
 
 <!-- EXAMPLE HOW TO USE ngIf WITH TEMPLATES
 
@@ -115,14 +138,14 @@
 -->
 
 <!-- EXAMPLE HOW TO BIND CLASS PROPERTY
-<p>Current network status: <span id="status" [ngClass] = this.onlineString>{{this.onlineString}}</span></p>
+<p>Current network status: <span id="status" [ngClass] = onlineString>{{onlineString}}</span></p>
 -->
 
 <!-- EXAMPLE OF OLD OPTIONS CONTAINER
 <hr *ngIf="false">
 <div *ngIf="false" class="options-container">
-    <md-slide-toggle (change)="this.showOptions = !this.showOptions" >Options</md-slide-toggle>
-    <div *ngIf="this.showOptions" class="options">
+    <md-slide-toggle (change)="showOptions = !showOptions" >Options</md-slide-toggle>
+    <div *ngIf="showOptions" class="options">
         <br>
         <div id="yearContainer">
             <label>Year:
@@ -133,7 +156,7 @@
                     max="2017"
                     step="1"
                     tickInterval="auto"
-                    [value]="this.yearSliderValue"
+                    [value]="yearSliderValue"
                     thumbLabel="false"
                     (input)="mdSliderInput_Year($event)"
                     (change)="mdSliderChange_Year($event)"
@@ -148,7 +171,7 @@
                     max="9.3"
                     step="0.1"
                     tickInterval="auto"
-                    [value]="this.ratingValueSliderValue"
+                    [value]="ratingValueSliderValue"
                     thumbLabel="false"
                     (input)="mdSliderInput_RatingValue($event)"
                     (change)="mdSliderChange_RatingValue($event)"
@@ -163,7 +186,7 @@
                     [max]="maxRatingCount"
                     step="100000"
                     tickInterval="1"
-                    [value]=this.ratingCountSliderValue
+                    [value]=ratingCountSliderValue
                     thumbLabel="false"
                     (input)="mdSliderInput_RatingCount($event)"
                     (change)="mdSliderChange_RatingCount($event)"
@@ -171,7 +194,7 @@
         </div>
     </div>
 
-    <div *ngIf="!this.showOptions" class="settings row">
+    <div *ngIf="!showOptions" class="settings row">
         <hr>
         <div class="col-xs-7">
             <label> Year:

@@ -64,14 +64,10 @@ import {DialogSettingsService} from "../dialog-settings/dialog-settings.service"
 export class VideosComponent implements OnInit {
     @Input() isParentLoading:boolean = true;
 
+    viewPortMovies: Movie[] = [];
     displayedMovies: Movie[] = [];
     filteredMovies: Movie[];
     allMovies: Movie[];
-
-    //TODO: calc this dynamically
-    //TODO: minEntries should correspond with scrollDistance?
-    minEntries:number = 48;
-    displayedEntries:number = this.minEntries;
 
     shouldLoadMoviesFromServer:boolean = true;
 
@@ -85,9 +81,6 @@ export class VideosComponent implements OnInit {
     minYearValueFilter:number = 2000;
 
     searchString:string ="";
-
-    //TODO: remove after debugging
-    scrolls:number = 0;
 
     animationYearScalingState:string = "normal1";
     animationRatingValueScalingState:string = "normal1";
@@ -149,6 +142,7 @@ export class VideosComponent implements OnInit {
     }
 
     preLoadMoviesFromLocalStorage() {
+        console.log("here");
         if (localStorage && localStorage.movies
             && (localStorage.movies != "undefined")) {
                 this.allMovies = JSON.parse(localStorage.movies);
@@ -208,13 +202,6 @@ export class VideosComponent implements OnInit {
                         (movie.movie.toUpperCase().indexOf(filter) > -1)
                     )
             );
-        if (this.filteredMovies.length < this.displayedEntries) {
-            // the filter is very narrow
-            this.displayedEntries = this.filteredMovies.length;
-        } else if (this.displayedEntries < this.minEntries) {
-            //TODO: revise this condition
-            this.displayedEntries = Math.min(this.filteredMovies.length, this.minEntries);
-        }
         if (incrementally) {
             this.setDisplayedMoviesIncrementally();
         } else {
@@ -267,25 +254,13 @@ export class VideosComponent implements OnInit {
             .subscribe(newValue => this.onYearChanged(newValue));
     }
 
-    onScrollDown () {
-        console.log('scrolled down!!')
-        this.addDisplayedMovies();
-        this.scrolls += 1;
-    }
-
-    onScrollUp () {
-        console.log('scrolled up!!')
-        this.removeDisplayedMovies();
-        this.scrolls -= 1;
-    }
-
     setDisplayedMoviesIncrementally() {
         // since displayedMovies is in a binding-relation to the data-table:
         // if the original displyedMovies array is resetted, the the DOM elements get resetted too
         // this looks like a reload of the whole page
         // if this happens after the request-Promise is returned, the user sees a reload
         // we wan't to avoid this unexpected reload
-        
+
         let indicesOfFoundDisplayedMovies:number[] = [];
 
         for (let i = 0; i < this.displayedMovies.length; i++) {
@@ -304,46 +279,14 @@ export class VideosComponent implements OnInit {
                 this.displayedMovies.push(this.filteredMovies[i]);
             }
         }
-        this.displayedEntries = this.displayedMovies.length;
     }
 
     setDisplayedMovies() {
         this.displayedMovies = [];
 
-        for (let i = 0; i < this.displayedEntries; i++) {
+        for (let i = 0; i < this.filteredMovies.length; i++) {
             this.displayedMovies.push(this.filteredMovies[i]);
         }
-
-        this.displayedEntries = this.displayedMovies.length;
-    }
-
-    addDisplayedMovies() {
-        //TODO: remove from beginning instead of adding only
-        let target:number = this.displayedEntries + 2 * this.minEntries;
-        let max:number;
-        max = Math.min(target, this.filteredMovies.length);
-
-        console.log("add" + max);
-
-        for (let i = this.displayedEntries; i < max; i++) {
-            this.displayedMovies.push(this.filteredMovies[i]);
-        }
-        //this.displayedEntries += 2 * this.minEntries;
-        this.displayedEntries = this.displayedMovies.length;
-    }
-
-    removeDisplayedMovies() {
-        //TODO: add on top
-        /*for (let i = 0; i < this.minEntries; i++) {
-            this.displayedMovies.pop();
-        }
-        this.displayedEntries -= this.minEntries;*/
-
-
-        //TODO: fix this workaround
-        this.displayedEntries = this.minEntries;
-        this.setDisplayedMovies();
-        this.displayedEntries = this.displayedMovies.length;
     }
 
     animateYearScalingTrigger() {

@@ -1,0 +1,28 @@
+/* Trying to use flex box:
+https://css-tricks.com/snippets/css/a-guide-to-flexbox/
+
+https://stackoverflow.com/questions/90178/make-a-div-fill-the-height-of-the-remaining-screen-space
+
+}*/
+
+.container-fluid {
+    height:100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #6E724E;
+}
+
+.header {
+    flex-grow: 0;
+    flex-shrink: 1;
+    flex-basis: auto;
+    border: 1px dotted;
+}
+
+.content {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: auto;
+    border: dotted;
+    /*overflow: hidden;*/
+}
