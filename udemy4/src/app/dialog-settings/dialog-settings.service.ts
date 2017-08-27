@@ -18,11 +18,11 @@ export class DialogSettingsService {
       return dialogRef.afterClosed();
   }
 
-  public openRatingValueDialog(initWith:number): Observable<number> {
+  public openRatingValueDialog(initWith:number, maxRatingValue:number): Observable<number> {
       let dialogRef: MdDialogRef<DialogSettingsComponent>;
 
       dialogRef = this.dialog.open(DialogSettingsComponent);
-      dialogRef.componentInstance.openRatingValueDialog(initWith);
+      dialogRef.componentInstance.openRatingValueDialog(initWith, maxRatingValue);
 
       return dialogRef.componentInstance.ratingValueObserveable();
   }

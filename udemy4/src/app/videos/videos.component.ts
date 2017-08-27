@@ -71,6 +71,7 @@ export class VideosComponent implements OnInit {
     shouldLoadMoviesFromServer:boolean = true;
 
     maxRatingCount: number;
+    maxRatingValue: number;
     maxYear: number;
     minYear: number;
 
@@ -88,9 +89,9 @@ export class VideosComponent implements OnInit {
     conditionalAnimation:string = "in";
 
     calcMaxRatingCount() {
-        if (this.allMovies) {
+        if (this.filteredMovies) {
             let max:number = 0;
-            this.allMovies.forEach(function (entry) {
+            this.filteredMovies.forEach(function (entry) {
                 if (entry.ratingCount > max) {
                     max = entry.ratingCount;
                 }
@@ -99,28 +100,49 @@ export class VideosComponent implements OnInit {
         }
     }
 
-    calcMinMaxYear() {
-        if (this.allMovies) {
+    calcMaxRatingValue() {
+        if (this.filteredMovies) {
+            let max:number = 0;
+            this.filteredMovies.forEach(function (entry) {
+                let n:number = parseFloat(entry.ratingValue);
+                if (n > max) {
+                    max = n;
+                }
+            });
+            this.maxRatingValue = max;
+        }
+    }
+
+    calcMaxYear() {
+        if (this.filteredMovies) {
             let maxY:number = 0;
-            let minY:number = 10000;
-            this.allMovies.forEach(function (entry) {
+            this.filteredMovies.forEach(function (entry) {
                 // MAX
                 if (entry.year > maxY) {
                     maxY = entry.year;
                 }
+            });
+            this.maxYear = maxY;
+        }
+    }
+
+    calcMinYear() {
+        if (this.allMovies) {
+            let minY:number = 10000;
+            this.allMovies.forEach(function (entry) {
                 // MIN
                 if ((entry.year > 1900) && (entry.year < minY)) {
                     minY = entry.year;
                 }
             });
-            this.maxYear = maxY;
             this.minYear = minY;
         }
     }
 
     calcMinMaxValues() {
         this.calcMaxRatingCount();
-        this.calcMinMaxYear();
+        this.calcMaxYear();
+        this.calcMaxRatingValue();
     }
 
     constructor(private webService: WebService,
@@ -148,6 +170,7 @@ export class VideosComponent implements OnInit {
                 this.allMovies = JSON.parse(localStorage.movies);
                 if (this.allMovies) {
                     this.filterAndSetMovies();
+                    this.calcMinYear();
                     this.calcMinMaxValues();
                 }
         }
@@ -172,6 +195,7 @@ export class VideosComponent implements OnInit {
         this.filterAndSetMovies(true);
         this.storeMoviesToLocalStorage();
         this.shouldLoadMoviesFromServer = false;
+        this.calcMinYear();
         this.calcMinMaxValues();
     }
 
@@ -207,6 +231,7 @@ export class VideosComponent implements OnInit {
         } else {
             this.setDisplayedMovies();
         }
+        this.calcMinMaxValues();
     }
 
     onRatingCountChanged(newValue:number) {
@@ -236,7 +261,7 @@ export class VideosComponent implements OnInit {
     openRatingValueDialog() {
         this.animateRatingValueScalingTrigger();
         this.dialogSettingsService
-            .openRatingValueDialog(this.minRatingValueFilter)
+            .openRatingValueDialog(this.minRatingValueFilter, this.maxRatingValue)
             .subscribe(newValue => this.onRatingValueChanged(newValue));
     }
 

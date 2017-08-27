@@ -96,6 +96,7 @@ export class DialogSettingsComponent {
     public message: string;
 
     maxRatingCount:number;
+    maxRatingValue:number;
     minYear:number;
     maxYear:number;
 
@@ -124,8 +125,9 @@ export class DialogSettingsComponent {
         return this.ratingValueSliderValueObserveable;
     }
 
-    public openRatingValueDialog(initWith:number) {
+    public openRatingValueDialog(initWith:number, maxRatingValue:number) {
         this.ratingValueSliderValue = initWith;
+        this.maxRatingValue = maxRatingValue;
         this.ratingValueShow = true;
     }
 
