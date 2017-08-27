@@ -26,7 +26,6 @@
 }*/
 
 .innerHeader {
-    border: blue solid;
 }
 
 .innerContent {
@@ -34,11 +33,6 @@
     min-height: 100%;
     max-height: 100%;
     flex-grow: 1;
-    border: red solid;
-}
-
-#moviesTable {
-    overflow-y: auto !important;
 }
 
 /* Overwrite the standard margin-bottom: 20px; between the top table with the
@@ -49,14 +43,4 @@ div.innerHeader table {
 
 p.info {
     margin: 0;
-}
-
-virtual-scroll {
-    /* iPhone 5:
-    320 x 460 px
-    (320 x 528* / 320 x 548**)
-    * – measurements with the small browser navigation bar
-    ** – measurements without any browser chrome for a web app
-     */
-    height: 287px;
 }

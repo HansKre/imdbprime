@@ -18,12 +18,9 @@ https://stackoverflow.com/questions/90178/make-a-div-fill-the-height-of-the-rema
     -webkit-flex-direction: column;    /* for Safari */
     display: flex;
     flex-direction: column;
-    background-color: green;
-    border: black dotted;
 }
 
 .outerHeader {
-    border: blue dotted;
 }
 
 .outerContent {
@@ -32,6 +29,4 @@ https://stackoverflow.com/questions/90178/make-a-div-fill-the-height-of-the-rema
     -webkit-flex-direction: column;    /* for Safari */
     display: flex;
     flex-direction: column;
-    border: red dotted;
-    background-color: yellow;
 }

@@ -3,99 +3,67 @@
         <md-progress-bar mode="indeterminate"></md-progress-bar>
     </div>
 
-    <p class="info">Showing {{ viewPortMovies.length }} | matching
+    <p class="info">Showing {{ displayedMovies.length }} | matching
         {{ filteredMovies.length }} | total {{ allMovies.length }}</p>
-<table class="table table-striped table-condensed" id="moviesTableHeader">
-    <thead class="thead-inverse">
-    <tr>
-        <th class="col-xs-8">Movie <br>
-            <md-input-container>
-                <input class="filterInput"
-                       mdInput [(ngModel)]="searchString"
-                       (ngModelChange)="filterAndSetMovies()"
-                       placeholder="Search for movie.."
-                >
-            </md-input-container>
-        </th>
-        <th class="col-xs-1">Year <br>
-            <label [@scalingTrigger]="animationYearScalingState"><span
-                    class="label label-info" (click)="openYearDialog()">{{minYearValueFilter.toString()}}</span>
-            </label>
-        </th>
-        <th class="col-xs-1 text-center">IMDB Rating <br>
-            <label [@scalingTrigger]="animationRatingValueScalingState"><span
-                    class="label label-info" (click)="openRatingValueDialog()">{{minRatingValueFilter.toLocaleString('en')}}</span>
-            </label>
-        </th>
-        <th class="col-xs-2 text-right">Rating Count <br>
-            <label [@scalingTrigger]="animationRatingCountScalingState"><span
-                    class="label label-info" (click)="openRatingCountDialog()">{{minRatingCountFilter.toLocaleString('en')}}</span>
-            </label>
-        </th>
-    </tr>
-    </thead>
-</table>
 </div>
 <div class="innerContent">
-    <virtual-scroll [items]="displayedMovies" (update)="viewPortMovies = $event" [childHeight]="31">
-        <table class="table table-striped table-condensed" id="moviesTable">
-            <!--This hidden head is here to take care of proper formatting of the actual
-            rows of the tboy. We do not want the thead to scroll though. -->
-            <thead class="thead-inverse" style="display: none">
-            <tr>
-                <th class="col-xs-8">Movie <br>
-                    <md-input-container>
-                        <input class="filterInput"
-                               mdInput [(ngModel)]="searchString"
-                               (ngModelChange)="filterAndSetMovies()"
-                               placeholder="Search for movie.."
-                        >
-                    </md-input-container>
-                </th>
-                <th class="col-xs-1">Year <br>
-                    <label [@scalingTrigger]="animationYearScalingState"><span
-                            class="label label-info" (click)="openYearDialog()">{{minYearValueFilter.toString()}}</span>
-                    </label>
-                </th>
-                <th class="col-xs-1 text-center">IMDB Rating <br>
-                    <label [@scalingTrigger]="animationRatingValueScalingState"><span
-                            class="label label-info" (click)="openRatingValueDialog()">{{minRatingValueFilter.toLocaleString('en')}}</span>
-                    </label>
-                </th>
-                <th class="col-xs-2 text-right">Rating Count <br>
-                    <label [@scalingTrigger]="animationRatingCountScalingState"><span
-                            class="label label-info" (click)="openRatingCountDialog()">{{minRatingCountFilter.toLocaleString('en')}}</span>
-                    </label>
-                </th>
-            </tr>
-            </thead>
+    <table class="table table-striped table-condensed" id="moviesTable">
+        <!--This hidden head is here to take care of proper formatting of the actual
+        rows of the tboy. We do not want the thead to scroll though. -->
+        <thead class="thead-inverse">
+        <tr>
+            <th class="col-xs-8">Movie <br>
+                <md-input-container>
+                    <input class="filterInput"
+                           mdInput [(ngModel)]="searchString"
+                           (ngModelChange)="filterAndSetMovies()"
+                           placeholder="Search for movie.."
+                    >
+                </md-input-container>
+            </th>
+            <th class="col-xs-1">Year <br>
+                <label [@scalingTrigger]="animationYearScalingState"><span
+                        class="label label-info" (click)="openYearDialog()">{{minYearValueFilter.toString()}}</span>
+                </label>
+            </th>
+            <th class="col-xs-1 text-center">IMDB Rating <br>
+                <label [@scalingTrigger]="animationRatingValueScalingState"><span
+                        class="label label-info" (click)="openRatingValueDialog()">{{minRatingValueFilter.toLocaleString('en')}}</span>
+                </label>
+            </th>
+            <th class="col-xs-2 text-right">Rating Count <br>
+                <label [@scalingTrigger]="animationRatingCountScalingState"><span
+                        class="label label-info" (click)="openRatingCountDialog()">{{minRatingCountFilter.toLocaleString('en')}}</span>
+                </label>
+            </th>
+        </tr>
+        </thead>
 
-            <!--First Solution with ng-template and ngFor
-            advantage: you don't need to put ngFor into a parent tag like "tbody" anymore -->
-            <tbody>
-            <ng-template ngFor let-movie [ngForOf]="viewPortMovies">
-                <tr [@fadeInOutTrigger]="conditionalAnimation">
-                    <td>
-                        <a target="_blank" href= "{{ movie.imdbMovieUrl }}" > {{ movie.movie }} </a>
-                    </td>
-                    <td>{{ movie.year }}</td>
-                    <td class="text-center">
-                        <ng-template [ngIf]="movie.ratingValue > 6.7">
-                            <span class="label label-success"> {{ movie.ratingValue }} </span>
-                        </ng-template>
-                        <ng-template [ngIf]="((movie.ratingValue <= 6.7) &&  (movie.ratingValue > 6))">
-                            <span class="label label-warning"> {{ movie.ratingValue }} </span>
-                        </ng-template>
-                        <ng-template [ngIf]="(movie.ratingValue <= 6.0)">
-                            <span class="label label-danger"> {{ movie.ratingValue }} </span>
-                        </ng-template>
-                    </td>
-                    <td class="text-right">{{ movie.ratingCountString }}</td>
-                </tr>
-            </ng-template>
-            </tbody>
-        </table>
-    </virtual-scroll>
+        <!--First Solution with ng-template and ngFor
+        advantage: you don't need to put ngFor into a parent tag like "tbody" anymore -->
+        <tbody>
+        <ng-template ngFor let-movie [ngForOf]="displayedMovies">
+            <tr [@fadeInOutTrigger]="conditionalAnimation">
+                <td>
+                    <a target="_blank" href= "{{ movie.imdbMovieUrl }}" > {{ movie.movie }} </a>
+                </td>
+                <td>{{ movie.year }}</td>
+                <td class="text-center">
+                    <ng-template [ngIf]="movie.ratingValue > 6.7">
+                        <span class="label label-success"> {{ movie.ratingValue }} </span>
+                    </ng-template>
+                    <ng-template [ngIf]="((movie.ratingValue <= 6.7) &&  (movie.ratingValue > 6))">
+                        <span class="label label-warning"> {{ movie.ratingValue }} </span>
+                    </ng-template>
+                    <ng-template [ngIf]="(movie.ratingValue <= 6.0)">
+                        <span class="label label-danger"> {{ movie.ratingValue }} </span>
+                    </ng-template>
+                </td>
+                <td class="text-right">{{ movie.ratingCountString }}</td>
+            </tr>
+        </ng-template>
+        </tbody>
+    </table>
 </div>
 
 

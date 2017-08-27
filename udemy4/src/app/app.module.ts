@@ -30,8 +30,6 @@ import 'hammerjs';
 // https://github.com/angular/angular/issues/10420
 import 'web-animations-js';
 
-import { VirtualScrollModule } from 'angular2-virtual-scroll';
-
 @NgModule({
     declarations: [
         AppComponent,
@@ -51,7 +49,6 @@ import { VirtualScrollModule } from 'angular2-virtual-scroll';
         BrowserAnimationsModule,
         MdButtonModule,
         MdDialogModule,
-        VirtualScrollModule,
         MdInputModule
     ],
     providers: [

@@ -64,7 +64,6 @@ import {DialogSettingsService} from "../dialog-settings/dialog-settings.service"
 export class VideosComponent implements OnInit {
     @Input() isParentLoading:boolean = true;
 
-    viewPortMovies: Movie[] = [];
     displayedMovies: Movie[] = [];
     filteredMovies: Movie[];
     allMovies: Movie[];
@@ -86,7 +85,7 @@ export class VideosComponent implements OnInit {
     animationYearScalingState:string = "normal1";
     animationRatingValueScalingState:string = "normal1";
     animationRatingCountScalingState:string = "normal1";
-    conditionalAnimation:string = "_in";
+    conditionalAnimation:string = "in";
 
     calcMaxRatingCount() {
         if (this.allMovies) {
