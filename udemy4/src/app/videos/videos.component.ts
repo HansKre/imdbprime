@@ -17,7 +17,7 @@ import {DialogSettingsService} from "../dialog-settings/dialog-settings.service"
                     opacity: 1,
                     transform: 'translateY(0)'
             })),
-            transition('void => *', [
+            transition('void => in', [
                 // specify starting style for animation
                 style({
                     opacity: 0,
@@ -25,7 +25,7 @@ import {DialogSettingsService} from "../dialog-settings/dialog-settings.service"
                 }),
                 animate(300)
             ]),
-            transition('* => void', [
+            transition('in => void', [
                 // specify end state after animation
                 animate(300,
                     style({
@@ -77,6 +77,7 @@ export class VideosComponent implements OnInit {
 
     minRatingCountFilter:number = 10000;
     minRatingValueFilter:number = 6;
+    //TODO: let user set this accordingly
     maxYearValueFilter:number = 2000;
     minYearValueFilter:number = 2000;
 
@@ -85,6 +86,7 @@ export class VideosComponent implements OnInit {
     animationYearScalingState:string = "normal1";
     animationRatingValueScalingState:string = "normal1";
     animationRatingCountScalingState:string = "normal1";
+    conditionalAnimation:string = "in";
 
     calcMaxRatingCount() {
         if (this.allMovies) {
@@ -142,7 +144,6 @@ export class VideosComponent implements OnInit {
     }
 
     preLoadMoviesFromLocalStorage() {
-        console.log("here");
         if (localStorage && localStorage.movies
             && (localStorage.movies != "undefined")) {
                 this.allMovies = JSON.parse(localStorage.movies);

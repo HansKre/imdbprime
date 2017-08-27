@@ -12,6 +12,18 @@
 @import "assets/my_indigo-pink.css";*/
 
 
+
+
+/* USE 100% of VIEWPORT without SCROLL */
+
+/* Set the height of root DOM element.
+Since min-height doesn't work if the parent height isn't explicitly set, a height attribute has to be added to the html element as well. */
+
 html, body {
+    /* remove the browser's default margin of 8px */
+    margin: 0;
+    /* instead of using height: 100%; on the body use min-height: 100%; so that the body can also grow beyond 100% height when used in conjunction with overflow: hidden; */
     height: 100%;
+    min-height: 100%;
+    max-height: 100%;
 }

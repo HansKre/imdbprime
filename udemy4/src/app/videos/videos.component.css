@@ -17,29 +17,40 @@
     }
 }
 
+/*.innerFlexBox {
+    -webkit-flex-direction: column;
+    display: flex;
+    flex-direction: column;
+    background-color: yellow;
+    border: black solid;
+}*/
 
-.flexBox {
-    height: 492px;
-    display:flex;
-    flex-direction:column;
-    border: 1px red solid;
+.innerHeader {
+    border: blue solid;
 }
 
-.moviesHeader {
-    flex-grow: 0;
-    flex-shrink: 1;
-    flex-basis: auto;
-}
-
-.tableWrapper {
-    align-items: stretch;
+.innerContent {
+    height: 100%;
+    min-height: 100%;
+    max-height: 100%;
     flex-grow: 1;
-    flex-shrink: 1;
-    flex-basis: auto;
-    overflow: hidden;
-    border: 1px blue dotted;
+    border: red solid;
+}
+
+#moviesTable {
+    overflow-y: auto !important;
+}
+
+/* Overwrite the standard margin-bottom: 20px; between the top table with the
+theader and the actual table with the tbody */
+div.innerHeader table {
+    margin-bottom: 0;
+}
+
+p.info {
+    margin: 0;
 }
 
 virtual-scroll {
-    height: 350px;
+    height: 400px;
 }

@@ -1,9 +1,8 @@
-<div class="container-fluid">
-    <div class="header">
+<div class="container-fluid outerFlexBox">
+    <div class="outerHeader">
         <h4>Prime Movies with IMDB Rating  <app-online-indicator></app-online-indicator></h4>
-        <p>Cache Event: {{ this.cacheEvent }}</p>
     </div>
-    <div class="content">
+    <div class="outerContent">
         <app-movies [isParentLoading]="isCacheLoading">Loading ...</app-movies>
     </div>
 </div>

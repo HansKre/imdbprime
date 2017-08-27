@@ -7,7 +7,6 @@ import {Component, OnInit} from '@angular/core';
 })
 export class AppComponent implements OnInit{
     isCacheLoading:boolean = false;
-    cacheEvent:string = "";
 
     ngOnInit(): void {
         // swapcache if already in UPDATEREADY state
@@ -37,7 +36,6 @@ export class AppComponent implements OnInit{
 
     swapCacheAndReloadContent() {
         this.isCacheLoading = true;
-        this.cacheEvent = 'swapping';
 
         // replace the current cache with the newer
         window.applicationCache.swapCache();
@@ -46,6 +44,5 @@ export class AppComponent implements OnInit{
         window.location.reload();
 
         this.isCacheLoading = false;
-        this.cacheEvent = '';
     }
 }
