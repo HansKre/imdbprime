@@ -130,13 +130,11 @@ export class DialogSettingsComponent {
     }
 
     mdSliderInput_RatingValue(changeEvent: MdSliderChange) {
-        console.log("mdSliderInput_RatingValue: " + this.scalingState);
         this.ratingValueSliderValue = changeEvent.value;
         this.animateFast();
     }
 
     mdSliderChange_RatingValue(changeEvent: MdSliderChange) {
-        console.log("mdSliderChange_RatingValue: " + this.scalingState);
         this.ratingValueSliderValue = changeEvent.value;
         this.animateSlowly();
     }
@@ -169,10 +167,12 @@ export class DialogSettingsComponent {
 
     mdSliderInput_RatingCount(changeEvent: MdSliderChange) {
         this.ratingCountSliderValue = changeEvent.value;
+        this.animateFast();
     }
 
     mdSliderChange_RatingCount(changeEvent: MdSliderChange) {
         this.ratingCountSliderValue = changeEvent.value;
+        this.animateSlowly();
     }
 
     /* YEAR */
@@ -203,9 +203,11 @@ export class DialogSettingsComponent {
 
     mdSliderInput_Year(changeEvent: MdSliderChange) {
         this.yearSliderValue = changeEvent.value;
+        this.animateFast();
     }
 
     mdSliderChange_Year(changeEvent: MdSliderChange) {
         this.yearSliderValue = changeEvent.value;
+        this.animateSlowly();
     }
 }
