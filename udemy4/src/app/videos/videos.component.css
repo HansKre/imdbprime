@@ -52,5 +52,11 @@ p.info {
 }
 
 virtual-scroll {
-    height: 400px;
+    /* iPhone 5:
+    320 x 460 px
+    (320 x 528* / 320 x 548**)
+    * – measurements with the small browser navigation bar
+    ** – measurements without any browser chrome for a web app
+     */
+    height: 287px;
 }

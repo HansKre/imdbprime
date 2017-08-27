@@ -86,7 +86,7 @@ export class VideosComponent implements OnInit {
     animationYearScalingState:string = "normal1";
     animationRatingValueScalingState:string = "normal1";
     animationRatingCountScalingState:string = "normal1";
-    conditionalAnimation:string = "in";
+    conditionalAnimation:string = "_in";
 
     calcMaxRatingCount() {
         if (this.allMovies) {
