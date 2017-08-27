@@ -43,4 +43,6 @@ div.innerHeader table {
 
 p.info {
     margin: 0;
+    text-align: center;
+    background-color: #eee;
 }

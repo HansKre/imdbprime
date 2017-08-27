@@ -274,7 +274,8 @@ export class VideosComponent implements OnInit {
             }
         }
         // add movies to displayedMovies, if they are new in the filtered list
-        for (let i = 0; i < this.filteredMovies.length; i++) {
+        let min:number = Math.min(100, this.filteredMovies.length);
+        for (let i = 0; i < min; i++) {
             if (indicesOfFoundDisplayedMovies.indexOf(i) == -1) {
                 this.displayedMovies.push(this.filteredMovies[i]);
             }
@@ -284,7 +285,9 @@ export class VideosComponent implements OnInit {
     setDisplayedMovies() {
         this.displayedMovies = [];
 
-        for (let i = 0; i < this.filteredMovies.length; i++) {
+        let min:number = Math.min(100, this.filteredMovies.length);
+
+        for (let i = 0; i < min; i++) {
             this.displayedMovies.push(this.filteredMovies[i]);
         }
     }
