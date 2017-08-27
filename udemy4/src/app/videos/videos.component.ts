@@ -258,6 +258,14 @@ export class VideosComponent implements OnInit {
         this.filterAndSetMovies();
     }
 
+    onAllChanged(newValue:number) {
+        this.minYearValueFilter = newValue;
+
+        this.showSnackbar("Minimum Year set to:", this.minYearValueFilter, false);
+
+        this.filterAndSetMovies();
+    }
+
     openRatingValueDialog() {
         this.animateRatingValueScalingTrigger();
         this.dialogSettingsService
@@ -274,9 +282,15 @@ export class VideosComponent implements OnInit {
 
     openYearDialog() {
         this.animateYearScalingTrigger();
-        this.dialogSettingsService
+        /*this.dialogSettingsService
             .openYearDialog(this.minYearValueFilter, this.minYear, this.maxYear)
-            .subscribe(newValue => this.onYearChanged(newValue));
+            .subscribe(newValue => this.onYearChanged(newValue));*/
+
+        this.dialogSettingsService
+            .openAllDialog(this.minYearValueFilter, this.minYear, this.maxYear,
+                this.minRatingCountFilter, this.maxRatingCount, this.minRatingValueFilter,
+                this.maxRatingValue)
+            .subscribe(newValue => this.onAllChanged(newValue));
     }
 
     setDisplayedMoviesIncrementally() {

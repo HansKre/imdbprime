@@ -212,4 +212,22 @@ export class DialogSettingsComponent {
         this.yearSliderValue = changeEvent.value;
         this.animateSlowly();
     }
+
+    public openAllDialog(initWithYear:number, minYear:number, maxYear:number,
+                         initWithRatingCount:number, maxRatingCount:number,
+                         initWithRatingValue:number, maxRatingValue:number) {
+        this.yearSliderValue = initWithYear;
+        this.minYear = minYear;
+        this.maxYear = maxYear;
+
+        this.ratingCountSliderValue = initWithRatingCount;
+        this.maxRatingCount = maxRatingCount;
+
+        this.ratingValueSliderValue = initWithRatingValue;
+        this.maxRatingValue = maxRatingValue;
+
+        this.yearShow = true;
+        this.ratingCountShow = true;
+        this.ratingValueShow = true;
+    }
 }
