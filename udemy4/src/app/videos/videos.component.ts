@@ -3,8 +3,8 @@ import { WebService } from "../services/web.service";
 import { Movie } from "../structures/movie";
 import { MdSnackBar } from "@angular/material";
 import { IsOnlineService } from "../services/is-online.service";
-import {animate, keyframes, state, style, transition, trigger} from "@angular/animations";
-import {DialogSettingsService} from "../dialog-settings/dialog-settings.service";
+import { animate, keyframes, state, style, transition, trigger } from "@angular/animations";
+import { DialogSettingsService } from "../dialog-settings/dialog-settings.service";
 
 @Component({
     selector: 'app-movies',
@@ -282,10 +282,13 @@ export class VideosComponent implements OnInit {
 
     openYearDialog() {
         this.animateYearScalingTrigger();
-        /*this.dialogSettingsService
+        this.dialogSettingsService
             .openYearDialog(this.minYearValueFilter, this.minYear, this.maxYear)
-            .subscribe(newValue => this.onYearChanged(newValue));*/
+            .subscribe(newValue => this.onYearChanged(newValue));
+    }
 
+    openAllSettingsDialog() {
+        this.animateYearScalingTrigger();
         this.dialogSettingsService
             .openAllDialog(this.minYearValueFilter, this.minYear, this.maxYear,
                 this.minRatingCountFilter, this.maxRatingCount, this.minRatingValueFilter,
@@ -341,5 +344,9 @@ export class VideosComponent implements OnInit {
 
     animateRatingCountScalingTrigger() {
         this.animationRatingCountScalingState = (this.animationRatingCountScalingState === "normal1" ? this.animationRatingCountScalingState = "normal2" : this.animationRatingCountScalingState = "normal1");
+    }
+
+    scrollToTop() {
+        window.scrollTo(0,0);
     }
 }

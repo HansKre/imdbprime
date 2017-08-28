@@ -1,3 +1,9 @@
+<div class="back-to-top">
+    <button class="mat-primary" md-fab (click)="scrollToTop()">^</button>
+    <button class="mat-active" md-fab (click)="openAllSettingsDialog()">+</button>
+</div>
+
+
 <div class="innerHeader">
     <div *ngIf="shouldShowProgressBar()" >
         <md-progress-bar mode="indeterminate"></md-progress-bar>

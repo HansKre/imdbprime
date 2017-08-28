@@ -46,3 +46,11 @@ p.info {
     text-align: center;
     background-color: #eee;
 }
+
+.back-to-top {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    z-index: 100;
+    margin: 5px;
+}
