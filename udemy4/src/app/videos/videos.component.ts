@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, HostListener, Input, OnInit} from '@angular/core';
 import { WebService } from "../services/web.service";
 import { Movie } from "../structures/movie";
 import { MdSnackBar } from "@angular/material";
@@ -346,7 +346,17 @@ export class VideosComponent implements OnInit {
         this.animationRatingCountScalingState = (this.animationRatingCountScalingState === "normal1" ? this.animationRatingCountScalingState = "normal2" : this.animationRatingCountScalingState = "normal1");
     }
 
+
+    /* SCROLL TO TOP */
+    protected shouldShowScrollToTop: boolean = false;
+    protected animateButtonEntryState: string = "in";
+
     scrollToTop() {
-        window.scrollTo(0,0);
+        window.scrollTo(0, 0);
+    }
+
+    @HostListener('window:scroll', ['$event'])
+    doSomething(event) {
+        this.shouldShowScrollToTop = (window.pageYOffset >= window.screen.height/2);
     }
 }
