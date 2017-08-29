@@ -348,8 +348,8 @@ export class VideosComponent implements OnInit {
 
 
     /* SCROLL TO TOP */
-    protected shouldShowScrollToTop: boolean = false;
-    protected animateButtonEntryState: string = "in";
+    shouldShowScrollToTop: boolean = false;
+    animateButtonEntryState: string = "in";
 
     scrollToTop() {
         window.scrollTo(0, 0);

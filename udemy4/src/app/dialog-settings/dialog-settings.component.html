@@ -9,8 +9,8 @@
 <div class="row myModalDialog">
     <!-- YEAR -->
     <div *ngIf="yearShow" id="yearContainer">
-        <label>Min Year:</label>
         <div class="centerWrapper">
+            <label>Min Year:</label>
             <label class="prominentValue" [@scalingFastTrigger]="scalingState" [@scalingSlowTrigger]="scalingState">
                 <span class="label label-info">{{yearSliderValue.toString()}}</span>
             </label>
@@ -30,8 +30,8 @@
     </div>
     <!-- RATING VALUE -->
     <div *ngIf="ratingValueShow" id="ratingValueContainer">
-        <label>Rating Value:</label>
         <div class="centerWrapper">
+            <label>Rating Value:</label>
             <label class="prominentValue" [@scalingFastTrigger]="scalingState" [@scalingSlowTrigger]="scalingState">
                 <span class="label label-info">{{ratingValueSliderValue.toLocaleString('en')}}</span>
             </label>
@@ -50,8 +50,8 @@
     </div>
     <!-- RATING COUNT -->
     <div *ngIf="ratingCountShow" id="ratingCountContainer">
-        <label>Rating Count:</label>
         <div class="centerWrapper">
+            <label>Rating Count:</label>
             <label class="prominentValue" [@scalingFastTrigger]="scalingState" [@scalingSlowTrigger]="scalingState">
                 <span class="label label-info">{{ratingCountSliderValue.toLocaleString('en')}}</span>
             </label>

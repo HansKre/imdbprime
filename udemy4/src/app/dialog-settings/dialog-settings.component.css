@@ -10,7 +10,21 @@
 }
 
 .prominentValue {
-    font-size: 45px;
+    font-size: 8vh;
+}
+
+/* mouse over for desktop computer*/
+@media screen and (min-width: 700px) {
+    .prominentValue {
+        -webkit-transition: font-size 1s, ease;
+        transition: font-size 0.3s ease;
+    }
+    .prominentValue span {
+        background-color: #0000bb;
+    }
+    .prominentValue:hover {
+        font-size: 10vh;
+    }
 }
 
 /*#ratingValueContainer {
@@ -18,5 +32,6 @@
 }*/
 
 .myModalDialog {
-    width: 208px;
+    max-height: 80vh;
+    max-width: 80vw;
 }
