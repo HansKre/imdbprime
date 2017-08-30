@@ -28,6 +28,13 @@
 .innerHeader {
 }
 
+#moviesTableHead {
+    margin-bottom: 0;
+    opacity: 1;
+    background-color: white;
+    z-index: 99;
+}
+
 .innerContent {
     height: 100%;
     min-height: 100%;

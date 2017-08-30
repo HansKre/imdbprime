@@ -1,4 +1,4 @@
-import {Component, HostListener, Input, OnInit} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, Input, OnInit, Renderer2, ViewChild} from '@angular/core';
 import { WebService } from "../services/web.service";
 import { Movie } from "../structures/movie";
 import { MdSnackBar } from "@angular/material";
@@ -61,7 +61,7 @@ import { DialogSettingsService } from "../dialog-settings/dialog-settings.servic
 // it is also possible to specify the end state when animation finishes
 // ... after that, animation transitions immediately to the target state?
 
-export class VideosComponent implements OnInit {
+export class VideosComponent implements OnInit, AfterViewInit {
     @Input() isParentLoading:boolean = true;
 
     displayedMovies: Movie[] = [];
@@ -148,7 +148,8 @@ export class VideosComponent implements OnInit {
     constructor(private webService: WebService,
                 private isOnlineService: IsOnlineService,
                 public snackBar: MdSnackBar,
-                public dialogSettingsService: DialogSettingsService) {
+                public dialogSettingsService: DialogSettingsService,
+                private rd: Renderer2) {
     }
 
     ngOnInit() {
@@ -356,7 +357,39 @@ export class VideosComponent implements OnInit {
     }
 
     @HostListener('window:scroll', ['$event'])
-    doSomething(event) {
+    onScrollFadeInOutScrollToTopButton(event) {
         this.shouldShowScrollToTop = (window.pageYOffset >= window.screen.height/2);
     }
+
+
+    /* Sticky Table Head */
+    // https://stackoverflow.com/questions/38944725/how-to-get-dom-element-in-angular-2
+    @ViewChild('tableHead') el:ElementRef;
+
+    /* add to constuctor */
+    //constructor(private rd: Renderer2) {}
+
+    /* interface AfterViewInit */
+    ngAfterViewInit() {
+        this.el.nativeElement.focus();
+    }
+
+    @HostListener('window:scroll', ['$event'])
+    onScrollStickTableHeaderToTop(event) {
+        let viewportOffset = this.el.nativeElement.getBoundingClientRect();
+
+        // these are relative to the viewport
+        let top = viewportOffset.top;
+
+        if (top <= 0) {
+            this.el.nativeElement.style.position = "absolute";
+            this.el.nativeElement.style.top = window.pageYOffset+'px';
+        }
+
+
+        //this.shouldShowScrollToTop = (window.pageYOffset >= window.screen.height/2);
+        console.log("scroling", top);
+    }
+
+    /* END Sticky Table Head */
 }
