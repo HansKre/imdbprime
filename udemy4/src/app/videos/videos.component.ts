@@ -357,38 +357,52 @@ export class VideosComponent implements OnInit, AfterViewInit {
     }
 
     @HostListener('window:scroll', ['$event'])
-    onScrollFadeInOutScrollToTopButton(event) {
+    onWindowScroll(event) {
+        this.onScrollFadeInOutScrollToTopButton();
+        this.onScrollStickTableHeaderToTop();
+    }
+
+
+    onScrollFadeInOutScrollToTopButton() {
+        /* The pageXOffset and pageYOffset properties returns the pixels the current document has been scrolled from the upper left corner of the window, horizontally and vertically.
+        The pageXOffset and pageYOffset properties are equal to the scrollX and scrollY properties. These properties are read-only. */
         this.shouldShowScrollToTop = (window.pageYOffset >= window.screen.height/2);
     }
 
 
     /* Sticky Table Head */
     // https://stackoverflow.com/questions/38944725/how-to-get-dom-element-in-angular-2
-    @ViewChild('tableHead') el:ElementRef;
+    @ViewChild('tableHeadWrapper') el:ElementRef;
 
     /* add to constuctor */
     //constructor(private rd: Renderer2) {}
 
     /* interface AfterViewInit */
+    private initialTableHeadDistanceToViewportTop:number;
     ngAfterViewInit() {
         this.el.nativeElement.focus();
+        this.initialTableHeadDistanceToViewportTop = this.el.nativeElement.getBoundingClientRect().top;
     }
 
-    @HostListener('window:scroll', ['$event'])
-    onScrollStickTableHeaderToTop(event) {
-        let viewportOffset = this.el.nativeElement.getBoundingClientRect();
+    onScrollStickTableHeaderToTop() {
+        /* Relative distance of element's top left corner
+        to the top left corner of the viewport (which is the visible area):
 
-        // these are relative to the viewport
-        let top = viewportOffset.top;
+        -> positive values: element's top left corner is visible and top_pixels away from the top
+        -> negative values: element's top left corner is NOT visible and top_pixels away from the top in the invisible area above the viewport's top left corner
+        */
+        let tableHeadTop = this.el.nativeElement.getBoundingClientRect().top;
 
-        if (top <= 0) {
-            this.el.nativeElement.style.position = "absolute";
-            this.el.nativeElement.style.top = window.pageYOffset+'px';
+        if (tableHeadTop < 0) { // scroll down => tableHead's top left corner gets invisible
+            if (!this.el.nativeElement.classList.contains('sticky')) {
+                this.el.nativeElement.classList.add('sticky');
+            }
+            // also possible: this.el.nativeElement.style.position = "fixed";
+        } else if (window.pageYOffset <= this.initialTableHeadDistanceToViewportTop) { // scroll up => tableHead's top left coroner is getting scrolled into the viewport
+            if (this.el.nativeElement.classList.contains('sticky')) {
+                this.el.nativeElement.classList.remove('sticky');
+            }
         }
-
-
-        //this.shouldShowScrollToTop = (window.pageYOffset >= window.screen.height/2);
-        console.log("scroling", top);
     }
 
     /* END Sticky Table Head */

@@ -28,11 +28,25 @@
 .innerHeader {
 }
 
+/* Remove default margin under each table because we
+    want the header appear to be part of the table below
+ */
 #moviesTableHead {
     margin-bottom: 0;
+}
+
+/* Make the sticky table header overlap other content */
+.movieTableHeadWrapper {
+    position: inherit;  /* not necessary, as style will return to previous value anyway */
+}
+
+.movieTableHeadWrapper.sticky {
+    position: fixed;
+    top: 0;
+    left: 0;
     opacity: 1;
     background-color: white;
-    z-index: 99;
+    z-index: 100; /* Above other content */
 }
 
 .innerContent {
