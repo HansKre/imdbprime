@@ -47,6 +47,40 @@
             </thead>
         </table>
     </div>
+    <div #tableHeadWrapperSticky class="movieTableHeadWrapper sticky">
+        <table class="table table-striped table-condensed" id="moviesTableHeadSticky">
+            <!--This hidden head is here to take care of proper formatting of the actual
+            rows of the tboy. We do not want the thead to scroll though. -->
+            <thead class="thead-inverse">
+            <tr>
+                <th class="col-xs-8">Movie <br>
+                    <md-input-container>
+                        <input class="filterInput"
+                               mdInput [(ngModel)]="searchString"
+                               (ngModelChange)="filterAndSetMovies()"
+                               placeholder="Search for movie.."
+                        >
+                    </md-input-container>
+                </th>
+                <th class="col-xs-1">Year <br>
+                    <label [@scalingTrigger]="animationYearScalingState"><span
+                            class="label label-info" (click)="openYearDialog()">{{minYearValueFilter.toString()}}</span>
+                    </label>
+                </th>
+                <th class="col-xs-1 text-center">IMDB Rating <br>
+                    <label [@scalingTrigger]="animationRatingValueScalingState"><span
+                            class="label label-info" (click)="openRatingValueDialog()">{{minRatingValueFilter.toLocaleString('en')}}</span>
+                    </label>
+                </th>
+                <th class="col-xs-2 text-right">Rating Count <br>
+                    <label [@scalingTrigger]="animationRatingCountScalingState"><span
+                            class="label label-info" (click)="openRatingCountDialog()">{{minRatingCountFilter.toLocaleString('en')}}</span>
+                    </label>
+                </th>
+            </tr>
+            </thead>
+        </table>
+    </div>
     <table class="table table-striped table-condensed" id="moviesTable">
         <!--This hidden head is here to take care of proper formatting of the actual
         rows of the tboy. We do not want the thead to scroll though. -->

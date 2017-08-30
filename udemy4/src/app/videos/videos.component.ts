@@ -419,7 +419,8 @@ export class VideosComponent implements OnInit, AfterViewInit {
 
     /* Sticky Table Head */
     // https://stackoverflow.com/questions/38944725/how-to-get-dom-element-in-angular-2
-    @ViewChild('tableHeadWrapper') el:ElementRef;
+    @ViewChild('tableHeadWrapper') tableHeadWrapperElem:ElementRef;
+    @ViewChild('tableHeadWrapperSticky') tableHeadWrapperStickyElem:ElementRef;
 
     /* add to constuctor */
     //constructor(private rd: Renderer2) {}
@@ -427,8 +428,10 @@ export class VideosComponent implements OnInit, AfterViewInit {
     /* interface AfterViewInit */
     private initialTableHeadDistanceToViewportTop:number;
     ngAfterViewInit() {
-        this.el.nativeElement.focus();
-        this.initialTableHeadDistanceToViewportTop = this.el.nativeElement.getBoundingClientRect().top;
+        this.tableHeadWrapperElem.nativeElement.focus();
+        this.tableHeadWrapperStickyElem.nativeElement.focus();
+        // we can not use the sticky header for the initial distance because it has position:fixed
+        this.initialTableHeadDistanceToViewportTop = this.tableHeadWrapperElem.nativeElement.getBoundingClientRect().top;
     }
 
     onScrollStickTableHeaderToTop() {
@@ -438,16 +441,18 @@ export class VideosComponent implements OnInit, AfterViewInit {
         -> positive values: element's top left corner is visible and top_pixels away from the top
         -> negative values: element's top left corner is NOT visible and top_pixels away from the top in the invisible area above the viewport's top left corner
         */
-        let tableHeadTop = this.el.nativeElement.getBoundingClientRect().top;
+        let tableHeadTop = this.tableHeadWrapperElem.nativeElement.getBoundingClientRect().top;
 
-        if (tableHeadTop < 0) { // scroll down => tableHead's top left corner gets invisible
-            if (!this.el.nativeElement.classList.contains('sticky')) {
-                this.el.nativeElement.classList.add('sticky');
+        let additionalClass = 'visible';
+        if (tableHeadTop < 0) {
+            // scrolling down => tableHead's top left corner gets invisible
+            if (!this.tableHeadWrapperStickyElem.nativeElement.classList.contains(additionalClass)) {
+                this.tableHeadWrapperStickyElem.nativeElement.classList.add(additionalClass);
             }
-            // also possible: this.el.nativeElement.style.position = "fixed";
-        } else if (window.pageYOffset <= this.initialTableHeadDistanceToViewportTop) { // scroll up => tableHead's top left coroner is getting scrolled into the viewport
-            if (this.el.nativeElement.classList.contains('sticky')) {
-                this.el.nativeElement.classList.remove('sticky');
+        } else if (window.pageYOffset <= this.initialTableHeadDistanceToViewportTop) {
+            // scrolling up => tableHead's top left coroner is getting scrolled into the viewport
+            if (this.tableHeadWrapperStickyElem.nativeElement.classList.contains(additionalClass)) {
+                this.tableHeadWrapperStickyElem.nativeElement.classList.remove(additionalClass);
             }
         }
     }
