@@ -450,6 +450,15 @@ export class VideosComponent implements OnInit, AfterViewInit {
                 this.tableHeadWrapperStickyElem.nativeElement.classList.add(additionalClass);
             }
         } else if (window.pageYOffset <= this.initialTableHeadDistanceToViewportTop) {
+            if (!this.shouldShowScrollToTop) {
+                // this is a fix for the iPhone:
+                // when search function is used inside of the sticky header
+                // with a very narrow filter, the list is filtered to 2-3 entries, then
+                // because of the on-screen keyboard, the "make sticky header" condition
+                // is fulfilled making the sticky header disappear while the scroll to
+                // top button is still present. The fix prevents this behaviour.
+                this.smoothScrollToTop();
+            }
             // scrolling up => tableHead's top left coroner is getting scrolled into the viewport
             if (this.tableHeadWrapperStickyElem.nativeElement.classList.contains(additionalClass)) {
                 this.tableHeadWrapperStickyElem.nativeElement.classList.remove(additionalClass);
