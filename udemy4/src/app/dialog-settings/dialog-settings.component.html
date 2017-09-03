@@ -15,7 +15,7 @@
                     <label>Min Year:</label>
                 </div>
                 <div class="col-xs-9">
-                    <label class="prominentValue" [@scalingFastTrigger]="scalingState" [@scalingSlowTrigger]="scalingState">
+                    <label class="prominentValue" [@scalingFastTrigger]="scalingStateYear" [@scalingSlowTrigger]="scalingStateYear">
                         <span class="label label-info">{{yearSliderValue.toString()}}</span>
                     </label>
                 </div>
@@ -42,7 +42,7 @@
                     <label>Rating Value:</label>
                 </div>
                 <div class="col-xs-9">
-                    <label class="prominentValue" [@scalingFastTrigger]="scalingState" [@scalingSlowTrigger]="scalingState">
+                    <label class="prominentValue" [@scalingFastTrigger]="scalingStateRatingValue" [@scalingSlowTrigger]="scalingStateRatingValue">
                         <span class="label label-info">{{ratingValueSliderValue.toLocaleString('en')}}</span>
                     </label>
                 </div>
@@ -68,7 +68,7 @@
                     <label>Rating Count:</label>
                 </div>
                 <div class="col-xs-9">
-                    <label class="prominentValue" [@scalingFastTrigger]="scalingState" [@scalingSlowTrigger]="scalingState">
+                    <label class="prominentValue" [@scalingFastTrigger]="scalingStateRatingCount" [@scalingSlowTrigger]="scalingStateRatingCount">
                         <span class="label label-info">{{ratingCountSliderValue.toLocaleString('en')}}</span>
                     </label>
                 </div>

@@ -49,9 +49,11 @@ import { animate, keyframes, state, style, transition, trigger } from "@angular/
 })
 export class DialogSettingsComponent {
 
-    scalingState:string = "normal1";
+    scalingStateYear:string = "normal1";
+    scalingStateRatingValue:string = "normal1";
+    scalingStateRatingCount:string = "normal1";
 
-    animateSlowly() {
+    animateSlowly(comp:string) {
         /*
         This does not work with two different animations:
         this.scalingState = (this.scalingState === "normal1" ? "normal2" : "normal1");
@@ -68,27 +70,59 @@ export class DialogSettingsComponent {
 
         Therefore, no state transition and no animation is triggered!
          */
-        if (this.scalingState === "normal1") {
-            this.scalingState = "normal2";
-        } else if (this.scalingState === "normal2") {
-            this.scalingState = "normal1";
-        } else if (this.scalingState === "normal3") {
+
+        let scalingState:string;
+
+        switch (comp) {
+            case 'year': scalingState = this.scalingStateYear; break;
+            case 'ratingValue': scalingState = this.scalingStateRatingValue; break;
+            case 'ratingCount': scalingState = this.scalingStateRatingCount; break;
+            default: break;
+        }
+
+        if (scalingState === "normal1") {
+            scalingState = "normal2";
+        } else if (scalingState === "normal2") {
+            scalingState = "normal1";
+        } else if (scalingState === "normal3") {
             // we don't want to trigger a second (and different) animation
             // this.scalingState = "normal2";
-        } else if (this.scalingState === "normal4") {
+        } else if (scalingState === "normal4") {
             // this.scalingState = "normal1";
+        }
+
+        switch (comp) {
+            case 'year': return this.scalingStateYear = scalingState;
+            case 'ratingValue': return this.scalingStateRatingValue = scalingState;
+            case 'ratingCount': return this.scalingStateRatingCount = scalingState;
+            default: return 0;
         }
     }
 
-    animateFast() {
-        if (this.scalingState === "normal3") {
-            this.scalingState = "normal4";
-        } else if (this.scalingState === "normal4") {
-            this.scalingState = "normal3";
-        } else if (this.scalingState === "normal2") {
-            this.scalingState = "normal4";
-        } else if (this.scalingState === "normal1") {
-            this.scalingState = "normal3";
+    animateFast(comp:string) {
+        let scalingState:string;
+
+        switch (comp) {
+            case 'year': scalingState = this.scalingStateYear; break;
+            case 'ratingValue': scalingState = this.scalingStateRatingValue; break;
+            case 'ratingCount': scalingState = this.scalingStateRatingCount; break;
+            default: break;
+        }
+        if (scalingState === "normal3") {
+            scalingState = "normal4";
+        } else if (scalingState === "normal4") {
+            scalingState = "normal3";
+        } else if (scalingState === "normal2") {
+            scalingState = "normal4";
+        } else if (scalingState === "normal1") {
+            scalingState = "normal3";
+        }
+
+        switch (comp) {
+            case 'year': return this.scalingStateYear = scalingState;
+            case 'ratingValue': return this.scalingStateRatingValue = scalingState;
+            case 'ratingCount': return this.scalingStateRatingCount = scalingState;
+            default: return 0;
         }
     }
 
@@ -133,12 +167,12 @@ export class DialogSettingsComponent {
 
     mdSliderInput_RatingValue(changeEvent: MdSliderChange) {
         this.ratingValueSliderValue = changeEvent.value;
-        this.animateFast();
+        this.animateFast('ratingValue');
     }
 
     mdSliderChange_RatingValue(changeEvent: MdSliderChange) {
         this.ratingValueSliderValue = changeEvent.value;
-        this.animateSlowly();
+        this.animateSlowly('ratingValue');
     }
 
     /* RATING COUNT*/
@@ -169,12 +203,12 @@ export class DialogSettingsComponent {
 
     mdSliderInput_RatingCount(changeEvent: MdSliderChange) {
         this.ratingCountSliderValue = changeEvent.value;
-        this.animateFast();
+        this.animateFast('ratingCount');
     }
 
     mdSliderChange_RatingCount(changeEvent: MdSliderChange) {
         this.ratingCountSliderValue = changeEvent.value;
-        this.animateSlowly();
+        this.animateSlowly('ratingCount');
     }
 
     /* YEAR */
@@ -205,12 +239,12 @@ export class DialogSettingsComponent {
 
     mdSliderInput_Year(changeEvent: MdSliderChange) {
         this.yearSliderValue = changeEvent.value;
-        this.animateFast();
+        this.animateFast('year');
     }
 
     mdSliderChange_Year(changeEvent: MdSliderChange) {
         this.yearSliderValue = changeEvent.value;
-        this.animateSlowly();
+        this.animateSlowly('year');
     }
 
     public openAllDialog(initWithYear:number, minYear:number, maxYear:number,
@@ -229,5 +263,13 @@ export class DialogSettingsComponent {
         this.yearShow = true;
         this.ratingCountShow = true;
         this.ratingValueShow = true;
+    }
+
+    allObserverables() {
+        return {
+            year:this.yearObserveable(),
+            ratingValue:this.ratingValueObserveable(),
+            ratingCount:this.ratingCountObserveable()
+        };
     }
 }

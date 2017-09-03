@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, OnInit, Renderer2 } from '@angular/core';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { WebService } from "../services/web.service";
 import { Movie } from "../structures/movie";
 import {MdSnackBar, Sort} from "@angular/material";
@@ -77,8 +77,6 @@ export class VideosComponent implements OnInit {
 
     minRatingCountFilter:number = 10000;
     minRatingValueFilter:number = 6;
-    //TODO: let user set this accordingly
-    maxYearValueFilter:number = 2000;
     minYearValueFilter:number = 2000;
 
     searchString:string ="";
@@ -148,8 +146,7 @@ export class VideosComponent implements OnInit {
     constructor(private webService: WebService,
                 private isOnlineService: IsOnlineService,
                 public snackBar: MdSnackBar,
-                public dialogSettingsService: DialogSettingsService,
-                private rd: Renderer2) {
+                public dialogSettingsService: DialogSettingsService) {
     }
 
     ngOnInit() {
@@ -259,14 +256,6 @@ export class VideosComponent implements OnInit {
         this.filterAndSetMovies();
     }
 
-    onAllChanged(newValue:number) {
-        this.minYearValueFilter = newValue;
-
-        this.showSnackbar("Minimum Year set to:", this.minYearValueFilter, false);
-
-        this.filterAndSetMovies();
-    }
-
     openRatingValueDialog() {
         this.animateRatingValueScalingTrigger();
         this.dialogSettingsService
@@ -290,11 +279,14 @@ export class VideosComponent implements OnInit {
 
     openAllSettingsDialog() {
         this.animateYearScalingTrigger();
-        this.dialogSettingsService
+        let allObserverables = this.dialogSettingsService
             .openAllDialog(this.minYearValueFilter, this.minYear, this.maxYear,
                 this.minRatingCountFilter, this.maxRatingCount, this.minRatingValueFilter,
-                this.maxRatingValue)
-            .subscribe(newValue => this.onAllChanged(newValue));
+                this.maxRatingValue);
+
+        allObserverables.year.subscribe(newValue => this.onYearChanged(newValue));
+        allObserverables.ratingValue.subscribe(newValue => this.onRatingValueChanged(newValue));
+        allObserverables.ratingCount.subscribe(newValue => this.onRatingCountChanged(newValue));
     }
 
     setDisplayedMoviesIncrementally() {

@@ -47,7 +47,8 @@ export class DialogSettingsService {
 
     public openAllDialog(initWithYear:number, minYear:number, maxYear:number,
                          initWithRatingCount:number, maxRatingCount:number,
-                         initWithRatingValue:number, maxRatingValue:number): Observable<number> {
+                         initWithRatingValue:number, maxRatingValue:number): {year:Observable<number>,
+    ratingValue:Observable<number>, ratingCount:Observable<number>} {
         let dialogRef: MdDialogRef<DialogSettingsComponent>;
 
         dialogRef = this.dialog.open(DialogSettingsComponent);
@@ -55,6 +56,6 @@ export class DialogSettingsService {
             initWithRatingCount, maxRatingCount,
             initWithRatingValue, maxRatingValue);
 
-        return dialogRef.componentInstance.yearObserveable();
+        return dialogRef.componentInstance.allObserverables();
     }
 }
