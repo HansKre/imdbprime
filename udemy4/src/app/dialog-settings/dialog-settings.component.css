@@ -41,3 +41,8 @@
     max-height: 80vh;
     max-width: 80vw;
 }
+
+label {
+    font-size: 4vh;
+    line-height: 150%;
+}
