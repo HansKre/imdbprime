@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, HostListener, Input, OnInit, Renderer2, ViewChild} from '@angular/core';
+import { Component, HostListener, Input, OnInit, Renderer2 } from '@angular/core';
 import { WebService } from "../services/web.service";
 import { Movie } from "../structures/movie";
 import { MdSnackBar } from "@angular/material";
@@ -61,7 +61,7 @@ import { DialogSettingsService } from "../dialog-settings/dialog-settings.servic
 // it is also possible to specify the end state when animation finishes
 // ... after that, animation transitions immediately to the target state?
 
-export class VideosComponent implements OnInit, AfterViewInit {
+export class VideosComponent implements OnInit {
     @Input() isParentLoading:boolean = true;
 
     displayedMovies: Movie[] = [];
@@ -374,7 +374,7 @@ export class VideosComponent implements OnInit, AfterViewInit {
     }
 
     smoothScrollToTop() {
-        let startY = this.currentYPosition();
+        let startY = VideosComponent.currentYPosition();
         let stopY = 0; // window top
         let distance = stopY > startY ? stopY - startY : startY - stopY;
         if (distance < 100) {
@@ -405,7 +405,7 @@ export class VideosComponent implements OnInit, AfterViewInit {
         }
     }
 
-    currentYPosition() {
+    static currentYPosition() {
         // Firefox, Chrome, Opera, Safari
         if (self.pageYOffset) return self.pageYOffset;
         // Internet Explorer 6 - standards mode
@@ -414,20 +414,6 @@ export class VideosComponent implements OnInit, AfterViewInit {
         // Internet Explorer 6, 7 and 8
         if (document.body.scrollTop) return document.body.scrollTop;
         return 0;
-    }
-
-    /* Sticky Table Head */
-    // https://stackoverflow.com/questions/38944725/how-to-get-dom-element-in-angular-2
-    @ViewChild('tableHeadWrapper') tableHeadWrapperElem:ElementRef;
-    @ViewChild('tableHeadWrapperSticky') tableHeadWrapperStickyElem:ElementRef;
-
-    /* add to constuctor */
-    //constructor(private rd: Renderer2) {}
-
-    /* interface AfterViewInit */
-    ngAfterViewInit() {
-        this.tableHeadWrapperElem.nativeElement.focus();
-        this.tableHeadWrapperStickyElem.nativeElement.focus();
     }
 
     /* END Sticky Table Head */

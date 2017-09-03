@@ -36,20 +36,6 @@
 }
 
 /* Make the sticky table header overlap other content */
-.movieTableHeadWrapper.sticky {
-    display:none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    opacity: 1;
-    background-color: white;
-    z-index: 100; /* Above other content */
-}
-
-.movieTableHeadWrapper.sticky.visible {
-    display: block;
-}
-
 .movieTableHeadWrapper {
     top: 0px;
     position: sticky;
