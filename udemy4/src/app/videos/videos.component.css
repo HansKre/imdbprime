@@ -50,6 +50,14 @@
     display: block;
 }
 
+.movieTableHeadWrapper {
+    top: 0px;
+    position: sticky;
+    opacity: 1;
+    background-color: white;
+    z-index: 100; /* Above other content */
+}
+
 .innerContent {
     height: 100%;
     min-height: 100%;

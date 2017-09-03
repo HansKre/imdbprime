@@ -352,7 +352,6 @@ export class VideosComponent implements OnInit, AfterViewInit {
     @HostListener('window:scroll', ['$event'])
     onWindowScroll(event) {
         this.onScrollFadeInOutScrollToTopButton();
-        this.onScrollStickTableHeaderToTop();
     }
 
     /* SCROLL TO TOP */
@@ -429,30 +428,6 @@ export class VideosComponent implements OnInit, AfterViewInit {
     ngAfterViewInit() {
         this.tableHeadWrapperElem.nativeElement.focus();
         this.tableHeadWrapperStickyElem.nativeElement.focus();
-    }
-
-    onScrollStickTableHeaderToTop() {
-        /* Relative distance of element's top left corner
-        to the top left corner of the viewport (which is the visible area):
-
-        -> positive values: element's top left corner is visible and top_pixels away from the top
-        -> negative values: element's top left corner is NOT visible and top_pixels away from the top in the invisible area above the viewport's top left corner
-        */
-        // we can not use the sticky header for the distance because it has position:fixed
-        let tableHeadTop = this.tableHeadWrapperElem.nativeElement.getBoundingClientRect().top;
-
-        let additionalClass = 'visible';
-        if (tableHeadTop < 0) {
-            // scrolling down => tableHead's top left corner gets invisible
-            if (!this.tableHeadWrapperStickyElem.nativeElement.classList.contains(additionalClass)) {
-                this.tableHeadWrapperStickyElem.nativeElement.classList.add(additionalClass);
-            }
-        } else if (window.pageYOffset <= tableHeadTop) {
-            // scrolling up => tableHead's top left coroner is getting scrolled into the viewport
-            if (this.tableHeadWrapperStickyElem.nativeElement.classList.contains(additionalClass)) {
-                this.tableHeadWrapperStickyElem.nativeElement.classList.remove(additionalClass);
-            }
-        }
     }
 
     /* END Sticky Table Head */
