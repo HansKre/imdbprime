@@ -9,11 +9,17 @@
     justify-content: center;
 }
 
+
+.col-xs-3, .col-xs-9, .container-fluid {
+    line-height:100%;
+    text-align: center;
+}
+
 .prominentValue {
     font-size: 8vh;
 }
 
-/* mouse over for desktop computer*/
+/* mouse over for desktop computer */
 @media screen and (min-width: 700px) {
     .prominentValue {
         -webkit-transition: font-size 1s, ease;

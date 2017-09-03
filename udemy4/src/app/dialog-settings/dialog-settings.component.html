@@ -9,11 +9,17 @@
 <div class="row myModalDialog">
     <!-- YEAR -->
     <div *ngIf="yearShow" id="yearContainer">
-        <div class="centerWrapper">
-            <label>Min Year:</label>
-            <label class="prominentValue" [@scalingFastTrigger]="scalingState" [@scalingSlowTrigger]="scalingState">
-                <span class="label label-info">{{yearSliderValue.toString()}}</span>
-            </label>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-3">
+                    <label>Min Year:</label>
+                </div>
+                <div class="col-xs-9">
+                    <label class="prominentValue" [@scalingFastTrigger]="scalingState" [@scalingSlowTrigger]="scalingState">
+                        <span class="label label-info">{{yearSliderValue.toString()}}</span>
+                    </label>
+                </div>
+            </div>
         </div>
 
         <md-slider
@@ -30,11 +36,17 @@
     </div>
     <!-- RATING VALUE -->
     <div *ngIf="ratingValueShow" id="ratingValueContainer">
-        <div class="centerWrapper">
-            <label>Rating Value:</label>
-            <label class="prominentValue" [@scalingFastTrigger]="scalingState" [@scalingSlowTrigger]="scalingState">
-                <span class="label label-info">{{ratingValueSliderValue.toLocaleString('en')}}</span>
-            </label>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-3">
+                    <label>Rating Value:</label>
+                </div>
+                <div class="col-xs-9">
+                    <label class="prominentValue" [@scalingFastTrigger]="scalingState" [@scalingSlowTrigger]="scalingState">
+                        <span class="label label-info">{{ratingValueSliderValue.toLocaleString('en')}}</span>
+                    </label>
+                </div>
+            </div>
         </div>
         <md-slider
                 class="slider"
@@ -50,11 +62,17 @@
     </div>
     <!-- RATING COUNT -->
     <div *ngIf="ratingCountShow" id="ratingCountContainer">
-        <div class="centerWrapper">
-            <label>Rating Count:</label>
-            <label class="prominentValue" [@scalingFastTrigger]="scalingState" [@scalingSlowTrigger]="scalingState">
-                <span class="label label-info">{{ratingCountSliderValue.toLocaleString('en')}}</span>
-            </label>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-3">
+                    <label>Rating Count:</label>
+                </div>
+                <div class="col-xs-9">
+                    <label class="prominentValue" [@scalingFastTrigger]="scalingState" [@scalingSlowTrigger]="scalingState">
+                        <span class="label label-info">{{ratingCountSliderValue.toLocaleString('en')}}</span>
+                    </label>
+                </div>
+            </div>
         </div>
         <md-slider
                 class="slider"
