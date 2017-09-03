@@ -72,3 +72,20 @@ p.info {
     z-index: 100;
     margin: 5px;
 }
+
+.firstLineTableHeader {
+    border-bottom: none;
+    margin: 0;
+    padding-bottom: 0;
+}
+
+.secondLineTableHeader {
+    margin: 0;
+    padding-top: 0;
+
+}
+
+/* Align labels with the search field */
+th label {
+    margin-bottom: 0;
+}

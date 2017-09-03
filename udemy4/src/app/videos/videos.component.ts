@@ -1,7 +1,7 @@
 import { Component, HostListener, Input, OnInit, Renderer2 } from '@angular/core';
 import { WebService } from "../services/web.service";
 import { Movie } from "../structures/movie";
-import { MdSnackBar } from "@angular/material";
+import {MdSnackBar, Sort} from "@angular/material";
 import { IsOnlineService } from "../services/is-online.service";
 import { animate, keyframes, state, style, transition, trigger } from "@angular/animations";
 import { DialogSettingsService } from "../dialog-settings/dialog-settings.service";
@@ -417,4 +417,29 @@ export class VideosComponent implements OnInit {
     }
 
     /* END Sticky Table Head */
+
+    sortData(sort: Sort) {
+        /* if mdSortDisableClear is not used, there is a unsorted state which should be handled here
+        if (!sort.active || sort.direction == '') {
+            this.sortedData = data;
+            return;
+        }*/
+
+        this.filteredMovies = this.filteredMovies.sort((a, b) => {
+            let isAsc = sort.direction == 'asc';
+            switch (sort.active) {
+                case 'movie': return compare(a.movie, b.movie, isAsc);
+                case 'year': return compare(+a.year, +b.year, isAsc);
+                case 'rating': return compare(+a.ratingValue, +b.ratingValue, isAsc);
+                case 'count': return compare(+a.ratingCount, +b.ratingCount, isAsc);
+                default: return 0;
+            }
+        });
+
+        this.setDisplayedMovies();
+    }
+}
+
+function compare(a, b, isAsc) {
+    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
 }

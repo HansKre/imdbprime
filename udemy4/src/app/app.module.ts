@@ -8,7 +8,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import {
     MdButtonModule, MdDialogModule, MdInputModule /* for Md-Container-Input */,
     MdProgressBarModule, MdSliderModule,
-    MdSnackBarModule
+    MdSnackBarModule, MdSortModule
 } from '@angular/material';
 
 // My Components
@@ -49,7 +49,8 @@ import 'web-animations-js';
         BrowserAnimationsModule,
         MdButtonModule,
         MdDialogModule,
-        MdInputModule
+        MdInputModule,
+        MdSortModule
     ],
     providers: [
         WebService,
