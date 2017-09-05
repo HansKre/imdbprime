@@ -15,7 +15,7 @@
     <div class="movieTableHeadWrapper">
         <table class="table table-striped table-condensed"
                id="moviesTableHead"
-               mdSort mdSortActive="year" (mdSortChange)="sortData($event)" mdSortDisableClear>
+               mdSort mdSortActive="year" (mdSortChange)="sortDataAndSetMovies($event)" mdSortDisableClear>
             <!--This hidden head is here to take care of proper formatting of the actual
             rows of the tboy. We do not want the thead to scroll though. -->
             <thead class="thead-inverse">

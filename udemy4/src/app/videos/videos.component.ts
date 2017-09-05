@@ -230,6 +230,8 @@ export class VideosComponent implements OnInit {
             window.scrollTo(0, 0);
         }
 
+        this.sortData();
+
         if (incrementally) {
             this.setDisplayedMoviesIncrementally();
         } else {
@@ -239,27 +241,27 @@ export class VideosComponent implements OnInit {
     }
 
     onRatingCountChanged(newValue:number) {
-        this.minRatingCountFilter = newValue;
-
-        this.showSnackbar("Minimum Rating Count set to:", this.minRatingCountFilter, true);
-
-        this.filterAndSetMovies();
+        if (this.minRatingCountFilter != newValue) {
+            this.minRatingCountFilter = newValue;
+            this.showSnackbar("Minimum Rating Count set to:", this.minRatingCountFilter, true);
+            this.filterAndSetMovies();
+        }
     }
 
     onRatingValueChanged(newValue:number) {
-        this.minRatingValueFilter = newValue;
-
-        this.showSnackbar("Minimum Rating Value set to:", this.minRatingValueFilter, true);
-
-        this.filterAndSetMovies();
+        if (this.minRatingValueFilter != newValue) {
+            this.minRatingValueFilter = newValue;
+            this.showSnackbar("Minimum Rating Value set to:", this.minRatingValueFilter, true);
+            this.filterAndSetMovies();
+        }
     }
 
     onYearChanged(newValue:number) {
-        this.minYearValueFilter = newValue;
-
-        this.showSnackbar("Minimum Year set to:", this.minYearValueFilter, false);
-
-        this.filterAndSetMovies();
+        if (this.minYearValueFilter != newValue) {
+            this.minYearValueFilter = newValue;
+            this.showSnackbar("Minimum Year set to:", this.minYearValueFilter, false);
+            this.filterAndSetMovies();
+        }
     }
 
     openRatingValueDialog() {
@@ -418,24 +420,40 @@ export class VideosComponent implements OnInit {
 
     /* END Sticky Table Head */
 
-    sortData(sort: Sort) {
+    sort: Sort;
+    sortData(sort?: Sort) {
         /* if mdSortDisableClear is not used, there is a unsorted state which should be handled here
         if (!sort.active || sort.direction == '') {
             this.sortedData = data;
             return;
         }*/
 
-        this.filteredMovies = this.filteredMovies.sort((a, b) => {
-            let isAsc = sort.direction == 'asc';
-            switch (sort.active) {
-                case 'movie': return compare(a.movie, b.movie, isAsc);
-                case 'year': return compare(+a.year, +b.year, isAsc);
-                case 'rating': return compare(+a.ratingValue, +b.ratingValue, isAsc);
-                case 'count': return compare(+a.ratingCount, +b.ratingCount, isAsc);
-                default: return 0;
-            }
-        });
+        let _sort: Sort;
+        if (sort) {
+            this.sort = sort;
+            _sort = sort;
+        } else {
+            _sort = this.sort;
+        }
+        console.log("_sort:", _sort, "this.sort: ", this.sort);
 
+        if (_sort) {
+            // there is no sort during initial loading
+            this.filteredMovies = this.filteredMovies.sort((a, b) => {
+                let isAsc = _sort.direction == 'asc';
+                switch (_sort.active) {
+                    case 'movie': return compare(a.movie, b.movie, isAsc);
+                    case 'year': return compare(+a.year, +b.year, isAsc);
+                    case 'rating': return compare(+a.ratingValue, +b.ratingValue, isAsc);
+                    case 'count': return compare(+a.ratingCount, +b.ratingCount, isAsc);
+                    default: return 0;
+                }
+            });
+        }
+    }
+
+    sortDataAndSetMovies(sort: Sort) {
+        this.sortData(sort);
         this.setDisplayedMovies();
     }
 }
