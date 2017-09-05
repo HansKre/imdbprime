@@ -224,6 +224,12 @@ export class VideosComponent implements OnInit {
                         (movie.movie.toUpperCase().indexOf(filter) > -1)
                     )
             );
+
+        // iPhone fix: fixes issues with focused input field while onscreen keyboard is visible
+        if (this.filteredMovies.length < 60) {
+            window.scrollTo(0, 0);
+        }
+
         if (incrementally) {
             this.setDisplayedMoviesIncrementally();
         } else {
@@ -373,9 +379,11 @@ export class VideosComponent implements OnInit {
             window.scrollTo(0, stopY);
             return;
         }
-        let speed = Math.round(distance / 100);
+        let speed = Math.round(distance / 50);
         let step = speed;
-        speed = Math.max(9, speed); //min 9 otherwise it won't look smooth
+
+        const minSpeed = 9;
+        speed = Math.max(minSpeed, speed); //min 9 otherwise it won't look smooth
         let leapY = stopY > startY ? startY + step : startY - step;
         let timer = 0;
         if (stopY > startY) {
