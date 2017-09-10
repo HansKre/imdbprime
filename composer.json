@@ -1,0 +1,12 @@
+{
+    "name": "vendor/name",
+    "authors": [
+        {
+            "name": "hanskrebs",
+            "email": "hans.krebs@me.com"
+        }
+    ],
+    "require": {
+    	"simpleregex/srl-php": "0.1.x-dev"
+    }
+}

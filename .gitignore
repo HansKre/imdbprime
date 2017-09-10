@@ -18,3 +18,4 @@ Thumbs.db
 global.log
 
 output/*.txt
+/vendor/
