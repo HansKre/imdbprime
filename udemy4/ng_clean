@@ -1,0 +1,30 @@
+#!/bin/bash
+
+#############################################
+# clean-up: remove files from previous build
+#############################################
+rm ../index.html
+rm ../favicon.ico
+rm ../3rdpartylicenses.txt
+rm ../.htaccess
+rm -r ../assets
+rm ../appcache.manifest
+
+#glyphicons-halflings-regular.448c34a56d699c29117a.woff2
+#glyphicons-halflings-regular.89889688147bd7575d63.svg
+#glyphicons-halflings-regular.e18bbf611f2a2e43afc0.ttf
+#glyphicons-halflings-regular.f4769f9bdb7466be6508.eot
+#glyphicons-halflings-regular.fa2772327f55d8198301.woff
+find /Users/hanskrebs/git/HTML/imdbprime -maxdepth 1 -type f -name 'glyphicons-halflings-regular.*.*' -delete
+
+#inline.c3433667a1aa84685d33.bundle.js
+#main.ccdc3c9eec51a5a04449.bundle.js
+#polyfills.991e140ab27557bb5853.bundle.js
+#styles.186bc368e0ad9cc257de.bundle.css
+#vendor.fe98792effb55bee8d1d.bundle.js
+
+find /Users/hanskrebs/git/HTML/imdbprime -maxdepth 1 -type f -name 'inline.*.bundle.js' -delete
+find /Users/hanskrebs/git/HTML/imdbprime -maxdepth 1 -type f -name 'main.*.bundle.js' -delete
+find /Users/hanskrebs/git/HTML/imdbprime -maxdepth 1 -type f -name 'polyfills.*.bundle.js' -delete
+find /Users/hanskrebs/git/HTML/imdbprime -maxdepth 1 -type f -name 'styles.*.bundle.css' -delete
+find /Users/hanskrebs/git/HTML/imdbprime -maxdepth 1 -type f -name 'vendor.*.bundle.js' -delete

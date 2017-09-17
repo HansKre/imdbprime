@@ -1,0 +1,33 @@
+#!/bin/bash
+
+#############################################
+# commit and push
+#############################################
+while getopts m:d: option
+do
+ case "${option}"
+ in
+ m) MESSAGE=${OPTARG};;
+ d) DESTINATION=${OPTARG};;
+ esac
+done
+
+if [ -z "${MESSAGE}" ];
+  then
+    echo "Skipping commit and push. Reason:"
+    echo "  Commit Message is unset or set to the empty string"
+  else
+    if [ -z "${DESTINATION}" ];
+      then
+        echo "Skipping commit and push. Reason:"
+        echo "  Destination is unset or set to the empty string"
+      else
+            MORE_PARAMS = $3
+            if [ -z "${MORE_PARAMS}" ];
+              then
+                git add .
+                git commit -m "$MESSAGE"
+                git push "$DESTINATION"
+              fi
+    fi
+fi
