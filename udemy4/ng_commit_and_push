@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x;
+
 #############################################
 # commit and push
 #############################################
@@ -34,3 +36,5 @@ if [ -z "${MESSAGE}" ] && [ -z "${DESTINATION}" ] && [ -z "${BRANCH}" ];
         git push "$REPOSITORY" "$BRANCH"
     fi
 fi
+
+set +x;
