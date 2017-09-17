@@ -28,6 +28,6 @@ if [ -z "${MESSAGE}" ] && [ -z "${DESTINATION}" ] && [ -z "${BRANCH}" ];
       else
         git add .
         git commit -m "$MESSAGE"
-        git push "$DESTINATION"
+        git push "$REPOSITORY" "$BRANCH"
     fi
 fi
