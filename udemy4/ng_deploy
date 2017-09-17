@@ -51,4 +51,4 @@ echo "/api offline.html" >> $myFile
 #############################################
 # commit and push
 #############################################
-./ng_commit_and_push
+./ng_commit_and_push "$@"
