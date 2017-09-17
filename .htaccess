@@ -1,2 +1,4 @@
+RewriteEngine On
+RedirectMatch 301 /index.html$ /u/index.html$1
 ErrorDocument 404 /u/index.html
 Header set Access-Control-Allow-Origin *
