@@ -29,11 +29,11 @@ if [ -z "${MESSAGE}" ] && [ -z "${DESTINATION}" ] && [ -z "${BRANCH}" ];
         echo "Usage: ng_deploy -m \"my message\" -r \"heroku\" -b \"master\""
       else
         echo "=============== ADDING & COMMITING ==============="
-        git add .
+        git add -A
         git commit -m "$MESSAGE"
         echo "=============== PUSHING TO ==============="
         echo "=============== $REPOSITORY $BRANCH ==============="
-        git push "$REPOSITORY" "$BRANCH"
+        #git push "$REPOSITORY" "$BRANCH"
     fi
 fi
 
