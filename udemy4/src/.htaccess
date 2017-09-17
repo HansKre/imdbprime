@@ -1,2 +1,1 @@
-//ErrorDocument 404 /u/index.html
 AddType text/cache-manifest .manifest
