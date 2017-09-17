@@ -21,7 +21,7 @@ cp -a ../u/. ../
 #############################################
 # adjust appcach.manifest
 #############################################
-myFile="appcache.manifest"
+myFile="../appcache.manifest"
 echo "CACHE MANIFEST" > $myFile
 echo "#v0.5 from 13.08.2017" >> $myFile
 echo "# see https://www.catswhocode.com/blog/how-to-create-offline-html5-web-apps-in-5-easy-steps" >> $myFile
