@@ -1,3 +1,1 @@
-RewriteEngine on
-Redirect 301 / http://imdbprime.herokuapp.com/u/
 Header set Access-Control-Allow-Origin *
