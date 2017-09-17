@@ -3,37 +3,31 @@
 #############################################
 # commit and push
 #############################################
-while getopts m:d: option
+while getopts m:r:b: option
 do
  case "${option}"
  in
  m) MESSAGE=${OPTARG};;
- d) DESTINATION=${OPTARG};;
+ r) REPOSITORY=${OPTARG};;
+ b) BRANCH=${OPTARG};;
  esac
 done
 
-if [ -z "${MESSAGE}" ];
+if [ -z "${MESSAGE}" ] && [ -z "${DESTINATION}" ] && [ -z "${BRANCH}" ];
   then
-    echo "Skipping commit and push. Reason:"
-    echo "  Commit Message is unset or set to the empty string"
+    echo "Skipping commit and push."
+    echo "Usage: ng_deploy -m \"my message\" -r \"heroku\" -b \"master\""
   else
-    if [ -z "${DESTINATION}" ];
+    #-m and -d count as own parameters, therefore everything above 4 parameters
+    # shall be rejected
+    MORE_PARAMS=$5
+    if [ -z "${MORE_PARAMS}" ];
       then
-        echo "Skipping commit and push. Reason:"
-        echo "  Destination is unset or set to the empty string"
+        echo "Skipping commit and push."
+        echo "Usage: ng_deploy -m \"my message\" -r \"heroku\" -b \"master\""
       else
-            #-m and -d count as own parameters, therefore everything above 4 parameters
-            # shall be rejected
-            MORE_PARAMS=$5
-            if [ -z "${MORE_PARAMS}" ];
-              then
-                git add .
-                git commit -m "$MESSAGE"
-                git push "$DESTINATION"
-              else
-                echo "Skipping commit and push. Reason:"
-                echo "  Too many parameters."
-                echo "Usage: ng_deploy -m \"my message\" -d \"heroku master\""
-            fi
+        git add .
+        git commit -m "$MESSAGE"
+        git push "$DESTINATION"
     fi
 fi
