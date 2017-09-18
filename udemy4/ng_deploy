@@ -32,8 +32,11 @@ echo "#what to cache in application cache" >> $myFile
 echo "#index.html -> not necessary, as all html files with "manifest" in them are cached anyway" >> $myFile
 echo "#we have some kind of lazy loading if we leave it out here" >> $myFile
 
-# add file names
-ls ../u >> $myFile
+# add files
+# get all files from /u but skipping the directories
+ls ../u -p | grep -v / >> $myFile
+# get content of the assets dir
+ls ../u/assets >> $myFile
 
 echo " " >> $myFile
 echo "NETWORK:" >> $myFile
