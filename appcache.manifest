@@ -7,7 +7,6 @@ CACHE:
 #index.html -> not necessary, as all html files with manifest in them are cached anyway
 #we have some kind of lazy loading if we leave it out here
 3rdpartylicenses.txt
-assets
 favicon.ico
 glyphicons-halflings-regular.448c34a56d699c29117a.woff2
 glyphicons-halflings-regular.89889688147bd7575d63.svg
@@ -20,8 +19,8 @@ main.ccdc3c9eec51a5a04449.bundle.js
 polyfills.991e140ab27557bb5853.bundle.js
 styles.186bc368e0ad9cc257de.bundle.css
 vendor.fe98792effb55bee8d1d.bundle.js
-imdb_logo.png
-my_indigo-pink.css
+assets/imdb_logo.png
+assets/my_indigo-pink.css
  
 NETWORK:
 #what to NOT cache if network is online

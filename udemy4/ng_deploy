@@ -3,12 +3,12 @@
 #############################################
 # creat prod build
 #############################################
-ng build --prod
+#ng build --prod
 
 #############################################
 # clean-up: remove files from previous build
 #############################################
-./ng_clean
+#./ng_clean
 
 #############################################
 # move new files to root
@@ -16,7 +16,7 @@ ng build --prod
 # copy all from /imdbprime/u to /imdbprime
 # The -a option is an improved recursive option, that preserve all file attributes, and also preserve symlinks.
 # The . at end of the source path is a specific cp syntax that allow to copy all files and folders, included hidden ones.
-cp -a ../u/. ../
+#cp -a ../u/. ../
 
 #############################################
 # adjust appcach.manifest
@@ -34,9 +34,12 @@ echo "#we have some kind of lazy loading if we leave it out here" >> $myFile
 
 # add files
 # get all files from /u but skipping the directories
-ls ../u -p | grep -v / >> $myFile
+ls -p ../u | grep -v / >> $myFile
 # get content of the assets dir
-ls ../u/assets >> $myFile
+for fileName in ../u/assets/*.*; do
+  name=${fileName##*/}
+  echo "assets/$name" >> $myFile
+done
 
 echo " " >> $myFile
 echo "NETWORK:" >> $myFile
