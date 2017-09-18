@@ -3,12 +3,12 @@
 #############################################
 # creat prod build
 #############################################
-#ng build --prod
+ng build --prod
 
 #############################################
 # clean-up: remove files from previous build
 #############################################
-#./ng_clean
+./ng_clean
 
 #############################################
 # move new files to root
@@ -16,7 +16,7 @@
 # copy all from /imdbprime/u to /imdbprime
 # The -a option is an improved recursive option, that preserve all file attributes, and also preserve symlinks.
 # The . at end of the source path is a specific cp syntax that allow to copy all files and folders, included hidden ones.
-#cp -a ../u/. ../
+cp -a ../u/. ../
 
 #############################################
 # adjust appcach.manifest
