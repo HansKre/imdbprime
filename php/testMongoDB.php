@@ -41,7 +41,7 @@ array(6) {
   ["pass"]=>
   string(26) "4tpqido9fp8p6agaecdqht4il1"
   ["path"]=>
-  string(16) "/heroku_n3dfqzx7"
+  string(16) "/heroku_n3dfqzx7" <--this is the DB name
 }
  */
 
@@ -57,16 +57,15 @@ if (!getenv('MONGODB_URI')) {
 }
 if (MONGODB_URI) {
     $client = new MongoDB\Client(MONGODB_URI);
-    var_dump($client->getManager()->getServers());
-    echo $client->listDatabases();
 
     /*
      * First we'll add a few songs. Nothing is required to create the songs
      * collection; it is created automatically when we insert.
      */
-    $songs = $client->db->songs;
+    $songs = $client->heroku_n3dfqzx7->songs;
     // To insert a dict, use the insert method.
     $songs->insertMany($seedData);
+
     /*
      * Then we need to give Boyz II Men credit for their contribution to
      * the hit "One Sweet Day".
