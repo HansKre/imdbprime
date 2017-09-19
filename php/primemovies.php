@@ -113,7 +113,8 @@ class PrimeMovies {
             myLog($this->executionId . " Parsing page " . $this->i);
             $newMovies = $this -> getMoviesFromUrl($this->getSearchUrl(), $reachedEnd);
             if (!empty($newMovies)) {
-                FileOperations::storeToFileThreadSave(FileNames::primeOutputMovies(), $newMovies);
+                //FileOperations::storeToFileThreadSave(FileNames::primeOutputMovies(), $newMovies);
+                MongoDBService::storeMovies($newMovies);
                 $this->i++;
                 if ($sleepTime > 2 * ONESECOND) {
                     $sleepTime -= 500000;
