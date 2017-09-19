@@ -46,7 +46,10 @@ ini_set('max_input_time', '36000');
  *
  */
 
-
+$myPrimeMovies = new PrimeMovies(12345);
+if ($myPrimeMovies->startQuery(1)) {
+    myLog("PrimeMovies Successful");
+}
 
 // https://ageek.de/6/php-scripte-im-hintergrund-ausfuhren/
 // https://entwickler.de/online/asynchronous-io-in-php-oder-doch-lieber-threads-137913.html
