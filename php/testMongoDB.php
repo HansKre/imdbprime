@@ -1,5 +1,6 @@
 <?php
 require_once ('commons.php');
+require_once ('MongoDBService.php');
 
 require '../vendor/autoload.php'; // include Composer's autoloader
 // Create seed data
@@ -26,7 +27,7 @@ $seedData = array(
 
 /*
  * php -r 'echo getenv('MONGODB_URI');'
-mongodb://heroku_n3dfqzx7:4tpqido9fp8p6agaecdqht4il1@ds139964.mlab.com:39964/heroku_n3dfqzx7
+mongodb://heroku_n3dfqzx7:mypwd@ds139964.mlab.com:39964/heroku_n3dfqzx7
  *
  * php -r 'echo var_dump(parse_url(getenv('MONGODB_URI')));'
 array(6) {
@@ -39,7 +40,7 @@ array(6) {
   ["user"]=>
   string(15) "heroku_n3dfqzx7"
   ["pass"]=>
-  string(26) "4tpqido9fp8p6agaecdqht4il1"
+  string(26) "mypwd"
   ["path"]=>
   string(16) "/heroku_n3dfqzx7" <--this is the DB name
 }
@@ -50,13 +51,13 @@ array(6) {
  * mongodb://[username:password@]host:port/[database]
  */
 
-if (!getenv('MONGODB_URI')) {
-    define('MONGODB_URI', 'mongodb://heroku_n3dfqzx7:4tpqido9fp8p6agaecdqht4il1@ds139964.mlab.com:39964/heroku_n3dfqzx7');
-} else {
-    define('MONGODB_URI', getenv('MONGODB_URI'));
-}
+MongoDBService::doSomething(MongoDBService::$collectionName1);
+return;
+
+define('MONGODB_URI', getenv('MONGODB_URI'));
 if (MONGODB_URI) {
-    $client = new MongoDB\Client(MONGODB_URI);
+    $options = array("connectTimeoutMS" => 30000);
+    $client = new MongoDB\Client(MONGODB_URI, $options);
 
     /*
      * First we'll add a few songs. Nothing is required to create the songs
@@ -90,8 +91,11 @@ if (MONGODB_URI) {
         echo ' topped the charts for ' .$doc['weeksAtOne'];
         echo ' straight weeks.', "\n";
     }
-    // Since this is an example, we'll clean up after ourselves.
-    $songs->drop();
+
+    /*
+     * Deletes complete collection
+     */
+    //$songs->drop();
 }
 
 echo "Finished testMongoDb.php ".nowAsString();
