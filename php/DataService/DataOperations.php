@@ -119,7 +119,7 @@ class DataOperations {
         if (empty($movie)) {
             return true;
         }
-        return MongoDBService::insertOneUnique(MongoDBCollections::$skippedMovies, $movie);
+        return MongoDBService::insertOneUnique(MongoDBCollections::$skippedMoviesInProgress, $movie);
     }
 
     public static function replaceOldImdbQueryResults() {
