@@ -8,6 +8,7 @@
     ],
     "require": {
     	"simpleregex/srl-php": "0.1.x-dev",
-        "mongodb/mongodb": "^1.1"
+        "mongodb/mongodb": "^1.1",
+        "ext-mbstring": "*"
     }
 }
