@@ -1,8 +1,8 @@
 <?php
 const IMDBURL = 'http://www.imdb.com';
 const AMAZON_SEARCH_URL = 'https://www.amazon.de/s/ref=sr_pg_399?fst=as%3Aoff&rh=n%3A3279204031%2Cp_n_ways_to_watch%3A7448695031%2Cn%3A%213010076031%2Cn%3A3015915031&page=399&bbn=3279204031&ie=UTF8';
-require_once ('commons.php');
-require_once('FileOperations.php');
+require_once(realpath(dirname(__FILE__)).'/../commons.php');
+require_once (realpath(dirname(__FILE__)).'/../DataService/DataOperations.php');
 require_once('ImdbMovieRatingsRetriever.php');
 
 class ImdbQuery {
@@ -16,14 +16,10 @@ class ImdbQuery {
         myLog($this->myExecutionId . " " . $message);
     }
 
-    /*
-     * On Openshift, scripts get aborted after 20mins, thus to avoid data loss,
-     * no further calculation happens after 19 minutes.
-     */
     private function hasTime() {
         $now = time();
         $elapsedMinutes = ($now - $this->startTime) / 60;
-        if ($elapsedMinutes > 18) {
+        if ($elapsedMinutes > (CRON_JOB_MAX_EXECUTION_TIME - 1)) {
             return false;
         }
         return true;
@@ -31,10 +27,10 @@ class ImdbQuery {
 
     private function storeAndReset() {
         if ($this->movieWithRating) {
-            FileOperations::storeToFileThreadSave(FileNames::imdbQueryMoviesWithRatingsName_temp(), $this->movieWithRating);
+            DataOperations::storeMatchedMovie($this->movieWithRating);
         }
         if ($this->skippedMovie) {
-            FileOperations::storeToFileThreadSave(FileNames::imdbQuerySkippedMoviesName_temp(), $this->skippedMovie);
+            DataOperations::storeSkippedMovie($this->skippedMovie);
         }
         $this->movieWithRating = null;
         $this->skippedMovie = null;
@@ -65,7 +61,7 @@ class ImdbQuery {
         $this->log("Starting IMDB Query");
         $hasMoviesToProcess = true;
         while ($hasMoviesToProcess && $this->hasTime()) {
-            $this->movie = FileOperations::getNextMovieAndRemoveItFromFile();
+            $this->movie = DataOperations::getNextMovieAndRemoveItFromDB();
             //$this->movie = array('year' => "2015", 'movie' => "The Lady In Black [OV]", 'director' => "Steve Spel");
             //$this->movie = array('year' => "2016", 'movie' => "Borderline - 1950 [OV]", 'director' => "Unavailable", 'actors' => array("Fred MacMurray", "Claire Trevor"));
             //$hasMoviesToProcess = false;
@@ -78,7 +74,7 @@ class ImdbQuery {
         }
 
         if (!$hasMoviesToProcess) {
-            FileOperations::replaceOldImdbQueryResults();
+            DataOperations::replaceOldImdbQueryResults();
         }
 
         return true;

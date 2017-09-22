@@ -15,7 +15,7 @@ export class ResultsComponent implements OnInit {
 }
 
 /*
-                        url: './getResultsDate.php',
+                        url: './getResultsDateAndCount.php',
                         success: function(data) {
                             resultsFromElem.innerHTML += data + '<br>' + "With min Rating Count: " + minRatingCount + ": "+ resultsArray.length;
                         }

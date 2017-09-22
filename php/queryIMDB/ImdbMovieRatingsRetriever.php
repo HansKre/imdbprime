@@ -1,5 +1,5 @@
 <?php
-require_once ('commons.php');
+require_once(realpath(dirname(__FILE__)).'/../commons.php');
 const EXACT = 1;
 const POPULAR = 2;
 

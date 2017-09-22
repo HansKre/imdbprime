@@ -66,14 +66,14 @@ class FileNames {
     }
 }
 
-class ReturnValues {
+class FOReturnValues {
     public static $shouldStart = "SHOULD_START";
     public static $shouldContinue = "SHOULD_CONTINUE";
     public static $inProgress = "IN_PROGRESS";
     public static $succeeded = "SUCCEEDED";
 }
 
-class ExecutionMarks {
+class FOExecutionMarks {
     public static $started = "STARTED";
     public static $succeeded = "SUCCEEDED";
 }
@@ -206,7 +206,7 @@ class FileOperations {
         $data = null;
         $returnValue = null;
         if (!file_exists($fileName)) {
-            return ReturnValues::$shouldStart;
+            return FOReturnValues::$shouldStart;
         } else {
             // open in r/w but without making any changes to the file
             $file = fopen($fileName,"c+");
@@ -218,7 +218,7 @@ class FileOperations {
             $data = file_get_contents($fileName);
 
             if ($data === "") {
-                $returnValue = ReturnValues::$shouldStart;
+                $returnValue = FOReturnValues::$shouldStart;
             } else {
                 //2017-07-29 12:05:12 STARTED
                 $splitStrings = explode(" ", $data);
@@ -229,20 +229,20 @@ class FileOperations {
                 $timeDiff = $now->diff($dateFromFile);
                 $timeDiffMinutes = ($timeDiff->y * 365 * 24 * 60) + ($timeDiff->m * 30.5 * 24 * 60) + ($timeDiff->days * 24 * 60) + ($timeDiff->h * 60) + ($timeDiff->i);
 
-                if (contains($splitStrings[2], ExecutionMarks::$started)) {
+                if (contains($splitStrings[2], FOExecutionMarks::$started)) {
                     if ($timeDiffMinutes > 20) {
                         // cron jobs get aborted after 20 minutes, therefore previous execution did not come to an end
-                        $returnValue = ReturnValues::$shouldContinue;
+                        $returnValue = FOReturnValues::$shouldContinue;
                     } else {
                         // still running
-                        $returnValue = ReturnValues::$inProgress;
+                        $returnValue = FOReturnValues::$inProgress;
                     }
-                } else if (contains($splitStrings[2], ExecutionMarks::$succeeded)) {
+                } else if (contains($splitStrings[2], FOExecutionMarks::$succeeded)) {
                     $oneDayInMinutes = 24 * 60;
                     if ($timeDiffMinutes > $oneDayInMinutes) {
-                        $returnValue = ReturnValues::$shouldStart;
+                        $returnValue = FOReturnValues::$shouldStart;
                     } else {
-                        $returnValue = ReturnValues::$succeeded;
+                        $returnValue = FOReturnValues::$succeeded;
                     }
                 }
             }

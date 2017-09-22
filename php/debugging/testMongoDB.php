@@ -1,8 +1,9 @@
 <?php
-require_once ('commons.php');
-require_once ('MongoDBService.php');
+require_once ('../commons.php');
+require_once ('../DataService/MongoDBService.php');
+require_once ('../DataService/DataOperations.php');
 
-require '../vendor/autoload.php'; // include Composer's autoloader
+require '../../vendor/autoload.php'; // include Composer's autoloader
 // Create seed data
 $seedData = array(
     array(
@@ -51,7 +52,14 @@ array(6) {
  * mongodb://[username:password@]host:port/[database]
  */
 
-MongoDBService::doSomething(MongoDBService::$collectionName1);
+//DataOperations::markExecutionAs("STARTED");
+//echo DataOperations::didRunPrimeMoviesToday();
+//DataOperations::dropPrimeMoviesCollection();
+//echo DataOperations::whereToContinueAmazonQuery();
+//var_dump(DataOperations::getNextMovieAndRemoveItFromDB());
+//echo DataOperations::storeMatchedMovie(['a'=>'b']);
+//echo DataOperations::replaceOldImdbQueryResults();
+//echo MongoDBService::renameCollection(MongoDBCollections::$moviesWithRating, MongoDBCollections::$moviesWithRating);
 return;
 
 define('MONGODB_URI', getenv('MONGODB_URI'));

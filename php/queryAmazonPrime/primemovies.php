@@ -1,20 +1,16 @@
 <?php
 ini_set('max_execution_time', 3600);
-require_once ('commons.php');
+require_once(realpath(dirname(__FILE__)).'/../commons.php');
 
 class PrimeMovies {
     private $i;
     private $executionId;
     private $startTime;
 
-    /*
-     * On Openshift, scripts get aborted after 20mins, thus to avoid data loss,
-     * no further calculation happens after 19 minutes.
-     */
     private function hasTime() {
         $now = time();
         $elapsedMinutes = ($now - $this->startTime) / 60;
-        if ($elapsedMinutes > 18) {
+        if ($elapsedMinutes > (CRON_JOB_MAX_EXECUTION_TIME - 1)) {
             return false;
         }
         return true;
@@ -50,7 +46,7 @@ class PrimeMovies {
         //Create a new DOM document
         $dom = new DOMDocument;
 
-        //Parse the HTML. The @ is used to suppress any parsing errors
+        //Parse the HTML. The @ is used to suppress any queryAmazonPrime errors
         //that will be thrown if the $html string isn't valid XHTML.
         if (@$dom->loadHTML($html)) {
             /*<div id="atfResults" class="a-row s-result-list-parent-container"><ul id="s-results-list-atf" class="s-result-list s-col-1 s-col-ws-1 s-result-list-hgrid s-height-equalized s-list-view s-text-condensed"><li id="result_6368" data-asin="B06XRLC6N7" class="s-result-item celwidget "><div class="s-item-container"><div class="a-fixed-left-grid"><div class="a-fixed-left-grid-inner" style="padding-left:218px"><div class="a-fixed-left-grid-col a-col-left" style="width:218px;margin-left:-218px;_margin-left:-109px;float:left;"><div class="a-row"><div aria-hidden="true" class="a-column a-span12 a-text-center"><a class="a-link-normal a-text-normal" href="https://www.amazon.de/Blueberry-Hunt-OV-Naseeruddin-Shah/dp/B06XRLC6N7/ref=sr_1_6369?s=instant-video&amp;ie=UTF8&amp;qid=1500111604&amp;sr=1-6369"><img alt="The Blueberry Hunt [OV]" src="https://images-eu.ssl-images-amazon.com/images/I/61O0uNFt5pL._PI_PJPrime-Sash-Extra-Large-2017,TopLeft,0,0_AC_US218_.jpg" class="s-access-image cfMarker" height="218" width="218"></a><div class="a-section a-spacing-none a-text-center"></div></div></div></div><div class="a-fixed-left-grid-col a-col-right" style="padding-left:2%;*width:97.6%;float:left;"><div class="a-row a-spacing-small"><div class="a-row a-spacing-none"><a class="a-link-normal s-access-detail-page  s-color-twister-title-link a-text-normal" title="The Blueberry Hunt [OV]" href="https://www.amazon.de/Blueberry-Hunt-OV-Naseeruddin-Shah/dp/B06XRLC6N7/ref=sr_1_6369?s=instant-video&amp;ie=UTF8&amp;qid=1500111604&amp;sr=1-6369"><h2 data-attribute="The Blueberry Hunt [OV]" data-max-rows="0" class="a-size-medium s-inline  s-access-title  a-text-normal">The Blueberry Hunt [OV]</h2></a><span class="a-letter-space"></span><span class="a-letter-space"></span><span class="a-size-small a-color-secondary">2016</span></div></div><div class="a-row"><div class="a-column a-span7"><div class="a-row a-spacing-none"><span class="a-size-small a-color-tertiary">In Ihrer Prime-Mitgliedschaft enthalten.</span></div><div class="a-row a-spacing-mini"><a class="a-link-normal a-text-normal" href="https://www.amazon.de/Blueberry-Hunt-OV-Naseeruddin-Shah/dp/B06XRLC6N7/ref=sr_1_6369_dvt_1_wnzw?s=instant-video&amp;ie=UTF8&amp;qid=1500111604&amp;sr=1-6369"><span class="a-size-base">Jetzt ansehen</span></a></div><div class="a-row a-spacing-top-mini a-spacing-mini"><span class="a-declarative" data-action="s-watchlist-add" data-s-watchlist-add="{&quot;asin&quot;:&quot;B06XRLC6N7&quot;,&quot;prodType&quot;:&quot;movie&quot;,&quot;n&quot;:&quot;6369&quot;}"><span class="a-button a-button-small"><span class="a-button-inner"><input class="a-button-input" type="submit"><span class="a-button-text" aria-hidden="true"><span class="s-padding-left-large s-padding-right-large">
@@ -113,8 +109,7 @@ class PrimeMovies {
             myLog($this->executionId . " Parsing page " . $this->i);
             $newMovies = $this -> getMoviesFromUrl($this->getSearchUrl(), $reachedEnd);
             if (!empty($newMovies)) {
-                //FileOperations::storeToFileThreadSave(FileNames::primeOutputMovies(), $newMovies);
-                MongoDBService::storeMovies($newMovies);
+                DataOperations::storeAmazonPrimeMovies($newMovies);
                 $this->i++;
                 if ($sleepTime > 2 * ONESECOND) {
                     $sleepTime -= 500000;
@@ -132,7 +127,7 @@ class PrimeMovies {
     }
 
     public function continueQuery() {
-        $this->startQuery(FileOperations::whereToContinueAmazonQuery());
+        return $this->startQuery(DataOperations::whereToContinueAmazonQuery());
     }
 
     public function __construct($executionId) {
