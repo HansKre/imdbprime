@@ -11,6 +11,7 @@ class PrimeMovies {
         $now = time();
         $elapsedMinutes = ($now - $this->startTime) / 60;
         if ($elapsedMinutes > (CRON_JOB_MAX_EXECUTION_TIME - 1)) {
+            echo "Running out of time. Stopping execution. \n";
             return false;
         }
         return true;
