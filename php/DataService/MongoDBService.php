@@ -83,12 +83,18 @@ class MongoDBService {
         }
     }
 
-    public static function find(string $colName, array $filter) :  Traversable {
+    public static function find(string $colName, array $filter) : array {
         $db = self::db();
         if ($db) {
             $collection = $db->selectCollection($colName);
+            $options = [
+                /* prevent _id from being part of the results */
+                'projection' => [
+                    '_id' => 0,
+                ],
+            ];
             try {
-                return $collection->find($filter);
+                return $collection->find($filter, $options)->toArray();
             } catch (Exception $e) {
                 echo $e;
                 return null;
@@ -96,6 +102,11 @@ class MongoDBService {
         } else {
             return null;
         }
+    }
+
+    public static function findAll(string $colName) : array {
+        $filter = [];
+        return self::find($colName, $filter);
     }
 
     public static function findOne(string $colName, array $filter) {
@@ -264,3 +275,9 @@ $options = array(
                     ],
 ];
  */
+
+/* Search for a range: http://php.net/manual/de/mongocollection.find.php
+https://www.techcoil.com/blog/getting-documents-from-mongodb-collections-with-php/
+// search for documents where 5 < x < 20
+$rangeQuery = array('x' => array( '$gt' => 5, '$lt' => 20 ));
+*/

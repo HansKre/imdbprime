@@ -21,8 +21,7 @@ http://imdbprime-snah.rhcloud.com
         $ratingCountMin = $_GET['ratingCountMin'];
     }
 
-    $data = file_get_contents( FileNames::imdbQueryMoviesWithRatingsName());
-    $movies = unserialize( $data );
+    $movies = DataOperations::getAllMoviesWithRatings();
 
     if ($sortBy && $order) {
         if ($sortBy === 'ratingValue' && $order === 'descending') {

@@ -7,18 +7,18 @@ export class WebService {
 
     movies: Movie[];
 
+    //private url = ''http://imdbprime-snah.rhcloud.com/getMoviesWithRatings.php?sortBy=ratingValue&order=descending&ratingCountMin=10000'';
+    private url = 'http://imdbprime.herokuapp.com/php/webAPI/getMoviesWithRatings.php?sortBy=ratingValue&order=descending&ratingCountMin=10000';
+
     constructor(private http: Http) { }
 
     getObservable() {
-        let url = 'http://imdbprime-snah.rhcloud.com/getMoviesWithRatings.php?sortBy=ratingValue&order=descending&ratingCountMin=10000';
-        return this.http.get(url);
+        return this.http.get(this.url);
     }
 
     getPromise() {
-        let url = 'http://imdbprime-snah.rhcloud.com/getMoviesWithRatings.php?sortBy=ratingValue&order=descending&ratingCountMin=10000';
-
         return new Promise(function (resolve, reject) {
-            this.http.get(url)
+            this.http.get(this.url)
                 .subscribe(
                     response => this.handleResponse(response),
                     error => reject(error),

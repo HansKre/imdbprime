@@ -113,7 +113,7 @@ class DataOperations {
         return MongoDBService::findOneAndDelete(MongoDBCollections::$foundOnAmazonPrime, $filter);
     }
 
-    private static function echoCountOfColByFilter($colName, $filter) {
+    private static function echoCountOfColByFilter($colName, $filter = []) {
         echo "Remaining in " . $colName . " : "
             . MongoDBService::count($colName, $filter)."\n";
     }
@@ -150,5 +150,9 @@ class DataOperations {
         } else {
             myLog("Did not find collection, cannot replace ".MongoDBCollections::$skippedMoviesInProgress);
         }
+    }
+
+    public static function getAllMoviesWithRatings() : array {
+        return MongoDBService::findAll(MongoDBCollections::$moviesWithRating);
     }
 }
