@@ -37,6 +37,8 @@ class MongoDBService {
             //insert only, if it does not exist yet
             if (!$cursor->toArray()) {
                 return $collection->insertOne($doc)->isAcknowledged();
+            } else {
+                return false;
             }
         }
         return false;

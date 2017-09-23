@@ -84,12 +84,12 @@ class DataOperations {
     }
 
     public static function dropPrimeMoviesCollection() {
-        MongoDBService::drop(MongoDBCollections::$amazonPrime);
+        MongoDBService::drop(MongoDBCollections::$foundOnAmazonPrime);
     }
 
-    public static function storeAmazonPrimeMovies(array $movies) {
+    public static function storeFoundAmazonPrimeMovies(array $movies) {
         foreach ($movies as $movie) {
-            if (!MongoDBService::insertOneUnique(MongoDBCollections::$amazonPrime, $movie)) {
+            if (!MongoDBService::insertOneUnique(MongoDBCollections::$foundOnAmazonPrime, $movie)) {
                 echo "ERROR in DataOperations::storeAmazonPrimeMovies() while storing " .
                     $movie['movie']."\n";
             }
@@ -99,7 +99,7 @@ class DataOperations {
     public static function whereToContinueAmazonQuery() {
         // since we are writing all the movies of an Amazon Search Page as a bulk to the DB,
         // we can assume, that the Search Page has been processed as a whole
-        $lastPage = MongoDBService::findOneMax(MongoDBCollections::$amazonPrime, 'searchPage');
+        $lastPage = MongoDBService::findOneMax(MongoDBCollections::$foundOnAmazonPrime, 'searchPage');
         if ($lastPage) {
             return ($lastPage + 1);
         } else {
@@ -109,9 +109,13 @@ class DataOperations {
 
     public static function getNextMovieAndRemoveItFromDB() {
         $filter = [];
-        echo "Remaining in " . MongoDBCollections::$amazonPrime . " : "
-            . MongoDBService::count(MongoDBCollections::$amazonPrime, $filter)."\n";
-        return MongoDBService::findOneAndDelete(MongoDBCollections::$amazonPrime, $filter);
+        self::echoCountOfColByFilter(MongoDBCollections::$foundOnAmazonPrime, $filter);
+        return MongoDBService::findOneAndDelete(MongoDBCollections::$foundOnAmazonPrime, $filter);
+    }
+
+    private static function echoCountOfColByFilter($colName, $filter) {
+        echo "Remaining in " . $colName . " : "
+            . MongoDBService::count($colName, $filter)."\n";
     }
 
     public static function storeMatchedMovie($movie) {
@@ -135,7 +139,7 @@ class DataOperations {
             MongoDBService::renameCollection(MongoDBCollections::$moviesWithRatingInProgress,
                 MongoDBCollections::$moviesWithRating);
         } else {
-               myLog("Cannot replace collection ".MongoDBCollections::$moviesWithRatingInProgress);
+               myLog("Did not find collection, cannot replace ".MongoDBCollections::$moviesWithRatingInProgress);
         }
 
         $canReplace = MongoDBService::hasCollection(MongoDBCollections::$skippedMoviesInProgress);
@@ -144,7 +148,7 @@ class DataOperations {
             MongoDBService::renameCollection(MongoDBCollections::$skippedMoviesInProgress,
                 MongoDBCollections::$skippedMovies);
         } else {
-            myLog("Cannot replace collection ".MongoDBCollections::$skippedMoviesInProgress);
+            myLog("Did not find collection, cannot replace ".MongoDBCollections::$skippedMoviesInProgress);
         }
     }
 }

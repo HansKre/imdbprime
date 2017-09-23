@@ -2,7 +2,7 @@
 
 class MongoDBCollections
 {
-    public static $amazonPrime = 'foundOnAmazonPrime';
+    public static $foundOnAmazonPrime = 'foundOnAmazonPrime';
     public static $control = 'control';
     public static $moviesWithRating = 'moviesWithRatings';
     public static $moviesWithRatingInProgress = 'moviesWithRatingsInProgress';
