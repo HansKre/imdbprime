@@ -80,10 +80,11 @@ if ($didRunPrimeMoviesToday === ReturnValues::$shouldStart) {
 $didRunPrimeMoviesToday = DataOperations::didRunPrimeMoviesToday();
 myLog("===== Execution Decision for IMDB Query is: $didRunPrimeMoviesToday =====");
 
-if ($didRunPrimeMoviesToday === ReturnValues::$succeeded) {
+if ($didRunPrimeMoviesToday === ReturnValues::$amazonQuerySucceeded) {
     myLog("=====Starte IMDB Query.=====");
     $imdbQuery = new ImdbQuery($myExecutionId);
     if ($imdbQuery->doQuery()) {
+        DataOperations::markExecutionAs(ExecutionMarks::$finished);
         myLog("=====Fertig=====");
     } else {
         myLog("=====Abbruch: queryimdb.php nicht erfolgreich.=====");

@@ -38,8 +38,10 @@ class DataOperations {
                 if ($timeDiffMinutes > $oneDayInMinutes) {
                     $returnValue = ReturnValues::$shouldStart;
                 } else {
-                    $returnValue = ReturnValues::$succeeded;
+                    $returnValue = ReturnValues::$amazonQuerySucceeded;
                 }
+            } else if (contains($controlDoc[MARK_EXECUTION_KEY], ExecutionMarks::$finished)) {
+                $returnValue = ReturnValues::$imdbQuerySucceeded;
             } else {
                 // undefined case
                 $returnValue = ReturnValues::$shouldStart;
@@ -59,7 +61,7 @@ class DataOperations {
         return MongoDBService::updateMany(MongoDBCollections::$control, $filter, $doc);
     }
 
-    //TODO
+    //TODO: not needed anymore
     /*public static function storeMovies($movie) {
         // add movie/displayedMovies as last array entry/entries
         if (isset($movie['movie'])) {
@@ -87,7 +89,10 @@ class DataOperations {
 
     public static function storeAmazonPrimeMovies(array $movies) {
         foreach ($movies as $movie) {
-            return MongoDBService::insertOneUnique(MongoDBCollections::$amazonPrime, $movie);
+            if (!MongoDBService::insertOneUnique(MongoDBCollections::$amazonPrime, $movie)) {
+                echo "ERROR in DataOperations::storeAmazonPrimeMovies() while storing " .
+                    $movie['movie']."\n";
+            }
         }
     }
 
@@ -103,8 +108,9 @@ class DataOperations {
     }
 
     public static function getNextMovieAndRemoveItFromDB() {
-        // filter to find anything
         $filter = [];
+        echo "Remaining in " . MongoDBCollections::$amazonPrime . " : "
+            . MongoDBService::count(MongoDBCollections::$amazonPrime, $filter)."\n";
         return MongoDBService::findOneAndDelete(MongoDBCollections::$amazonPrime, $filter);
     }
 
@@ -129,7 +135,7 @@ class DataOperations {
             MongoDBService::renameCollection(MongoDBCollections::$moviesWithRatingInProgress,
                 MongoDBCollections::$moviesWithRating);
         } else {
-               myLog("Cannot not replace collection ".MongoDBCollections::$moviesWithRatingInProgress);
+               myLog("Cannot replace collection ".MongoDBCollections::$moviesWithRatingInProgress);
         }
 
         $canReplace = MongoDBService::hasCollection(MongoDBCollections::$skippedMoviesInProgress);
@@ -138,7 +144,7 @@ class DataOperations {
             MongoDBService::renameCollection(MongoDBCollections::$skippedMoviesInProgress,
                 MongoDBCollections::$skippedMovies);
         } else {
-            myLog("Cannot not replace collection ".MongoDBCollections::$skippedMoviesInProgress);
+            myLog("Cannot replace collection ".MongoDBCollections::$skippedMoviesInProgress);
         }
     }
 }

@@ -224,6 +224,19 @@ class MongoDBService {
             return false;
         }
     }
+
+    public static function count(string $colName, $filter) {
+        $db = self::db();
+        if ($db) {
+            $collection = $db->selectCollection($colName);
+            try {
+                return $collection->count($filter);
+            } catch (Exception $e) {
+                echo $e;
+                return null;
+            }
+        }
+    }
 }
 
 /* QUERY TYPES
