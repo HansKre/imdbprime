@@ -60,6 +60,7 @@ array(6) {
 //echo DataOperations::storeMatchedMovie(['a'=>'b']);
 //echo DataOperations::replaceOldImdbQueryResults();
 //echo MongoDBService::renameCollection(MongoDBCollections::$moviesWithRating, MongoDBCollections::$moviesWithRating);
+echo "Running";
 return;
 
 define('MONGODB_URI', getenv('MONGODB_URI'));
