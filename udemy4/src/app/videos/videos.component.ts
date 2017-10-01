@@ -1,58 +1,19 @@
 import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { WebService } from "../services/web.service";
 import { Movie } from "../structures/movie";
-import {MdSnackBar, Sort} from "@angular/material";
+import { MdSnackBar, Sort } from "@angular/material";
 import { IsOnlineService } from "../services/is-online.service";
-import { animate, keyframes, state, style, transition, trigger } from "@angular/animations";
 import { DialogSettingsService } from "../dialog-settings/dialog-settings.service";
+import { FADE_IN_OUT_ANIMATION } from "../animations/fade-in-out.animation";
+import { SCALE_IN_OUT_SLOW_ANIMATION } from "../animations/scale-in-out-slow.animation";
 
 @Component({
     selector: 'app-movies',
     templateUrl: './videos.component.html',
     styleUrls: ['./videos.component.css'],
     animations: [
-        /* FADE IN_OUT */
-        trigger('fadeInOutTrigger', [
-            state('in', style({
-                    opacity: 1,
-                    transform: 'translateY(0)'
-            })),
-            transition('void => in', [
-                // specify starting style for animation
-                style({
-                    opacity: 0,
-                    transform: 'translateY(-100%)'
-                }),
-                animate(300)
-            ]),
-            transition('in => void', [
-                // specify end state after animation
-                animate(300,
-                    style({
-                        opacity: 0,
-                        transform: 'translateY(-100%)'
-                    })
-                )
-            ])
-        ]),
-        /* SCALE IN_OUT SLOW */
-        trigger('scalingTrigger', [
-            state('normal1', style({
-                opacity: 1,
-                transform: 'scale(1)'
-            })),
-            state('normal2', style({
-                opacity: 1,
-                transform: 'scale(1)'
-            })),
-            transition('normal1 <=> normal2', [
-                animate(300, keyframes([
-                    style({opacity: 1, transform: 'scale(1)', offset: 0}),
-                    style({opacity: 0.5, transform: 'scale(3)', offset: 0.2}),
-                    style({opacity: 1, transform: 'scale(1)', offset: 1}),
-                ]))
-            ])
-        ]),
+        FADE_IN_OUT_ANIMATION,
+        SCALE_IN_OUT_SLOW_ANIMATION,
     ]
 })
 
