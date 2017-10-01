@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MoveToTopComponent } from './buttons-back-to-top-and-settings.component';
+import { ButtonOpenSettingsComponent } from './button-open-settings.component';
 
-describe('MoveToTopComponent', () => {
-  let component: MoveToTopComponent;
-  let fixture: ComponentFixture<MoveToTopComponent>;
+describe('ButtonOpenSettingsComponent', () => {
+  let component: ButtonOpenSettingsComponent;
+  let fixture: ComponentFixture<ButtonOpenSettingsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MoveToTopComponent ]
+      declarations: [ ButtonOpenSettingsComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MoveToTopComponent);
+    fixture = TestBed.createComponent(ButtonOpenSettingsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

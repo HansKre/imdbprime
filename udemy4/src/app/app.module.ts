@@ -18,7 +18,8 @@ import { SliderComponent } from './slider/slider.component';
 import { ResultsComponent } from './results/results.component';
 import { OnlineIndicatorComponent } from './online-indicator/online-indicator.component';
 import { DialogSettingsComponent } from './dialog-settings/dialog-settings.component';
-import { MoveToTopComponent } from './buttons-back-to-top-and-settings/buttons-back-to-top-and-settings.component';
+import { MoveToTopComponent } from './button-back-to-top/button-back-to-top.component';
+import { ButtonOpenSettingsComponent } from './button-open-settings/button-open-settings.component';
 
 // Services
 import { WebService } from "./services/web.service";
@@ -39,7 +40,8 @@ import 'web-animations-js';
         ResultsComponent,
         OnlineIndicatorComponent,
         DialogSettingsComponent,
-        MoveToTopComponent
+        MoveToTopComponent,
+        ButtonOpenSettingsComponent
     ],
     imports: [
         BrowserModule,

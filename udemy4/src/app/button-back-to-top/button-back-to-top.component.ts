@@ -1,17 +1,18 @@
-import {Component, HostListener, OnInit} from '@angular/core';
+import {Component, HostListener, Input, OnInit} from '@angular/core';
 import {FADE_IN_OUT_ANIMATION} from "../animations/fade-in-out.animation";
 
 @Component({
-    selector: 'app-buttons-back-to-top-and-settings',
-    templateUrl: './buttons-back-to-top-and-settings.component.html',
-    styleUrls: ['./buttons-back-to-top-and-settings.component.css'],
+    selector: 'app-button-back-to-top',
+    templateUrl: './button-back-to-top.component.html',
+    styleUrls: ['./button-back-to-top.component.css'],
     animations: [
         FADE_IN_OUT_ANIMATION,
     ]
 })
 export class MoveToTopComponent implements OnInit {
 
-    /* SCROLL TO TOP */
+    @Input() rightOffset: string = '60px';
+
     shouldShowScrollToTop: boolean = false;
     animateButtonEntryState: string = "in";
 
@@ -83,13 +84,6 @@ export class MoveToTopComponent implements OnInit {
         // Internet Explorer 6, 7 and 8
         if (document.body.scrollTop) return document.body.scrollTop;
         return 0;
-    }
-
-
-
-    //==============SETTINGS DIALOG=============
-    openAllSettingsDialog() {
-        alert("opening dialog");
     }
 
 }
