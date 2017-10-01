@@ -18,10 +18,10 @@
             rows of the tboy. We do not want the thead to scroll though. -->
             <thead class="thead-inverse">
             <tr>
-                <th md-sort-header="movie" class="col-xs-8 firstLineTableHeader">Movie</th>
+                <th md-sort-header="movie" class="col-xs-9 firstLineTableHeader">Movie</th>
                 <th md-sort-header="year" start="desc" class="col-xs-1 firstLineTableHeader">Year</th>
                 <th md-sort-header="rating" start="desc" class="col-xs-1 text-center firstLineTableHeader"><span>Rating</span></th>
-                <th md-sort-header="count" start="desc" class="col-xs-2 text-right firstLineTableHeader"><span>Count</span></th>
+                <th md-sort-header="count" start="desc" class="col-xs-1 text-right firstLineTableHeader"><span>Count</span></th>
             </tr>
             <tr class="secondLineTableHeader">
                 <th class="secondLineTableHeader">
@@ -34,20 +34,26 @@
                     </md-input-container>
                 </th>
                 <th class="secondLineTableHeader">
-                    <label [@scalingTrigger]="animationYearScalingState"><span
-                            class="label label-info" (click)="openYearDialog()">{{minYearValueFilter.toString()}}</span>
+                    <label [@scalingTrigger]="animationYearScalingState">
+                        <span
+                            class="label label-info"
+                            (click)="openYearDialog()">{{minYearValueFilter.toString()}}</span>
                     </label>
                 </th>
                 <th class="secondLineTableHeader">
                     <img src="assets/imdb_logo.png" alt="IMDB">
-                    <label [@scalingTrigger]="animationRatingValueScalingState"><span
-                            class="label label-info" (click)="openRatingValueDialog()">{{minRatingValueFilter.toLocaleString('en')}}</span>
+                    <label [@scalingTrigger]="animationRatingValueScalingState">
+                        <span
+                            class="label label-info"
+                            (click)="openRatingValueDialog()">{{minRatingValueFilter.toLocaleString('en')}}</span>
                     </label>
                 </th>
                 <th class="secondLineTableHeader">
                     <img src="assets/imdb_logo.png" alt="IMDB">
-                    <label [@scalingTrigger]="animationRatingCountScalingState"><span
-                            class="label label-info" (click)="openRatingCountDialog()">{{minRatingCountFilter.toLocaleString('en')}}</span>
+                    <label [@scalingTrigger]="animationRatingCountScalingState">
+                        <span
+                            class="label label-info"
+                            (click)="openRatingCountDialog()">{{minRatingCountFilter.toLocaleString('en')}}</span>
                     </label>
                 </th>
             </tr>
@@ -59,13 +65,10 @@
         rows of the tboy. We do not want the thead to scroll though. -->
         <thead class="thead-inverse" style="display: none">
         <tr>
-            <th class="col-xs-8 firstLineTableHeader">Movie</th>
+            <th class="col-xs-9 firstLineTableHeader">Movie</th>
             <th class="col-xs-1 firstLineTableHeader">Year</th>
-            <th class="col-xs-1 text-center firstLineTableHeader">
-                <img src="assets/imdb_logo.png" alt="IMDB">
-                <span>Rating</span>
-            </th>
-            <th  class="col-xs-2 text-right firstLineTableHeader">Rating Count</th>
+            <th class="col-xs-1 text-center firstLineTableHeader"><span>Rating</span></th>
+            <th class="col-xs-1 text-right firstLineTableHeader"><span>Count</span></th>
         </tr>
         <tr class="secondLineTableHeader">
             <th class="secondLineTableHeader">
@@ -78,18 +81,26 @@
                 </md-input-container>
             </th>
             <th class="secondLineTableHeader">
-                <label [@scalingTrigger]="animationYearScalingState"><span
-                        class="label label-info" (click)="openYearDialog()">{{minYearValueFilter.toString()}}</span>
+                <label [@scalingTrigger]="animationYearScalingState">
+                        <span
+                                class="label label-info"
+                                (click)="openYearDialog()">{{minYearValueFilter.toString()}}</span>
                 </label>
             </th>
             <th class="secondLineTableHeader">
-                <label [@scalingTrigger]="animationRatingValueScalingState"><span
-                        class="label label-info" (click)="openRatingValueDialog()">{{minRatingValueFilter.toLocaleString('en')}}</span>
+                <img src="assets/imdb_logo.png" alt="IMDB">
+                <label [@scalingTrigger]="animationRatingValueScalingState">
+                        <span
+                                class="label label-info"
+                                (click)="openRatingValueDialog()">{{minRatingValueFilter.toLocaleString('en')}}</span>
                 </label>
             </th>
             <th class="secondLineTableHeader">
-                <label [@scalingTrigger]="animationRatingCountScalingState"><span
-                        class="label label-info" (click)="openRatingCountDialog()">{{minRatingCountFilter.toLocaleString('en')}}</span>
+                <img src="assets/imdb_logo.png" alt="IMDB">
+                <label [@scalingTrigger]="animationRatingCountScalingState">
+                        <span
+                                class="label label-info"
+                                (click)="openRatingCountDialog()">{{minRatingCountFilter.toLocaleString('en')}}</span>
                 </label>
             </th>
         </tr>
