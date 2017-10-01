@@ -13,11 +13,12 @@ import {
 
 // My Components
 import { AppComponent } from './app.component';
-import { VideosComponent } from './videos/videos.component';
+import { MoviesContainerComponent } from './movies-container/movies.container.component';
 import { SliderComponent } from './slider/slider.component';
 import { ResultsComponent } from './results/results.component';
 import { OnlineIndicatorComponent } from './online-indicator/online-indicator.component';
 import { DialogSettingsComponent } from './dialog-settings/dialog-settings.component';
+import { MoveToTopComponent } from './buttons-back-to-top-and-settings/buttons-back-to-top-and-settings.component';
 
 // Services
 import { WebService } from "./services/web.service";
@@ -33,11 +34,12 @@ import 'web-animations-js';
 @NgModule({
     declarations: [
         AppComponent,
-        VideosComponent,
+        MoviesContainerComponent,
         SliderComponent,
         ResultsComponent,
         OnlineIndicatorComponent,
-        DialogSettingsComponent
+        DialogSettingsComponent,
+        MoveToTopComponent
     ],
     imports: [
         BrowserModule,

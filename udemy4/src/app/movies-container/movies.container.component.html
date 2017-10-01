@@ -1,7 +1,4 @@
-<div class="back-to-top">
-    <button *ngIf="shouldShowScrollToTop" [@fadeInOutTrigger]="animateButtonEntryState" class="mat-primary" md-fab (click)="smoothScrollToTop()">^</button>
-    <button class="mat-active" md-fab (click)="openAllSettingsDialog()">+</button>
-</div>
+<app-buttons-back-to-top-and-settings></app-buttons-back-to-top-and-settings>
 
 <div class="innerHeader">
     <div *ngIf="shouldShowProgressBar()" >

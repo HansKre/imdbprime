@@ -1,16 +1,16 @@
-import { Component, HostListener, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { WebService } from "../services/web.service";
 import { Movie } from "../structures/movie";
 import { MdSnackBar, Sort } from "@angular/material";
 import { IsOnlineService } from "../services/is-online.service";
 import { DialogSettingsService } from "../dialog-settings/dialog-settings.service";
 import { FADE_IN_OUT_ANIMATION } from "../animations/fade-in-out.animation";
-import { SCALE_IN_OUT_SLOW_ANIMATION } from "../animations/scale-in-out-slow.animation";
+import { SCALE_IN_OUT_SLOW_ANIMATION} from "../animations/scale-in-out-slow.animation";
 
 @Component({
-    selector: 'app-movies',
-    templateUrl: './videos.component.html',
-    styleUrls: ['./videos.component.css'],
+    selector: 'app-movies-container',
+    templateUrl: './movies.container.component.html',
+    styleUrls: ['./movies.container.component.css'],
     animations: [
         FADE_IN_OUT_ANIMATION,
         SCALE_IN_OUT_SLOW_ANIMATION,
@@ -22,7 +22,7 @@ import { SCALE_IN_OUT_SLOW_ANIMATION } from "../animations/scale-in-out-slow.ani
 // it is also possible to specify the end state when animation finishes
 // ... after that, animation transitions immediately to the target state?
 
-export class VideosComponent implements OnInit {
+export class MoviesContainerComponent implements OnInit {
     @Input() isParentLoading:boolean = true;
 
     displayedMovies: Movie[] = [];
@@ -306,77 +306,6 @@ export class VideosComponent implements OnInit {
 
     animateRatingCountScalingTrigger() {
         this.animationRatingCountScalingState = (this.animationRatingCountScalingState === "normal1" ? this.animationRatingCountScalingState = "normal2" : this.animationRatingCountScalingState = "normal1");
-    }
-
-
-    /* HOST LISTENER FOR STICKY TABLE HEAD AND SCROLL TO TOP */
-    @HostListener('window:scroll', ['$event'])
-    onWindowScroll(event) {
-        this.onScrollFadeInOutScrollToTopButton();
-    }
-
-    /* SCROLL TO TOP */
-    shouldShowScrollToTop: boolean = false;
-    animateButtonEntryState: string = "in";
-
-    onScrollFadeInOutScrollToTopButton() {
-        /* The pageXOffset and pageYOffset properties returns the pixels the current document has been scrolled from the upper left corner of the window, horizontally and vertically.
-        The pageXOffset and pageYOffset properties are equal to the scrollX and scrollY properties. These properties are read-only. */
-        this.shouldShowScrollToTop = (window.pageYOffset >= window.screen.height/2);
-    }
-
-    /* Smooth scrolling */
-    // https://stackoverflow.com/questions/36092212/smooth-scroll-angular2
-    scrollTo(yPoint: number, duration: number) {
-        setTimeout(() => {
-            window.scrollTo(0, yPoint)
-        }, duration);
-        return;
-    }
-
-    smoothScrollToTop() {
-        let startY = VideosComponent.currentYPosition();
-        let stopY = 0; // window top
-        let distance = stopY > startY ? stopY - startY : startY - stopY;
-        if (distance < 100) {
-            window.scrollTo(0, stopY);
-            return;
-        }
-        let speed = Math.round(distance / 50);
-        let step = speed;
-
-        const minSpeed = 9;
-        speed = Math.max(minSpeed, speed); //min 9 otherwise it won't look smooth
-        let leapY = stopY > startY ? startY + step : startY - step;
-        let timer = 0;
-        if (stopY > startY) {
-            for (let i = startY; i < stopY; i += step) {
-                // since setTimeout is asynchronous, the for-loop will will fire all scrolls
-                // nearly simoultaniously. Therefore, we need to multiply the speed with
-                // a counter which lets the scrolls start with a growing offset which lets the
-                // setTimeout wait for a growing time till it scrolls there
-                // that way, we prevent the window to scroll instantly to the target Yposition
-                this.scrollTo(leapY, timer * speed);
-                leapY += step; if (leapY > stopY) leapY = stopY; timer++;
-            }
-            return;
-        } else {
-            for (let i = startY; i > stopY; i -= step) {
-                this.scrollTo(leapY, timer * speed);
-                leapY -= step; if (leapY < stopY) leapY = stopY; timer++;
-            }
-        }
-    }
-
-    static currentYPosition() {
-        // Firefox, Chrome, Opera, Safari
-        if (self.pageYOffset) return self.pageYOffset;
-        // Internet Explorer 6 - standards mode
-        if (document.documentElement && document.documentElement.scrollTop)
-            return document.documentElement.scrollTop;
-        // Internet Explorer 6, 7 and 8
-        if (document.body.scrollTop) return document.body.scrollTop;
-        return 0;
     }
 
     /* END Sticky Table Head */

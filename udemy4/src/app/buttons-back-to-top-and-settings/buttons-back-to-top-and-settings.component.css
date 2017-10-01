@@ -1,0 +1,7 @@
+.back-to-top {
+    position: fixed;
+    bottom: 40px;
+    right: 0;
+    z-index: 100;
+    margin: 5px;
+}
