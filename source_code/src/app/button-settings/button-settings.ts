@@ -2,14 +2,14 @@ import {EventEmitter, Input, Output} from "@angular/core";
 
 export abstract class AbstractButtonSettingsComponent {
 
-    @Input() maxRatingCount: number;
-    @Input() maxRatingValue: number;
-    @Input() maxYear: number;
-    @Input() minYear: number;
+    @Input() maxRatingCount: number = 0;
+    @Input() maxRatingValue: number = 0;
+    @Input() maxYear: number = 0;
+    @Input() minYear: number = 0;
 
-    @Input() minRatingCountFilter:number;
-    @Input() minRatingValueFilter:number;
-    @Input() minYearValueFilter:number;
+    @Input() minRatingCountFilter:number = 0;
+    @Input() minRatingValueFilter:number = 0;
+    @Input() minYearValueFilter:number = 0;
 
     @Output() onRatingCountChanged = new EventEmitter<number>();
     @Output() onRatingValueChanged = new EventEmitter<number>();
