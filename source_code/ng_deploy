@@ -2,7 +2,79 @@
 
 #############################################
 # creat prod build
+##############################################
+echo "Usage: ng_deploy -m \"my message\" -r \"heroku\" -b \"master\""
+
 #############################################
+# clean-up: remove files from previous build
+#############################################
+rm ../index.html
+rm ../favicon.ico
+rm ../3rdpartylicenses.txt
+rm ../.htaccess
+rm -r ../assets
+rm ../appcache.manifest
+
+#glyphicons-halflings-regular.448c34a56d699c29117a.woff2
+#glyphicons-halflings-regular.89889688147bd7575d63.svg
+#glyphicons-halflings-regular.e18bbf611f2a2e43afc0.ttf
+#glyphicons-halflings-regular.f4769f9bdb7466be6508.eot
+#glyphicons-halflings-regular.fa2772327f55d8198301.woff
+find /Users/hanskrebs/git/HTML/imdbprime -maxdepth 1 -type f -name 'glyphicons-halflings-regular.*.*' -delete
+
+#inline.c3433667a1aa84685d33.bundle.js
+#main.ccdc3c9eec51a5a04449.bundle.js
+#polyfills.991e140ab27557bb5853.bundle.js
+#styles.186bc368e0ad9cc257de.bundle.css
+#vendor.fe98792effb55bee8d1d.bundle.js
+
+find /Users/hanskrebs/git/HTML/imdbprime -maxdepth 1 -type f -name 'inline.*.bundle.js' -delete
+find /Users/hanskrebs/git/HTML/imdbprime -maxdepth 1 -type f -name 'main.*.bundle.js' -delete
+find /Users/hanskrebs/git/HTML/imdbprime -maxdepth 1 -type f -name 'polyfills.*.bundle.js' -delete
+find /Users/hanskrebs/git/HTML/imdbprime -maxdepth 1 -type f -name 'styles.*.bundle.css' -delete
+find /Users/hanskrebs/git/HTML/imdbprime -maxdepth 1 -type f -name 'vendor.*.bundle.js' -delete
+
+#!/bin/bash
+
+#############################################
+# commit and push
+#############################################
+while getopts m:r:b: option
+do
+ case "${option}"
+ in
+ m) MESSAGE=${OPTARG};;
+ r) REPOSITORY=${OPTARG};;
+ b) BRANCH=${OPTARG};;
+ esac
+done
+
+if [ -z "${MESSAGE}" ] && [ -z "${DESTINATION}" ] && [ -z "${BRANCH}" ];
+  then
+    echo "Skipping commit and push."
+    echo "Usage: ng_deploy -m \"my message\" -r \"heroku\" -b \"master\""
+  else
+    #-m and -d count as own parameters, therefore everything above 4 parameters
+    # shall be rejected
+    MORE_PARAMS=$5
+    if [ -z "${MORE_PARAMS}" ];
+      then
+        echo "Skipping commit and push."
+        echo "Usage: ng_deploy -m \"my message\" -r \"heroku\" -b \"master\""
+      else
+        echo "=============== ADDING & COMMITING ==============="
+        echo "git add -A"
+        git add -A
+        echo "git commit -m $MESSAGE"
+        git commit -m "$MESSAGE"
+        echo "=============== PUSHING TO ==============="
+        echo "=============== $REPOSITORY $BRANCH ==============="
+        echo "git push $REPOSITORY $BRANCH"
+        git push "$REPOSITORY" "$BRANCH"
+    fi
+fi
+
+
 ng build --prod
 
 #############################################
