@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {DialogSettingsService} from "../../dialog-settings/dialog-settings.service";
 import {AbstractButtonSettingsComponent} from "../button-settings";
+import {ValuesService} from "../../services/values.service";
 
 @Component({
     selector: 'app-button-open-settings',
@@ -9,8 +10,9 @@ import {AbstractButtonSettingsComponent} from "../button-settings";
 })
 export class ButtonOpenSettingsComponent extends AbstractButtonSettingsComponent implements OnInit {
 
-    constructor(public dialogSettingsService: DialogSettingsService) {
-        super();
+    constructor(public dialogSettingsService: DialogSettingsService,
+                protected valuesService: ValuesService) {
+        super(valuesService);
     }
 
     ngOnInit() { }
@@ -18,12 +20,12 @@ export class ButtonOpenSettingsComponent extends AbstractButtonSettingsComponent
     openAllSettingsDialog() {
         let allObserverables = this.dialogSettingsService
             .openAllDialog(
-                this.minYearValueFilter,
-                this.minYear, this.maxYear,
-                this.minRatingCountFilter,
-                this.maxRatingCount,
-                this.minRatingValueFilter,
-                this.maxRatingValue);
+                this.valuesService.minYearValueFilter,
+                this.valuesService.minYear, this.valuesService.maxYear,
+                this.valuesService.minRatingCountFilter,
+                this.valuesService.maxRatingCount,
+                this.valuesService.minRatingValueFilter,
+                this.valuesService.maxRatingValue);
 
         allObserverables.year.subscribe(
             newValue => this._onYearChanged(newValue));

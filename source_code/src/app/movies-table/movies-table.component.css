@@ -1,0 +1,81 @@
+/* Select and style an Dropdown-List (<select>),
+<textarea>, input fields and the class="filterInput" when they get focus,
+ change their font-size to prevent iOS Safari to zoom in and change the background
+
+ New: IOS will still zoom, unless you use 16px on the input without the focus.
+ */
+@media screen and (max-width: 415px) {
+    select,
+    textarea,
+    input,
+    .filterInput {
+        font-size: 16px !important;
+    }
+
+    .filterInput:focus {
+        background: #eee;
+    }
+}
+
+/*.innerFlexBox {
+    -webkit-flex-direction: column;
+    display: flex;
+    flex-direction: column;
+    background-color: yellow;
+    border: black solid;
+}*/
+
+/* Remove default margin under each table because we
+    want the header appear to be part of the table below
+ */
+#moviesTableHead, #moviesTableHeadSticky {
+    margin-bottom: 0;
+}
+
+/* Make the sticky table header overlap other content */
+.movieTableHeadWrapper {
+    top: 0px;
+    position: sticky;
+    opacity: 1;
+    background-color: white;
+    z-index: 100; /* Above other content */
+}
+
+.innerContent {
+    height: 100%;
+    min-height: 100%;
+    max-height: 100%;
+    flex-grow: 1;
+}
+
+/* Overwrite the standard margin-bottom: 20px; between the top table with the
+theader and the actual table with the tbody */
+div.innerHeader table {
+    margin-bottom: 0;
+}
+
+.firstLineTableHeader {
+    border-bottom: none;
+    margin: 0;
+    padding-bottom: 0;
+}
+
+.secondLineTableHeader {
+    margin: 0;
+    padding-top: 0;
+    text-align: center;
+
+}
+
+/* Align labels with the search field */
+th label {
+    margin-bottom: 0;
+}
+
+/*img {
+    display: block;
+    width: 100%;
+    height: auto;
+    padding-right: 5px;
+    padding-left: 5px;
+}*/

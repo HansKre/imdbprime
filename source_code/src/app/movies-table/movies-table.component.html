@@ -1,0 +1,146 @@
+<div class="innerContent">
+  <div class="movieTableHeadWrapper">
+    <table class="table table-striped table-condensed"
+           id="moviesTableHead"
+           mdSort mdSortActive="year" (mdSortChange)="sortDataAndSetMovies($event)" mdSortDisableClear>
+      <thead class="thead-inverse">
+      <tr>
+        <th md-sort-header="movie" class="col-xs-9 firstLineTableHeader">Movie</th>
+        <th md-sort-header="year" start="desc" class="col-xs-1 firstLineTableHeader">Year</th>
+        <th md-sort-header="rating" start="desc" class="col-xs-1 text-center firstLineTableHeader"><span>Rating</span></th>
+        <th md-sort-header="count" start="desc" class="col-xs-1 text-right firstLineTableHeader"><span>Count</span></th>
+      </tr>
+      <tr class="secondLineTableHeader">
+        <th class="secondLineTableHeader">
+          <md-input-container>
+            <input class="filterInput"
+                   mdInput [(ngModel)]="valuesService.searchString"
+                   (ngModelChange)="filterAndSetMovies()"
+                   placeholder="Search for movie.."
+            >
+          </md-input-container>
+        </th>
+        <th class="secondLineTableHeader">
+          <app-button-open-single-setting
+                  [settingYear]=true
+                  (onYearChanged)="onYearChanged($event)"
+          ></app-button-open-single-setting>
+        </th>
+        <th class="secondLineTableHeader">
+          <app-button-open-single-setting
+                  [settingRatingValue]=true
+                  (onRatingValueChanged)="onRatingValueChanged($event)"
+          ></app-button-open-single-setting>
+        </th>
+        <th class="secondLineTableHeader">
+          <app-button-open-single-setting
+                  [settingRatingCount]=true
+                  (onRatingCountChanged)="onRatingCountChanged($event)"
+          ></app-button-open-single-setting>
+        </th>
+      </tr>
+      </thead>
+    </table>
+  </div>
+  <table class="table table-striped table-condensed" id="moviesTable">
+    <!--This hidden head is here to take care of proper formatting of the actual
+    rows of the tboy. We do not want the thead to scroll though. -->
+    <thead class="thead-inverse" style="display: none">
+    <tr>
+      <th class="col-xs-9 firstLineTableHeader">Movie</th>
+      <th class="col-xs-1 firstLineTableHeader">Year</th>
+      <th class="col-xs-1 text-center firstLineTableHeader"><span>Rating</span></th>
+      <th class="col-xs-1 text-right firstLineTableHeader"><span>Count</span></th>
+    </tr>
+    <tr class="secondLineTableHeader">
+      <th class="secondLineTableHeader">
+        <md-input-container>
+          <input class="filterInput"
+                 mdInput [(ngModel)]="valuesService.searchString"
+                 (ngModelChange)="filterAndSetMovies()"
+                 placeholder="Search for movie.."
+          >
+        </md-input-container>
+      </th>
+      <th class="secondLineTableHeader">
+        <app-button-open-single-setting [settingYear]=true></app-button-open-single-setting>
+      </th>
+      <th class="secondLineTableHeader">
+        <app-button-open-single-setting [settingRatingValue]=true></app-button-open-single-setting>
+      </th>
+      <th class="secondLineTableHeader">
+        <app-button-open-single-setting [settingRatingCount]=true></app-button-open-single-setting>
+      </th>
+    </tr>
+    </thead>
+
+    <!--First Solution with ng-template and ngFor
+    advantage: you don't need to put ngFor into a parent tag like "tbody" anymore -->
+    <tbody>
+    <ng-template ngFor let-movie [ngForOf]="valuesService.displayedMovies">
+      <tr [@fadeInOutTrigger]="conditionalAnimation">
+        <td>
+          <a target="_blank" href= "{{ movie.imdbMovieUrl }}" > {{ movie.movie }} </a>
+        </td>
+        <td>{{ movie.year }}</td>
+        <td class="text-center">
+          <ng-template [ngIf]="movie.ratingValue > 6.7">
+            <span class="label label-success"> {{ movie.ratingValue }} </span>
+          </ng-template>
+          <ng-template [ngIf]="((movie.ratingValue <= 6.7) &&  (movie.ratingValue > 6))">
+            <span class="label label-warning"> {{ movie.ratingValue }} </span>
+          </ng-template>
+          <ng-template [ngIf]="(movie.ratingValue <= 6.0)">
+            <span class="label label-danger"> {{ movie.ratingValue }} </span>
+          </ng-template>
+        </td>
+        <td class="text-right">{{ movie.ratingCountString }}</td>
+      </tr>
+    </ng-template>
+    </tbody>
+  </table>
+</div>
+
+
+<!-- EXAMPLE HOW TO USE ngIf WITH TEMPLATES
+
+<ng-template ngFor let-movie [ngForOf]="displayedMovies">
+    <ng-template #good>
+        <span class="label label-success"> {{ movie.ratingValue }} </span>
+    </ng-template>
+    <ng-template #bad>
+        <span class="label label-success"> {{ movie.ratingValue }} </span>
+    </ng-template>
+
+    <tr>
+        <td>
+            <a target="_blank" href= "{{ movie.imdbMovieUrl }}" > {{ movie.movie }} </a>
+        </td>
+        <td>{{ movie.year }}</td>
+        <td *ngIf="movie.ratingValue > 6.7; then good else bad"></td>
+        <td>{{ movie.ratingCount }}</td>
+    </tr>
+</ng-template>
+
+==============================================
+==============================================-->
+
+<!-- EXAMPLE: Alternative Solution with only ngFor
+            <tbody *ngFor="let movie of displayedMovies">
+                <tr>
+                    <td>{{ movie.movie }}</td>
+                    <td>{{ movie.year }}</td>
+                    <td>{{ movie.ratingValue }}</td>
+                    <td>{{ movie.ratingCount }}</td>
+                </tr>
+            </tbody>
+-->
+
+
+<!-- EXAMPLE HOW TO USE BOOTSTRAP BUTTON
+<button [disabled]="!allowNewServer" class="btn btn-primary" (click)="registerForWebRequest()">Send Get Request</button>
+-->
+
+<!-- EXAMPLE HOW TO BIND CLASS PROPERTY
+<p>Current network status: <span id="status" [ngClass] = onlineString>{{onlineString}}</span></p>
+-->

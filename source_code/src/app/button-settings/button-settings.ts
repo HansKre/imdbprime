@@ -1,40 +1,32 @@
-import {EventEmitter, Input, Output} from "@angular/core";
+import {EventEmitter, Output} from "@angular/core";
+import {ValuesService} from "../services/values.service";
 
 export abstract class AbstractButtonSettingsComponent {
-
-    @Input() maxRatingCount: number = 0;
-    @Input() maxRatingValue: number = 0;
-    @Input() maxYear: number = 0;
-    @Input() minYear: number = 0;
-
-    @Input() minRatingCountFilter:number = 0;
-    @Input() minRatingValueFilter:number = 0;
-    @Input() minYearValueFilter:number = 0;
 
     @Output() onRatingCountChanged = new EventEmitter<number>();
     @Output() onRatingValueChanged = new EventEmitter<number>();
     @Output() onYearChanged = new EventEmitter<number>();
 
-    constructor() { }
+    constructor(protected valuesService: ValuesService) { }
 
     _onRatingCountChanged(newValue:number) {
-        if (this.minRatingCountFilter != newValue) {
-            this.minRatingCountFilter = newValue;
+        if (this.valuesService.minRatingCountFilter != newValue) {
+            this.valuesService.minRatingCountFilter = newValue;
             this.onRatingCountChanged.emit(newValue);
         }
     }
 
     _onRatingValueChanged(newValue:number) {
-        if (this.minRatingValueFilter != newValue) {
-            this.minRatingValueFilter = newValue;
+        if (this.valuesService.minRatingValueFilter != newValue) {
+            this.valuesService.minRatingValueFilter = newValue;
             this.onRatingValueChanged.emit(newValue);
         }
     }
 
     _onYearChanged(newValue:number) {
-        if (this.minYearValueFilter != newValue) {
-            this.minYearValueFilter = newValue;
-            this.onYearChanged.emit(newValue);
+        if (this.valuesService.minYearValueFilter != newValue) {
+            this.valuesService.minYearValueFilter = newValue;
+            //this.onYearChanged.emit(newValue);
         }
     }
 }

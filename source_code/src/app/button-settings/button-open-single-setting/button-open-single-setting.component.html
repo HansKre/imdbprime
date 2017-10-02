@@ -1,7 +1,8 @@
 <label *ngIf="settingYear" [@scalingTrigger]="animationYearScalingState">
     <span
             class="label label-info"
-            (click)="openYearDialog()">{{minYearValueFilter.toString()}}</span>
+            (click)="openYearDialog()">
+        {{valuesService.minYearValueFilter.toString()}}</span>
 </label>
 
 
@@ -10,7 +11,8 @@
 <label *ngIf="settingRatingValue" [@scalingTrigger]="animationRatingValueScalingState">
     <span
             class="label label-info"
-            (click)="openRatingValueDialog()">{{minRatingValueFilter.toLocaleString('en')}}</span>
+            (click)="openRatingValueDialog()">
+        {{valuesService.minRatingValueFilter.toLocaleString('en')}}</span>
 </label>
 
 
@@ -19,5 +21,6 @@
 <label *ngIf="settingRatingCount" [@scalingTrigger]="animationRatingCountScalingState">
     <span
             class="label label-info"
-            (click)="openRatingCountDialog()">{{minRatingCountFilter.toLocaleString('en')}}</span>
+            (click)="openRatingCountDialog()">
+        {{valuesService.minRatingCountFilter.toLocaleString('en')}}</span>
 </label>

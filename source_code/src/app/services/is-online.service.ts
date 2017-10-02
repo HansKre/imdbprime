@@ -7,6 +7,7 @@ import {Subject} from "rxjs/Subject";
 export class IsOnlineService {
 
     private _isOnline: boolean = false;
+    // use the Subject-object as an intermediary step to create an Observeable to observe value changes
     private isOnlineSubject: Subject<boolean>;
     private isOnline$: Observable<boolean>;
 
@@ -39,6 +40,11 @@ export class IsOnlineService {
         this.isOnline = false;
     }
 
+    /*
+    to subscribe:
+    this.isOnlineService.isOnlineObserveable()
+            .subscribe((isOnline:boolean) => this.onlineChanged(isOnline));
+     */
     isOnlineObserveable() {
         return this.isOnline$;
     }

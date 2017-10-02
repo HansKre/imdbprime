@@ -21,11 +21,13 @@ import { DialogSettingsComponent } from './dialog-settings/dialog-settings.compo
 import { MoveToTopComponent } from './button-back-to-top/button-back-to-top.component';
 import { ButtonOpenSettingsComponent } from './button-settings/button-open-settings/button-open-settings.component';
 import { ButtonOpenSingleSettingComponent } from './button-settings/button-open-single-setting/button-open-single-setting.component';
+import { MoviesTableComponent } from './movies-table/movies-table.component';
 
 // Services
 import { WebService } from "./services/web.service";
 import { IsOnlineService } from "./services/is-online.service";
 import { DialogSettingsService } from "./dialog-settings/dialog-settings.service";
+import { ValuesService } from "./services/values.service";
 
 // needed for some gesture support
 import 'hammerjs';
@@ -43,7 +45,8 @@ import 'web-animations-js';
         DialogSettingsComponent,
         MoveToTopComponent,
         ButtonOpenSettingsComponent,
-        ButtonOpenSingleSettingComponent
+        ButtonOpenSingleSettingComponent,
+        MoviesTableComponent
     ],
     imports: [
         BrowserModule,
@@ -61,7 +64,8 @@ import 'web-animations-js';
     providers: [
         WebService,
         IsOnlineService,
-        DialogSettingsService
+        DialogSettingsService,
+        ValuesService,
     ],
     entryComponents: [
         DialogSettingsComponent
