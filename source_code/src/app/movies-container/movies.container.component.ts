@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import {ValuesService} from "../services/values.service";
 
 @Component({
     selector: 'app-movies-container',
@@ -17,6 +16,5 @@ export class MoviesContainerComponent implements OnInit {
 
     @Input() isParentLoading:boolean = false;
 
-    constructor(private valuesService: ValuesService) {
-    }
+    constructor() {}
 }

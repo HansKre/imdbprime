@@ -19,7 +19,7 @@ export class MoviesTableComponent implements OnInit {
     conditionalAnimation:string = "in";
 
     constructor(private webService: WebService,
-                private valuesService: ValuesService,
+                public valuesService: ValuesService,
                 private isOnlineService: IsOnlineService,
                 public snackBar: MdSnackBar,) { }
 

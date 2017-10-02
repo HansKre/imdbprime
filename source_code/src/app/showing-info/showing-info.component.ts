@@ -8,7 +8,7 @@ import {ValuesService} from "../services/values.service";
 })
 export class ShowingInfoComponent implements OnInit {
 
-  constructor(private valuesService: ValuesService) { }
+  constructor(public valuesService: ValuesService) { }
 
   ngOnInit() {
   }
