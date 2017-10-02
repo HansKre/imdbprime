@@ -19,8 +19,8 @@ import { ResultsComponent } from './results/results.component';
 import { OnlineIndicatorComponent } from './online-indicator/online-indicator.component';
 import { DialogSettingsComponent } from './dialog-settings/dialog-settings.component';
 import { MoveToTopComponent } from './button-back-to-top/button-back-to-top.component';
-import { ButtonOpenSettingsComponent } from './button-open-settings/button-open-settings.component';
-import { ButtonOpenSingleSettingComponent } from './button-open-single-setting/button-open-single-setting.component';
+import { ButtonOpenSettingsComponent } from './button-settings/button-open-settings/button-open-settings.component';
+import { ButtonOpenSingleSettingComponent } from './button-settings/button-open-single-setting/button-open-single-setting.component';
 
 // Services
 import { WebService } from "./services/web.service";
