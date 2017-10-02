@@ -8,7 +8,7 @@ export class WebService {
     movies: Movie[];
 
     //private url = ''http://imdbprime-snah.rhcloud.com/getMoviesWithRatings.php?sortBy=ratingValue&order=descending&ratingCountMin=10000'';
-    private url = 'http://imdbprime.herokuapp.com/php/webAPI/getMoviesWithRatings.php?sortBy=ratingValue&order=descending&ratingCountMin=10000';
+    private url = 'https://imdbprime.herokuapp.com/php/webAPI/getMoviesWithRatings.php?sortBy=ratingValue&order=descending&ratingCountMin=10000';
 
     constructor(private http: Http) { }
 
