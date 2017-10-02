@@ -3,9 +3,7 @@ import { WebService } from "../services/web.service";
 import { Movie } from "../structures/movie";
 import { MdSnackBar, Sort } from "@angular/material";
 import { IsOnlineService } from "../services/is-online.service";
-import { DialogSettingsService } from "../dialog-settings/dialog-settings.service";
 import { FADE_IN_OUT_ANIMATION } from "../animations/fade-in-out.animation";
-import { SCALE_IN_OUT_SLOW_ANIMATION} from "../animations/scale-in-out-slow.animation";
 
 @Component({
     selector: 'app-movies-container',
@@ -13,7 +11,6 @@ import { SCALE_IN_OUT_SLOW_ANIMATION} from "../animations/scale-in-out-slow.anim
     styleUrls: ['./movies.container.component.css'],
     animations: [
         FADE_IN_OUT_ANIMATION,
-        SCALE_IN_OUT_SLOW_ANIMATION,
     ]
 })
 
@@ -42,10 +39,12 @@ export class MoviesContainerComponent implements OnInit {
 
     searchString:string ="";
 
-    animationYearScalingState:string = "normal1";
-    animationRatingValueScalingState:string = "normal1";
-    animationRatingCountScalingState:string = "normal1";
     conditionalAnimation:string = "in";
+
+    constructor(private webService: WebService,
+                private isOnlineService: IsOnlineService,
+                public snackBar: MdSnackBar) {
+    }
 
     calcMaxRatingCount() {
         if (this.filteredMovies) {
@@ -102,12 +101,6 @@ export class MoviesContainerComponent implements OnInit {
         this.calcMaxRatingCount();
         this.calcMaxYear();
         this.calcMaxRatingValue();
-    }
-
-    constructor(private webService: WebService,
-                private isOnlineService: IsOnlineService,
-                public snackBar: MdSnackBar,
-                public dialogSettingsService: DialogSettingsService) {
     }
 
     ngOnInit() {
@@ -201,63 +194,6 @@ export class MoviesContainerComponent implements OnInit {
         this.calcMinMaxValues();
     }
 
-    onRatingCountChanged(newValue:number) {
-        if (this.minRatingCountFilter != newValue) {
-            this.minRatingCountFilter = newValue;
-            this.showSnackbar("Minimum Rating Count set to:", this.minRatingCountFilter, true);
-            this.filterAndSetMovies();
-        }
-    }
-
-    onRatingValueChanged(newValue:number) {
-        if (this.minRatingValueFilter != newValue) {
-            this.minRatingValueFilter = newValue;
-            this.showSnackbar("Minimum Rating Value set to:", this.minRatingValueFilter, true);
-            this.filterAndSetMovies();
-        }
-    }
-
-    onYearChanged(newValue:number) {
-        if (this.minYearValueFilter != newValue) {
-            this.minYearValueFilter = newValue;
-            this.showSnackbar("Minimum Year set to:", this.minYearValueFilter, false);
-            this.filterAndSetMovies();
-        }
-    }
-
-    openRatingValueDialog() {
-        this.animateRatingValueScalingTrigger();
-        this.dialogSettingsService
-            .openRatingValueDialog(this.minRatingValueFilter, this.maxRatingValue)
-            .subscribe(newValue => this.onRatingValueChanged(newValue));
-    }
-
-    openRatingCountDialog() {
-        this.animateRatingCountScalingTrigger();
-        this.dialogSettingsService
-            .openRatingCountDialog(this.minRatingCountFilter, this.maxRatingCount)
-            .subscribe(newValue => this.onRatingCountChanged(newValue));
-    }
-
-    openYearDialog() {
-        this.animateYearScalingTrigger();
-        this.dialogSettingsService
-            .openYearDialog(this.minYearValueFilter, this.minYear, this.maxYear)
-            .subscribe(newValue => this.onYearChanged(newValue));
-    }
-
-    openAllSettingsDialog() {
-        this.animateYearScalingTrigger();
-        let allObserverables = this.dialogSettingsService
-            .openAllDialog(this.minYearValueFilter, this.minYear, this.maxYear,
-                this.minRatingCountFilter, this.maxRatingCount, this.minRatingValueFilter,
-                this.maxRatingValue);
-
-        allObserverables.year.subscribe(newValue => this.onYearChanged(newValue));
-        allObserverables.ratingValue.subscribe(newValue => this.onRatingValueChanged(newValue));
-        allObserverables.ratingCount.subscribe(newValue => this.onRatingCountChanged(newValue));
-    }
-
     setDisplayedMoviesIncrementally() {
         // since displayedMovies is in a binding-relation to the data-table:
         // if the original displyedMovies array is resetted, the the DOM elements get resetted too
@@ -296,20 +232,6 @@ export class MoviesContainerComponent implements OnInit {
         }
     }
 
-    animateYearScalingTrigger() {
-        this.animationYearScalingState = (this.animationYearScalingState === "normal1" ? this.animationYearScalingState = "normal2" : this.animationYearScalingState = "normal1");
-    }
-
-    animateRatingValueScalingTrigger() {
-        this.animationRatingValueScalingState = (this.animationRatingValueScalingState === "normal1" ? this.animationRatingValueScalingState = "normal2" : this.animationRatingValueScalingState = "normal1");
-    }
-
-    animateRatingCountScalingTrigger() {
-        this.animationRatingCountScalingState = (this.animationRatingCountScalingState === "normal1" ? this.animationRatingCountScalingState = "normal2" : this.animationRatingCountScalingState = "normal1");
-    }
-
-    /* END Sticky Table Head */
-
     sort: Sort;
     sortData(sort?: Sort) {
         /* if mdSortDisableClear is not used, there is a unsorted state which should be handled here
@@ -345,6 +267,27 @@ export class MoviesContainerComponent implements OnInit {
     sortDataAndSetMovies(sort: Sort) {
         this.sortData(sort);
         this.setDisplayedMovies();
+    }
+
+    onRatingCountChanged(newValue:number) {
+        this.minRatingCountFilter = newValue;
+        this.showSnackbar("Minimum Rating Count set to:",
+            this.minRatingCountFilter, true);
+        this.filterAndSetMovies();
+    }
+
+    onRatingValueChanged(newValue:number) {
+        this.minRatingValueFilter = newValue;
+        this.showSnackbar("Minimum Rating Value set to:",
+            this.minRatingValueFilter, true);
+        this.filterAndSetMovies();
+    }
+
+    onYearChanged(newValue:number) {
+        this.minYearValueFilter = newValue;
+        this.showSnackbar("Minimum Year set to:",
+            this.minYearValueFilter, false);
+        this.filterAndSetMovies();
     }
 }
 

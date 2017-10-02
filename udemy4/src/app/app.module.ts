@@ -20,6 +20,7 @@ import { OnlineIndicatorComponent } from './online-indicator/online-indicator.co
 import { DialogSettingsComponent } from './dialog-settings/dialog-settings.component';
 import { MoveToTopComponent } from './button-back-to-top/button-back-to-top.component';
 import { ButtonOpenSettingsComponent } from './button-open-settings/button-open-settings.component';
+import { ButtonOpenSingleSettingComponent } from './button-open-single-setting/button-open-single-setting.component';
 
 // Services
 import { WebService } from "./services/web.service";
@@ -41,7 +42,8 @@ import 'web-animations-js';
         OnlineIndicatorComponent,
         DialogSettingsComponent,
         MoveToTopComponent,
-        ButtonOpenSettingsComponent
+        ButtonOpenSettingsComponent,
+        ButtonOpenSingleSettingComponent
     ],
     imports: [
         BrowserModule,
