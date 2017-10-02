@@ -41,10 +41,10 @@ if [ -z "$1" ];
   echo "#we have some kind of lazy loading if we leave it out here" >> $myFile
 
   # add files
-  # get all files from /newBuild but skipping the directories
-  ls -p ../newBuild | grep -v / >> $myFile
+  # get all files from /newestBuild but skipping the directories
+  ls -p ../newestBuild | grep -v / >> $myFile
   # get content of the assets dir
-  for fileName in ../newBuild/assets/*.*; do
+  for fileName in ../newestBuild/assets/*.*; do
     name=${fileName##*/}
     echo "assets/$name" >> $myFile
   done
