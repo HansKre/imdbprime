@@ -1,8 +1,6 @@
 #!/bin/bash
 
-#############################################
-# clean-up: remove files from previous build
-#############################################
+echo "=============== clean-up: remove files from previous build ===="
 rm ../index.html
 rm ../favicon.ico
 rm ../3rdpartylicenses.txt
@@ -28,3 +26,4 @@ find /Users/hanskrebs/git/HTML/imdbprime -maxdepth 1 -type f -name 'main.*.bundl
 find /Users/hanskrebs/git/HTML/imdbprime -maxdepth 1 -type f -name 'polyfills.*.bundle.js' -delete
 find /Users/hanskrebs/git/HTML/imdbprime -maxdepth 1 -type f -name 'styles.*.bundle.css' -delete
 find /Users/hanskrebs/git/HTML/imdbprime -maxdepth 1 -type f -name 'vendor.*.bundle.js' -delete
+echo "=============== ENDING clean-up: remove files from prev. build"

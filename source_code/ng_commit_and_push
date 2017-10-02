@@ -1,8 +1,6 @@
 #!/bin/bash
 
-#############################################
-# commit and push
-#############################################
+echo "=============== commit and push ==============="
 while getopts m:r:b: option
 do
  case "${option}"
@@ -13,19 +11,21 @@ do
  esac
 done
 
-if [ -z "${MESSAGE}" ] && [ -z "${DESTINATION}" ] && [ -z "${BRANCH}" ];
+if [ -z "${MESSAGE}" ];
   then
-    echo "Skipping commit and push."
-    echo "Usage: ng_deploy -m \"my message\" -r \"heroku\" -b \"master\""
+    echo "Commit message is mandatory parameter."
+    echo "Usage: ng_deploy -m \"my message\" [-r \"heroku\" -b \"master\"]"
   else
-    #-m and -d count as own parameters, therefore everything above 4 parameters
+    #-m and -d count as own parameters, therefore everything above 6 parameters
     # shall be rejected
-    MORE_PARAMS=$5
+    MORE_PARAMS=$7
     if [ -z "${MORE_PARAMS}" ];
       then
-        echo "Skipping commit and push."
-        echo "Usage: ng_deploy -m \"my message\" -r \"heroku\" -b \"master\""
-      else
+        if [ -z "${DESTINATION}" ] || [ -z "${BRANCH}" ];
+          then
+            REPOSITORY="heroku"
+            BRANCH="master"
+        fi
         echo "=============== ADDING & COMMITING ==============="
         echo "git add -A"
         git add -A
@@ -35,5 +35,9 @@ if [ -z "${MESSAGE}" ] && [ -z "${DESTINATION}" ] && [ -z "${BRANCH}" ];
         echo "=============== $REPOSITORY $BRANCH ==============="
         echo "git push $REPOSITORY $BRANCH"
         git push "$REPOSITORY" "$BRANCH"
+      else
+        echo "Too many parameters"
+        echo "Usage: ng_deploy -m \"my message\" [-r \"heroku\" -b \"master\"]"
     fi
 fi
+echo "=============== ENDING: commit and push ==============="

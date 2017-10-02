@@ -6,7 +6,7 @@
   "apps": [
     {
       "root": "src",
-      "outDir": "../u",
+      "outDir": "../newestBuild",
       "assets": [
         "assets",
         "favicon.ico",

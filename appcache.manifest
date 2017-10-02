@@ -6,22 +6,7 @@ CACHE:
 #what to cache in application cache
 #index.html -> not necessary, as all html files with manifest in them are cached anyway
 #we have some kind of lazy loading if we leave it out here
-3rdpartylicenses.txt
-favicon.ico
-glyphicons-halflings-regular.448c34a56d699c29117a.woff2
-glyphicons-halflings-regular.89889688147bd7575d63.svg
-glyphicons-halflings-regular.e18bbf611f2a2e43afc0.ttf
-glyphicons-halflings-regular.f4769f9bdb7466be6508.eot
-glyphicons-halflings-regular.fa2772327f55d8198301.woff
-index.html
-inline.8d6e1a4bbfbe7409c1aa.bundle.js
-main.8048c44b183dc0e1938e.bundle.js
-polyfills.991e140ab27557bb5853.bundle.js
-styles.186bc368e0ad9cc257de.bundle.css
-vendor.5c267e716443f575545f.bundle.js
-assets/imdb_logo.png
-assets/imdb_logo_.png
-assets/my_indigo-pink.css
+assets/*.*
  
 NETWORK:
 #what to NOT cache if network is online

@@ -1,132 +1,70 @@
 #!/bin/bash
 
-#############################################
-# creat prod build
-##############################################
-echo "Usage: ng_deploy -m \"my message\" -r \"heroku\" -b \"master\""
-
-#############################################
-# clean-up: remove files from previous build
-#############################################
-rm ../index.html
-rm ../favicon.ico
-rm ../3rdpartylicenses.txt
-rm ../.htaccess
-rm -r ../assets
-rm ../appcache.manifest
-
-#glyphicons-halflings-regular.448c34a56d699c29117a.woff2
-#glyphicons-halflings-regular.89889688147bd7575d63.svg
-#glyphicons-halflings-regular.e18bbf611f2a2e43afc0.ttf
-#glyphicons-halflings-regular.f4769f9bdb7466be6508.eot
-#glyphicons-halflings-regular.fa2772327f55d8198301.woff
-find /Users/hanskrebs/git/HTML/imdbprime -maxdepth 1 -type f -name 'glyphicons-halflings-regular.*.*' -delete
-
-#inline.c3433667a1aa84685d33.bundle.js
-#main.ccdc3c9eec51a5a04449.bundle.js
-#polyfills.991e140ab27557bb5853.bundle.js
-#styles.186bc368e0ad9cc257de.bundle.css
-#vendor.fe98792effb55bee8d1d.bundle.js
-
-find /Users/hanskrebs/git/HTML/imdbprime -maxdepth 1 -type f -name 'inline.*.bundle.js' -delete
-find /Users/hanskrebs/git/HTML/imdbprime -maxdepth 1 -type f -name 'main.*.bundle.js' -delete
-find /Users/hanskrebs/git/HTML/imdbprime -maxdepth 1 -type f -name 'polyfills.*.bundle.js' -delete
-find /Users/hanskrebs/git/HTML/imdbprime -maxdepth 1 -type f -name 'styles.*.bundle.css' -delete
-find /Users/hanskrebs/git/HTML/imdbprime -maxdepth 1 -type f -name 'vendor.*.bundle.js' -delete
-
-#!/bin/bash
-
-#############################################
-# commit and push
-#############################################
-while getopts m:r:b: option
-do
- case "${option}"
- in
- m) MESSAGE=${OPTARG};;
- r) REPOSITORY=${OPTARG};;
- b) BRANCH=${OPTARG};;
- esac
-done
-
-if [ -z "${MESSAGE}" ] && [ -z "${DESTINATION}" ] && [ -z "${BRANCH}" ];
+if [ -z "$1" ];
   then
-    echo "Skipping commit and push."
-    echo "Usage: ng_deploy -m \"my message\" -r \"heroku\" -b \"master\""
+    echo "Usage: ng_deploy -m \"my message\" [-r \"heroku\" -b \"master\"]"
+    echo "Aborting"
   else
-    #-m and -d count as own parameters, therefore everything above 4 parameters
-    # shall be rejected
-    MORE_PARAMS=$5
-    if [ -z "${MORE_PARAMS}" ];
-      then
-        echo "Skipping commit and push."
-        echo "Usage: ng_deploy -m \"my message\" -r \"heroku\" -b \"master\""
-      else
-        echo "=============== ADDING & COMMITING ==============="
-        echo "git add -A"
-        git add -A
-        echo "git commit -m $MESSAGE"
-        git commit -m "$MESSAGE"
-        echo "=============== PUSHING TO ==============="
-        echo "=============== $REPOSITORY $BRANCH ==============="
-        echo "git push $REPOSITORY $BRANCH"
-        git push "$REPOSITORY" "$BRANCH"
-    fi
+    echo "=============== create prod build ==============="
+    ng build --prod
+    echo "=============== ENDING: create prod build ==============="
+
+    #############################################
+    # clean-up: remove files from previous build
+    #############################################
+    ./ng_clean
+
+
+  #############################################
+  # move new files to root
+  #############################################
+    echo "=============== move new build to root ==============="
+  # copy all from /imdbprime/newestBuild to /imdbprime
+  # The -a option is an improved recursive option, that preserve all file attributes, and also preserve symlinks.
+  # The . at end of the source path is a specific cp syntax that allow to copy all files and folders, included hidden ones.
+    cp -a ../newestBuild/. ../
+    echo "=============== ENDING: move new build to root ==============="
+
+  #############################################
+  # adjust appcach.manifest
+  #############################################
+  echo "=============== adjust appcach.manifest ==============="
+  myFile="../appcache.manifest"
+  echo "CACHE MANIFEST" > $myFile
+  echo "#v0.5 from 13.08.2017" >> $myFile
+  echo "# see https://www.catswhocode.com/blog/how-to-create-offline-html5-web-apps-in-5-easy-steps" >> $myFile
+  echo "# https://www.html5rocks.com/de/tutorials/appcache/beginner/" >> $myFile
+
+  echo "CACHE:" >> $myFile
+  echo "#what to cache in application cache" >> $myFile
+  echo "#index.html -> not necessary, as all html files with "manifest" in them are cached anyway" >> $myFile
+  echo "#we have some kind of lazy loading if we leave it out here" >> $myFile
+
+  # add files
+  # get all files from /newBuild but skipping the directories
+  ls -p ../newBuild | grep -v / >> $myFile
+  # get content of the assets dir
+  for fileName in ../newBuild/assets/*.*; do
+    name=${fileName##*/}
+    echo "assets/$name" >> $myFile
+  done
+
+  echo " " >> $myFile
+  echo "NETWORK:" >> $myFile
+  echo "#what to NOT cache if network is online" >> $myFile
+  echo "#star means, load everything if network is online" >> $myFile
+  echo "#star is only allowed for online!" >> $myFile
+  echo "*" >> $myFile
+  echo " " >> $myFile
+  echo "FALLBACK" >> $myFile
+  echo "#just an example how to use: if the ressource /api is offline then the cached" >> $myFile
+  echo "ressource offline.html shall be used" >> $myFile
+  echo "/api offline.html" >> $myFile
+
+  echo "=============== ENDING: adjust appcach.manifest ==============="
+
+  #############################################
+  # commit and push
+  #############################################
+  ./ng_commit_and_push "$@"
 fi
-
-
-ng build --prod
-
-#############################################
-# clean-up: remove files from previous build
-#############################################
-./ng_clean
-
-#############################################
-# move new files to root
-#############################################
-# copy all from /imdbprime/u to /imdbprime
-# The -a option is an improved recursive option, that preserve all file attributes, and also preserve symlinks.
-# The . at end of the source path is a specific cp syntax that allow to copy all files and folders, included hidden ones.
-cp -a ../u/. ../
-
-#############################################
-# adjust appcach.manifest
-#############################################
-myFile="../appcache.manifest"
-echo "CACHE MANIFEST" > $myFile
-echo "#v0.5 from 13.08.2017" >> $myFile
-echo "# see https://www.catswhocode.com/blog/how-to-create-offline-html5-web-apps-in-5-easy-steps" >> $myFile
-echo "# https://www.html5rocks.com/de/tutorials/appcache/beginner/" >> $myFile
-
-echo "CACHE:" >> $myFile
-echo "#what to cache in application cache" >> $myFile
-echo "#index.html -> not necessary, as all html files with "manifest" in them are cached anyway" >> $myFile
-echo "#we have some kind of lazy loading if we leave it out here" >> $myFile
-
-# add files
-# get all files from /u but skipping the directories
-ls -p ../u | grep -v / >> $myFile
-# get content of the assets dir
-for fileName in ../u/assets/*.*; do
-  name=${fileName##*/}
-  echo "assets/$name" >> $myFile
-done
-
-echo " " >> $myFile
-echo "NETWORK:" >> $myFile
-echo "#what to NOT cache if network is online" >> $myFile
-echo "#star means, load everything if network is online" >> $myFile
-echo "#star is only allowed for online!" >> $myFile
-echo "*" >> $myFile
-echo " " >> $myFile
-echo "FALLBACK" >> $myFile
-echo "#just an example how to use: if the ressource /api is offline then the cached" >> $myFile
-echo "ressource offline.html shall be used" >> $myFile
-echo "/api offline.html" >> $myFile
-
-
-#############################################
-# commit and push
-#############################################
-./ng_commit_and_push "$@"
