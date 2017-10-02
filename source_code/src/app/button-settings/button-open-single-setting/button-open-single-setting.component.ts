@@ -1,7 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {SCALE_IN_OUT_SLOW_ANIMATION} from "../../animations/scale-in-out-slow.animation";
 import {DialogSettingsService} from "../../dialog-settings/dialog-settings.service";
-import {AbstractButtonSettingsComponent} from "../button-settings";
 import {ValuesService} from "../../services/values.service";
 
 @Component({
@@ -12,7 +11,7 @@ import {ValuesService} from "../../services/values.service";
         SCALE_IN_OUT_SLOW_ANIMATION,
     ]
 })
-export class ButtonOpenSingleSettingComponent extends AbstractButtonSettingsComponent implements OnInit {
+export class ButtonOpenSingleSettingComponent implements OnInit {
 
     @Input() settingYear:boolean = false;
     @Input() settingRatingValue:boolean = false;
@@ -23,31 +22,23 @@ export class ButtonOpenSingleSettingComponent extends AbstractButtonSettingsComp
     animationRatingCountScalingState:string = "normal1";
 
     constructor(public dialogSettingsService: DialogSettingsService,
-                protected valuesService: ValuesService) {
-        super(valuesService);
-    }
+                private valuesService: ValuesService) { }
 
     ngOnInit() { }
 
     openRatingValueDialog() {
         this.animateRatingValueButton();
-        this.dialogSettingsService
-            .openRatingValueDialog(this.valuesService.minRatingValueFilter, this.valuesService.maxRatingValue)
-            .subscribe(newValue => this._onRatingValueChanged(newValue));
+        this.dialogSettingsService.openRatingValueDialog();
     }
 
     openRatingCountDialog() {
         this.animateRatingCountButton();
-        this.dialogSettingsService
-            .openRatingCountDialog(this.valuesService.minRatingCountFilter, this.valuesService.maxRatingCount)
-            .subscribe(newValue => this._onRatingCountChanged(newValue));
+        this.dialogSettingsService.openRatingCountDialog();
     }
 
     openYearDialog() {
         this.animateYearButton();
-        this.dialogSettingsService
-            .openYearDialog(this.valuesService.minYearValueFilter, this.valuesService.minYear, this.valuesService.maxYear)
-            .subscribe(newValue => this._onYearChanged(newValue));
+        this.dialogSettingsService.openYearDialog();
     }
 
     animateYearButton() {

@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
 import { MdDialogRef, MdSliderChange } from "@angular/material";
-import { Subject } from "rxjs/Subject";
-import { Observable } from "rxjs/Observable";
 import {
     SCALE_IN_OUT_SLOW_FAST_FAST_ANIMATION,
     SCALE_IN_OUT_SLOW_FAST_SLOW_ANIMATION
 } from "../animations/scale-in-out-slow-fast.animation";
+import {ValuesService} from "../services/values.service";
 
 @Component({
     selector: 'dialog-settings-component',
@@ -98,147 +97,59 @@ export class DialogSettingsComponent {
     public title: string;
     public message: string;
 
-    maxRatingCount:number;
-    maxRatingValue:number;
-    minYear:number;
-    maxYear:number;
-
-    constructor(public dialogRef: MdDialogRef<DialogSettingsComponent>) {
-        this.ratingValueSliderValueObserveable = this.ratingValueSliderValueSubject.asObservable();
-        this.ratingCountSliderValueObserveable = this.ratingCountSliderValueSubject.asObservable();
-        this.yearSliderValueObserveable = this.yearSliderValueSubject.asObservable();
-    }
-
-    /* RATING VALUE */
     ratingValueShow:boolean = false;
-    _ratingValueSliderValue:number;
-    ratingValueSliderValueSubject:Subject<number> = new Subject<number>();
-    ratingValueSliderValueObserveable:Observable<number>;
+    yearShow:boolean = false;
+    ratingCountShow:boolean = false;
 
-    set ratingValueSliderValue(value: number) {
-        this._ratingValueSliderValue = value;
-        this.ratingValueSliderValueSubject.next(value);
-    }
+    constructor(public dialogRef: MdDialogRef<DialogSettingsComponent>,
+                private valuesService: ValuesService) { }
 
-    get ratingValueSliderValue () {
-        return this._ratingValueSliderValue;
-    }
-
-    public ratingValueObserveable():Observable<number> {
-        return this.ratingValueSliderValueObserveable;
-    }
-
-    public openRatingValueDialog(initWith:number, maxRatingValue:number) {
-        this.ratingValueSliderValue = initWith;
-        this.maxRatingValue = maxRatingValue;
+    public openRatingValueDialog():void {
         this.ratingValueShow = true;
     }
 
-    mdSliderInput_RatingValue(changeEvent: MdSliderChange) {
-        this.ratingValueSliderValue = changeEvent.value;
-        this.animateFast('ratingValue');
+    public openYearDialog():void {
+        this.yearShow = true;
     }
 
-    mdSliderChange_RatingValue(changeEvent: MdSliderChange) {
-        this.ratingValueSliderValue = changeEvent.value;
+    public openRatingCountDialog():void {
+        this.ratingCountShow = true;
+    }
+
+    public openAllDialog():void {
+        this.yearShow = true;
+        this.ratingCountShow = true;
+        this.ratingValueShow = true;
+    }
+
+    onRatingValueChanged(changeEvent: MdSliderChange) {
+        this.valuesService.minRatingValueFilter = changeEvent.value;
         this.animateSlowly('ratingValue');
     }
 
-    /* RATING COUNT*/
-    ratingCountShow:boolean = false;
-    _ratingCountSliderValue:number;
-    ratingCountSliderValueSubject:Subject<number> = new Subject<number>();
-    ratingCountSliderValueObserveable:Observable<number>;
-
-    set ratingCountSliderValue(value: number) {
-        this._ratingCountSliderValue = value;
-        this.ratingCountSliderValueSubject.next(value);
-    }
-
-    get ratingCountSliderValue () {
-        return this._ratingCountSliderValue;
-    }
-
-    public ratingCountObserveable():Observable<number> {
-        return this.ratingCountSliderValueObserveable;
-    }
-
-    public openRatingCountDialog(initWith:number, maxRatingCount:number) {
-        this.ratingCountSliderValue = initWith;
-        this.maxRatingCount = maxRatingCount;
-        this.ratingCountShow = true;
+    onRatingValueInput(changeEvent: MdSliderChange) {
+        this.valuesService.minRatingValueFilter = changeEvent.value;
+        this.animateFast('ratingValue');
     }
 
 
-    mdSliderInput_RatingCount(changeEvent: MdSliderChange) {
-        this.ratingCountSliderValue = changeEvent.value;
+    onRatingCountChanged(changeEvent: MdSliderChange) {
+        this.valuesService.minRatingCountFilter = changeEvent.value;
         this.animateFast('ratingCount');
     }
 
-    mdSliderChange_RatingCount(changeEvent: MdSliderChange) {
-        this.ratingCountSliderValue = changeEvent.value;
+    onRatingCountInput(changeEvent: MdSliderChange) {
+        this.valuesService.minRatingCountFilter = changeEvent.value;
         this.animateSlowly('ratingCount');
     }
 
-    /* YEAR */
-    yearShow:boolean = false;
-    _yearSliderValue:number;
-    yearSliderValueSubject:Subject<number> = new Subject<number>();
-    yearSliderValueObserveable:Observable<number>;
-
-    set yearSliderValue(value: number) {
-        this._yearSliderValue = value;
-        this.yearSliderValueSubject.next(value);
-    }
-
-    get yearSliderValue () {
-        return this._yearSliderValue;
-    }
-
-    public yearObserveable():Observable<number> {
-        return this.yearSliderValueObserveable;
-    }
-
-    public openYearDialog(initWith:number, minYear:number, maxYear:number) {
-        this.yearSliderValue = initWith;
-        this.minYear = minYear;
-        this.maxYear = maxYear;
-        this.yearShow = true;
-    }
-
-    mdSliderInput_Year(changeEvent: MdSliderChange) {
-        this.yearSliderValue = changeEvent.value;
-        this.animateFast('year');
-    }
-
-    mdSliderChange_Year(changeEvent: MdSliderChange) {
-        this.yearSliderValue = changeEvent.value;
+    onYearChanged(changeEvent: MdSliderChange) {
+        this.valuesService.minYearValueFilter = changeEvent.value;
         this.animateSlowly('year');
     }
 
-    public openAllDialog(initWithYear:number, minYear:number, maxYear:number,
-                         initWithRatingCount:number, maxRatingCount:number,
-                         initWithRatingValue:number, maxRatingValue:number) {
-        this.yearSliderValue = initWithYear;
-        this.minYear = minYear;
-        this.maxYear = maxYear;
-
-        this.ratingCountSliderValue = initWithRatingCount;
-        this.maxRatingCount = maxRatingCount;
-
-        this.ratingValueSliderValue = initWithRatingValue;
-        this.maxRatingValue = maxRatingValue;
-
-        this.yearShow = true;
-        this.ratingCountShow = true;
-        this.ratingValueShow = true;
-    }
-
-    allObserverables() {
-        return {
-            year:this.yearObserveable(),
-            ratingValue:this.ratingValueObserveable(),
-            ratingCount:this.ratingCountObserveable()
-        };
+    onYearInput(changeEvent: MdSliderChange) {
+        this.valuesService.minYearValueFilter = changeEvent.value;
+        this.animateFast('year');
     }
 }

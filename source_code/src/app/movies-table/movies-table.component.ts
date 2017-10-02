@@ -242,23 +242,20 @@ export class MoviesTableComponent implements OnInit {
     }
 
     onRatingCountChanged(newValue:number) {
-        this.valuesService.minRatingCountFilter = newValue;
         this.showSnackbar("Minimum Rating Count set to:",
-            this.valuesService.minRatingCountFilter, true);
+            newValue, true);
         this.filterAndSetMovies();
     }
 
     onRatingValueChanged(newValue:number) {
-        this.valuesService.minRatingValueFilter = newValue;
         this.showSnackbar("Minimum Rating Value set to:",
-            this.valuesService.minRatingValueFilter, true);
+            newValue, true);
         this.filterAndSetMovies();
     }
 
     onYearChanged(newValue:number) {
-        this.valuesService.minYearValueFilter = newValue;
         this.showSnackbar("Minimum Year set to:",
-            this.valuesService.minYearValueFilter, false);
+            newValue, false);
         this.filterAndSetMovies();
     }
 

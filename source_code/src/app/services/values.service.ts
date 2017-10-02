@@ -51,8 +51,11 @@ export class ValuesService {
     }
 
     set minRatingCountFilter(value: number) {
-        this._minRatingCountFilter = value;
-        this.minRatingCountFilterSubject.next(value);
+        //prevent the observers to fire if the value didn't really change
+        if (this._minRatingCountFilter != value) {
+            this._minRatingCountFilter = value;
+            this.minRatingCountFilterSubject.next(value);
+        }
     }
 
     get minRatingValueFilter(): number {
@@ -60,8 +63,10 @@ export class ValuesService {
     }
 
     set minRatingValueFilter(value: number) {
-        this._minRatingValueFilter = value;
-        this.minRatingValueFilterSubject.next(value);
+        if (this._minRatingValueFilter != value) {
+            this._minRatingValueFilter = value;
+            this.minRatingValueFilterSubject.next(value);
+        }
     }
 
     get minYearValueFilter(): number {
@@ -69,8 +74,10 @@ export class ValuesService {
     }
 
     set minYearValueFilter(value: number) {
-        this._minYearValueFilter = value;
-        this.minYearValueFilterSubject.next(value);
+        if (this._minYearValueFilter != value) {
+            this._minYearValueFilter = value;
+            this.minYearValueFilterSubject.next(value);
+        }
     }
 
 

@@ -16,7 +16,7 @@
                 </div>
                 <div class="col-xs-9">
                     <label class="prominentValue" [@scalingFastTrigger]="scalingStateYear" [@scalingSlowTrigger]="scalingStateYear">
-                        <span class="label label-info">{{yearSliderValue.toString()}}</span>
+                        <span class="label label-info">{{valuesService.minYearValueFilter.toString()}}</span>
                     </label>
                 </div>
             </div>
@@ -24,14 +24,14 @@
 
         <md-slider
                 class="slider"
-                [min]="minYear"
-                [max]="maxYear"
+                [min]="valuesService.minYear"
+                [max]="valuesService.maxYear"
                 step="1"
                 tickInterval="auto"
-                [value]="yearSliderValue"
+                [value]="valuesService.minYearValueFilter"
                 thumbLabel="false"
-                (input)="mdSliderInput_Year($event)"
-                (change)="mdSliderChange_Year($event)"
+                (input)="onYearInput($event)"
+                (change)="onYearChanged($event)"
         ></md-slider>
     </div>
     <!-- RATING VALUE -->
@@ -43,7 +43,7 @@
                 </div>
                 <div class="col-xs-9">
                     <label class="prominentValue" [@scalingFastTrigger]="scalingStateRatingValue" [@scalingSlowTrigger]="scalingStateRatingValue">
-                        <span class="label label-info">{{ratingValueSliderValue.toLocaleString('en')}}</span>
+                        <span class="label label-info">{{valuesService.minRatingValueFilter.toLocaleString('en')}}</span>
                     </label>
                 </div>
             </div>
@@ -51,13 +51,13 @@
         <md-slider
                 class="slider"
                 min="1"
-                [max]="maxRatingValue"
+                [max]="valuesService.maxRatingValue"
                 step="0.1"
                 tickInterval="auto"
-                [value]="ratingValueSliderValue"
+                [value]="valuesService.minRatingValueFilter"
                 thumbLabel="false"
-                (input)="mdSliderInput_RatingValue($event)"
-                (change)="mdSliderChange_RatingValue($event)"
+                (input)="onRatingValueInput($event)"
+                (change)="onRatingValueChanged($event)"
         ></md-slider>
     </div>
     <!-- RATING COUNT -->
@@ -69,7 +69,7 @@
                 </div>
                 <div class="col-xs-9 ratingCountLabel">
                     <label class="prominentValue" [@scalingFastTrigger]="scalingStateRatingCount" [@scalingSlowTrigger]="scalingStateRatingCount">
-                        <span class="label label-info">{{ratingCountSliderValue.toLocaleString('en')}}</span>
+                        <span class="label label-info">{{valuesService.minRatingCountFilter.toLocaleString('en')}}</span>
                     </label>
                 </div>
             </div>
@@ -77,13 +77,13 @@
         <md-slider
                 class="slider"
                 min="10000"
-                [max]="maxRatingCount"
+                [max]="valuesService.maxRatingCount"
                 step="100000"
                 tickInterval="1"
-                [value]="ratingCountSliderValue"
+                [value]="valuesService.minRatingCountFilter"
                 thumbLabel="false"
-                (input)="mdSliderInput_RatingCount($event)"
-                (change)="mdSliderChange_RatingCount($event)"
+                (input)="onRatingCountChanged($event)"
+                (change)="onRatingCountInput($event)"
         ></md-slider>
     </div>
 
