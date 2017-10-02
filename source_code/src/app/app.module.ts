@@ -22,6 +22,8 @@ import { MoveToTopComponent } from './button-back-to-top/button-back-to-top.comp
 import { ButtonOpenSettingsComponent } from './button-settings/button-open-settings/button-open-settings.component';
 import { ButtonOpenSingleSettingComponent } from './button-settings/button-open-single-setting/button-open-single-setting.component';
 import { MoviesTableComponent } from './movies-table/movies-table.component';
+import { ProgressBarComponent } from './progress-bar/progress-bar.component';
+import { ShowingInfoComponent } from './showing-info/showing-info.component';
 
 // Services
 import { WebService } from "./services/web.service";
@@ -46,7 +48,9 @@ import 'web-animations-js';
         MoveToTopComponent,
         ButtonOpenSettingsComponent,
         ButtonOpenSingleSettingComponent,
-        MoviesTableComponent
+        MoviesTableComponent,
+        ProgressBarComponent,
+        ShowingInfoComponent
     ],
     imports: [
         BrowserModule,

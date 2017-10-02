@@ -15,16 +15,8 @@ import {ValuesService} from "../services/values.service";
 export class MoviesContainerComponent implements OnInit {
     ngOnInit(): void { }
 
-    @Input() isParentLoading:boolean = true;
+    @Input() isParentLoading:boolean = false;
 
     constructor(private valuesService: ValuesService) {
-    }
-
-    shouldShowProgressBar() {
-        if (navigator.onLine) {
-            return this.valuesService.shouldLoadMoviesFromServer || this.isParentLoading;
-        } else {
-            return false;
-        }
     }
 }

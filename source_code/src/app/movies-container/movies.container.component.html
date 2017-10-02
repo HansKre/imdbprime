@@ -1,13 +1,7 @@
 <app-button-back-to-top rightOffset="60px"></app-button-back-to-top>
 <app-button-open-settings></app-button-open-settings>
 
-<div class="innerHeader">
-    <div *ngIf="shouldShowProgressBar()" >
-        <md-progress-bar mode="indeterminate"></md-progress-bar>
-    </div>
-
-    <p class="info">Showing {{ valuesService.displayedMovies.length }} | matching
-        {{ valuesService.filteredMovies.length }} | total {{ valuesService.allMovies.length }}</p>
-</div>
+<app-progress-bar [isParentLoading]="isParentLoading"></app-progress-bar>
+<app-showing-info></app-showing-info>
 
 <app-movies-table></app-movies-table>
