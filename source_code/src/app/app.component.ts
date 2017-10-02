@@ -21,6 +21,7 @@ export class AppComponent implements OnInit{
     private registerApplicationCacheEvents() {
         this.registerForDOWNLOADING();
         this.registerForUPDEATEREADY();
+        this.registerForCACHED();
     }
 
     private registerForDOWNLOADING() {
@@ -35,6 +36,14 @@ export class AppComponent implements OnInit{
         }.bind(this);
     }
 
+    // cached - The resources listed in the manifest have been fully downloaded
+    // and the application is now cached locally.
+    private registerForCACHED() {
+        window.applicationCache.oncached = function () {
+            this.isCacheLoading = false;
+        }.bind(this);
+    }
+
     swapCacheAndReloadContent() {
         this.isCacheLoading = true;
 
@@ -44,6 +53,6 @@ export class AppComponent implements OnInit{
         // page content needs to be reloaded after this
         window.location.reload();
 
-        this.isCacheLoading = false;
+        // code past this point won't be executed
     }
 }
