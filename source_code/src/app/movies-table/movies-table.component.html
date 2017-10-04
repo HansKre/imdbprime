@@ -2,7 +2,7 @@
   <div class="movieTableHeadWrapper">
     <table class="table table-striped table-condensed"
            id="moviesTableHead"
-           mdSort mdSortActive="year" (mdSortChange)="sortDataAndSetMovies($event)" mdSortDisableClear>
+           mdSort mdSortActive="year" mdSortDirection="desc" (mdSortChange)="sortDataAndSetMovies($event)" mdSortDisableClear>
       <thead class="thead-inverse">
       <tr>
         <th md-sort-header="movie" class="col-xs-9 firstLineTableHeader">Movie</th>
