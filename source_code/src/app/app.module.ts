@@ -8,7 +8,7 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import {
     MdButtonModule, MdDialogModule, MdInputModule /* for Md-Container-Input */,
     MdProgressBarModule, MdSliderModule,
-    MdSnackBarModule, MdSortModule
+    MdSnackBarModule, MdSortModule, MatSortModule, MatTableModule, MdIconModule
 } from '@angular/material';
 
 // My Components
@@ -24,6 +24,7 @@ import { ButtonOpenSingleSettingComponent } from './button-settings/button-open-
 import { MoviesTableComponent } from './movies-table/movies-table.component';
 import { ProgressBarComponent } from './progress-bar/progress-bar.component';
 import { ShowingInfoComponent } from './showing-info/showing-info.component';
+import { MoviesTableMatComponent } from './movies-table-mat/movies-table-mat.component';
 
 // Services
 import { WebService } from "./services/web.service";
@@ -50,7 +51,8 @@ import 'web-animations-js';
         ButtonOpenSingleSettingComponent,
         MoviesTableComponent,
         ProgressBarComponent,
-        ShowingInfoComponent
+        ShowingInfoComponent,
+        MoviesTableMatComponent
     ],
     imports: [
         BrowserModule,
@@ -63,7 +65,10 @@ import 'web-animations-js';
         MdButtonModule,
         MdDialogModule,
         MdInputModule,
-        MdSortModule
+        MdSortModule,
+        MatTableModule,
+        MatSortModule,
+        MdIconModule
     ],
     providers: [
         WebService,
