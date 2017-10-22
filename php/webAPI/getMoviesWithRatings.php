@@ -44,8 +44,11 @@ http://imdbprime-snah.rhcloud.com
         }
     }
     
-    // set expires header
-    header('Expires: '.gmdate('D, d M Y H:i:s \G\M\T', time() + (60 * 60))); // 1 hour
+    // Set Last Modified header
+    header('Last-Modified: '.gmdate('D, d M Y H:i:s \G\M\T', time()));
+    
+    // Set Expires header to 1 hour
+    header('Expires: '.gmdate('D, d M Y H:i:s \G\M\T', time() + (60 * 1)));
 
     // return
     if (empty($moviesWithMinRatingCount)) {
