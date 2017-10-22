@@ -20,14 +20,10 @@ Header set Access-Control-Allow-Origin *
     </IfModule>
     
     <IfModule mod_expires.c>
-    	# Turn on Expires and set default to 0
-		ExpiresActive On
-		ExpiresDefault A0
-		
-		# expire JSON after 2 hours in the client's cache, unfortunately this won't help us invalidating the response, since it is tagged as html
-		ExpiresByType application/json "access plus 2 hours"
-		
-		
+    	<FilesMatch "\.(php|xyz)$">
+	    	ExpiresDefault "access plus 2 hours"
+			Header append Cache-Control "private"
+		</FilesMatch>
     </IfModule>
 
 
