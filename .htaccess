@@ -5,7 +5,7 @@ Header set Access-Control-Allow-Origin *
     # http://httpd.apache.org/docs/current/mod/mod_headers.html
     <IfModule mod_headers.c>
 	    # Set 360 day expiration on everything
-        Header set Cache-Control "max-age=31104000"
+        #Header set Cache-Control "max-age=31104000"
         
         # header being added to the response: MyHeader: Hi Hans. It took D=3775428 microseconds for Apache to serve this request.
     	Header set MyHeader "Hi Hans. It took %D microseconds for Apache to serve this request."
