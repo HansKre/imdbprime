@@ -44,18 +44,27 @@ http://imdbprime-snah.rhcloud.com
         }
     }
     
+    // the following approach does not work: 
+    // If both Expires and max-age are set max-age will take precedence.
+    // therefore, we would need to reset the high max-age value, which is set
+    // in .htaccess
+    // Unfortunately, this is not possible here, because the 'Cache-Control' header
+    // from .htaccess is set AFTER this php file is executed.
+    
     // If both Expires and max-age are set max-age will take precedence.
     // therefore, we need to replace any max-age on this response
-    header_remove('Cache-Control');
-    header('Cache-Control: private');
+    //header_remove('Cache-Control');
+    //header('Cache-Control: private');
     
     // Set Last Modified header
-    header('Last-Modified: '.gmdate('D, d M Y H:i:s \G\M\T', time()));
+    //header('Last-Modified: '.gmdate('D, d M Y H:i:s \G\M\T', time()));
     
     // Set Expires header to 1 hour
-    header('Expires: '.gmdate('D, d M Y H:i:s \G\M\T', time() + (60 * 1)));
+    //header('Expires: '.gmdate('D, d M Y H:i:s \G\M\T', time() + (60 * 1)));
     
-    // Set proper MIME Type
+    
+    
+    // Better approach: set proper MIME type and then set ExpiresByType in .htaccess
     header('Content-Type: application/json');
 
     // return
