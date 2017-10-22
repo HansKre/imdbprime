@@ -20,8 +20,9 @@ Header set Access-Control-Allow-Origin *
     </IfModule>
     
     <IfModule mod_expires.c>
+    	# invalidate php requests after 2 hours
     	<FilesMatch "\.(php|xyz)$">
-	    	ExpiresDefault "access plus 2 hours"
+	    	ExpiresDefault A7200
 			Header append Cache-Control "private"
 		</FilesMatch>
     </IfModule>
