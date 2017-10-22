@@ -46,6 +46,7 @@ http://imdbprime-snah.rhcloud.com
     
     // If both Expires and max-age are set max-age will take precedence.
     // therefore, we need to replace any max-age on this response
+    header_remove('Cache-Control');
     header('Cache-Control: private');
     
     // Set Last Modified header
