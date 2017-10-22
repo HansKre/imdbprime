@@ -18,15 +18,6 @@ Header set Access-Control-Allow-Origin *
 			Header set Cache-Control "max-age=0, private, no-store, no-cache, must-revalidate"
 		</FilesMatch>
     </IfModule>
-    
-    <IfModule mod_expires.c>
-    	# invalidate php requests after 2 hours
-    	<FilesMatch "\.(php|xyz)$">
-	    	ExpiresDefault A7200
-			Header append Cache-Control "private"
-		</FilesMatch>
-    </IfModule>
-
 
 # https://raw.githubusercontent.com/h5bp/html5-boilerplate/master/dist/.htaccess
 # ######################################################################
