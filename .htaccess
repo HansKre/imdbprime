@@ -5,13 +5,29 @@ Header set Access-Control-Allow-Origin *
     # http://httpd.apache.org/docs/current/mod/mod_headers.html
     <IfModule mod_headers.c>
 	    # Set 360 day expiration on everything
-        Header set Cache-Control "max-age=31104000"
+        Header set Cache-Control "public, max-age=31104000"
         
         # header being added to the response: MyHeader: Hi Hans. It took D=3775428 microseconds for Apache to serve this request.
     	Header set MyHeader "Hi Hans. It took %D microseconds for Apache to serve this request."
     	
     	# Set a test cookie if and only if the client didn't send us a cookie
     	Header set Set-Cookie testcookie "expr=-z %{req:Cookie}"
+    	
+    	# NEVER CACHE
+		<FilesMatch "\.(xyz|cgi|pl)$">
+			Header set Cache-Control "max-age=0, private, no-store, no-cache, must-revalidate"
+		</FilesMatch>
+    </IfModule>
+    
+    <IfModule mod_expires.c>
+    	# Turn on Expires and set default to 0
+		ExpiresActive On
+		ExpiresDefault A0
+		
+		# expire JSON after 2 hours in the client's cache, unfortunately this won't help us invalidating the response, since it is tagged as html
+		ExpiresByType application/json "access plus 2 hours"
+		
+		
     </IfModule>
 
 
