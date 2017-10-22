@@ -44,6 +44,10 @@ http://imdbprime-snah.rhcloud.com
         }
     }
     
+    // If both Expires and max-age are set max-age will take precedence.
+    // therefore, we need to replace any max-age on this response
+    header('Cache-Control: private', true)
+    
     // Set Last Modified header
     header('Last-Modified: '.gmdate('D, d M Y H:i:s \G\M\T', time()));
     
