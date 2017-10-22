@@ -1,8 +1,8 @@
-#CACHE MANIFEST
+CACHE MANIFEST
 #v0.5 from 13.08.2017
 # see https://www.catswhocode.com/blog/how-to-create-offline-html5-web-apps-in-5-easy-steps
 # https://www.html5rocks.com/de/tutorials/appcache/beginner/
-#CACHE:
+CACHE:
 #what to cache in application cache
 #index.html -> not necessary, as all html files with manifest in them are cached anyway
 #we have some kind of lazy loading if we leave it out here
