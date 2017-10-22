@@ -41,6 +41,9 @@ FileETag None
 
 # ----------------------------------------------------------------------
 # | Expires headers                                                    |
+# |  Note: chrome does not even SEND any requests to the server as     |
+# |  long as the ressource is valid. After the expiration, browser     |
+# |  starts sending requests with the "if-modified-since" header.      |
 # ----------------------------------------------------------------------
 
 # Serve resources with far-future expires headers.
@@ -95,7 +98,7 @@ FileETag None
     ExpiresByType image/gif                             "access plus 1 month"
     ExpiresByType image/jpeg                            "access plus 1 month"
     ExpiresByType image/png                             "access plus 1 month"
-    ExpiresByType image/svg+xml                         "access plus 1 month"
+    ExpiresByType image/svg+xml                         "access plus 10 seconds"
     ExpiresByType image/webp                            "access plus 1 month"
     ExpiresByType video/mp4                             "access plus 1 month"
     ExpiresByType video/ogg                             "access plus 1 month"
