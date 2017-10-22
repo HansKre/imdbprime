@@ -1,8 +1,21 @@
 AddType text/cache-manifest .manifest
 Header set Access-Control-Allow-Origin *
 
-# https://raw.githubusercontent.com/h5bp/html5-boilerplate/master/dist/.htaccess
 
+    # http://httpd.apache.org/docs/current/mod/mod_headers.html
+    <IfModule mod_headers.c>
+	    # Set 360 day expiration on everything
+        Header set Cache-Control "max-age=31104000"
+        
+        # header being added to the response: MyHeader: Hi Hans. It took D=3775428 microseconds for Apache to serve this request.
+    	Header set MyHeader "Hi Hans. It took %D microseconds for Apache to serve this request."
+    	
+    	# Set a test cookie if and only if the client didn't send us a cookie
+    	Header set Set-Cookie testcookie "expr=-z %{req:Cookie}"
+    </IfModule>
+
+
+# https://raw.githubusercontent.com/h5bp/html5-boilerplate/master/dist/.htaccess
 # ######################################################################
 # # WEB PERFORMANCE                                                    #
 # ######################################################################
