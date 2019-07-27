@@ -65,7 +65,7 @@ if ($didRunPrimeMoviesToday === ReturnValues::$shouldStart) {
         if ($myPrimeMovies->startQuery(1)) {
             myLog("PrimeMovies Successful");
         }
-        DataOperations::markExecutionAs(ExecutionMarks::$succeeded);
+        DataOperations::markExecutionAs(ExecutionMarks::$amazonQuerySucceeded);
     }
 } else if ($didRunPrimeMoviesToday == ReturnValues::$shouldContinue) {
     if (DataOperations::markExecutionAs(ExecutionMarks::$started)) {
@@ -73,7 +73,7 @@ if ($didRunPrimeMoviesToday === ReturnValues::$shouldStart) {
         if ($myPrimeMovies->continueQuery()) {
             myLog("PrimeMovies Successful");
         }
-        DataOperations::markExecutionAs(ExecutionMarks::$succeeded);
+        DataOperations::markExecutionAs(ExecutionMarks::$amazonQuerySucceeded);
     }
 }
 
@@ -84,7 +84,7 @@ if ($didRunPrimeMoviesToday === ReturnValues::$amazonQuerySucceeded) {
     myLog("=====Starte IMDB Query.=====");
     $imdbQuery = new ImdbQuery($myExecutionId);
     if ($imdbQuery->doQuery()) {
-        DataOperations::markExecutionAs(ExecutionMarks::$finished);
+        DataOperations::markExecutionAs(ExecutionMarks::$imdbQuerySucceeded);
         myLog("=====Fertig=====");
     } else {
         myLog("=====Abbruch: queryimdb.php nicht erfolgreich.=====");

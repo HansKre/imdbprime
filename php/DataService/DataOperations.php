@@ -32,16 +32,22 @@ class DataOperations {
                     // still running
                     $returnValue = ReturnValues::$inProgress;
                 }
-            } else if (contains($controlDoc[MARK_EXECUTION_KEY], ExecutionMarks::$succeeded)) {
-                // succeeded, but maybe we need to restart
+            } else if (contains($controlDoc[MARK_EXECUTION_KEY], ExecutionMarks::$amazonQuerySucceeded)) {
+                // amazon query may have succeeded, but maybe we need to restart
                 $oneDayInMinutes = 24 * 60;
                 if ($timeDiffMinutes > $oneDayInMinutes) {
                     $returnValue = ReturnValues::$shouldStart;
                 } else {
                     $returnValue = ReturnValues::$amazonQuerySucceeded;
                 }
-            } else if (contains($controlDoc[MARK_EXECUTION_KEY], ExecutionMarks::$finished)) {
-                $returnValue = ReturnValues::$imdbQuerySucceeded;
+            } else if (contains($controlDoc[MARK_EXECUTION_KEY], ExecutionMarks::$imdbQuerySucceeded)) {
+                // imdb query may have succeeded, but maybe we need to restart
+                $oneDayInMinutes = 24 * 60;
+                if ($timeDiffMinutes > $oneDayInMinutes) {
+                    $returnValue = ReturnValues::$shouldStart;
+                } else {
+                    $returnValue = ReturnValues::$imdbQuerySucceeded;
+                }
             } else {
                 // undefined case
                 $returnValue = ReturnValues::$shouldStart;

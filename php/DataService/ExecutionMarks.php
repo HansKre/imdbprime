@@ -2,6 +2,6 @@
 
 class ExecutionMarks {
     public static $started = "STARTED";
-    public static $succeeded = "AMAZON_QUERY_SUCCEEDED";
-    public static $finished = "FINISHED";
+    public static $amazonQuerySucceeded = "AMAZON_QUERY_SUCCEEDED";
+    public static $imdbQuerySucceeded = "FINISHED";
 }
