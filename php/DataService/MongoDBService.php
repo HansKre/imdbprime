@@ -30,15 +30,20 @@ class MongoDBService {
     public static function insertOneUnique($colName, $doc) {
         $db = self::db();
         if ($db) {
-            //inserting creates a selected collection, if it doesn't exist
+            //inserting creates and selects collection, if it doesn't exist already
             $collection = $db->selectCollection($colName);
 
-            $cursor = $collection->find($doc);
-            //insert only, if it does not exist yet
-            if (!$cursor->toArray()) {
-                return $collection->insertOne($doc)->isAcknowledged();
-            } else {
-                return false;
+            try {
+                $cursor = $collection->find($doc);
+                //insert only, if it does not exist yet
+                if (!$cursor->toArray()) {
+                    return $collection->insertOne($doc)->isAcknowledged();
+                } else {
+                    return false;
+                }
+            } catch (Exception $e) {
+                myLog('Exception while trying to search & insert into the DB:');
+                myLog($e->getMessage());
             }
         }
         return false;

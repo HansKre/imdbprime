@@ -53,7 +53,7 @@ array(6) {
  */
 
 //DataOperations::markExecutionAs("STARTED");
-//echo DataOperations::didRunPrimeMoviesToday();
+//echo DataOperations::howToExecute();
 //DataOperations::dropPrimeMoviesCollection();
 //echo DataOperations::whereToContinueAmazonQuery();
 //var_dump(DataOperations::getNextMovieAndRemoveItFromDB());

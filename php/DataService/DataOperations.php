@@ -9,48 +9,62 @@ const LAST_EXECUTION_KEY = "lastExecution";
 const MARK_EXECUTION_KEY = "executionMark";
 const CONFIG_FOR_KEY = "configFor";
 const APP_NAME = "imdbprime";
+const ONE_DAY_IN_MINUTES = 24 * 60;
+const WEEK_IN_MINUTES = ONE_DAY_IN_MINUTES * 7;
 
 class DataOperations {
-    public static function didRunPrimeMoviesToday() {
+    public static function howToExecute() {
         $data = null;
         $returnValue = null;
 
         $controlDoc = MongoDBService::findOne(MongoDBCollections::$control, [CONFIG_FOR_KEY => APP_NAME]);
         if (!$controlDoc) {
             // there no "lastExecution" entry at all
-            return ReturnValues::$shouldStart;
+            return ReturnValues::$AMAZON_QUERY_SHOULD_START;
         } else {
             $timeDiffMinutes = self::calcTimeDiffMinutes($controlDoc);
 
-
-            if (contains($controlDoc[MARK_EXECUTION_KEY], ExecutionMarks::$started)) {
-                if ($timeDiffMinutes > CRON_JOB_MAX_EXECUTION_TIME) {
+            // ===== SWITCH THROUGH ALL THE 4 EXECUTION MARKS ===== //
+            if (contains($controlDoc[MARK_EXECUTION_KEY], ExecutionMarks::$AMAZON_QUERY_STARTED)) {
+                if ($timeDiffMinutes > WEEK_IN_MINUTES) {
+                    $returnValue = ReturnValues::$AMAZON_QUERY_SHOULD_START;
+                } else if ($timeDiffMinutes > CRON_JOB_MAX_EXECUTION_TIME) {
                     // cron jobs get aborted after CRON_JOB_MAX_EXECUTION_TIME,
                     // if we are here, the previous execution did not come to an end
-                    $returnValue = ReturnValues::$shouldContinue;
+                    $returnValue = ReturnValues::$AMAZON_QUERY_SHOULD_CONTINUE;
                 } else {
-                    // still running
-                    $returnValue = ReturnValues::$inProgress;
+                    // in production, we should never reach this scode
+                    // if we are here, it may be due to concurrency and another script may be still running
+                    // or we got here because we are debugging and deliberately aborted the previous execution
+                    // or for some reason the script aborted before the CRON_JOB_MAX_EXECUTION_TIME
+                    $returnValue = ReturnValues::$AMAZON_WAIT_FOR_PREVIOUS_QUERY_TO_FINISH;
                 }
-            } else if (contains($controlDoc[MARK_EXECUTION_KEY], ExecutionMarks::$amazonQuerySucceeded)) {
-                // amazon query may have succeeded, but maybe we need to restart
-                $oneDayInMinutes = 24 * 60;
-                if ($timeDiffMinutes > $oneDayInMinutes) {
-                    $returnValue = ReturnValues::$shouldStart;
+            } else if (contains($controlDoc[MARK_EXECUTION_KEY], ExecutionMarks::$AMAZON_QUERY_SUCCEEDED)) {
+                // amazon query may have succeeded, but it may be too old
+                if ($timeDiffMinutes > WEEK_IN_MINUTES) {
+                    $returnValue = ReturnValues::$AMAZON_QUERY_SHOULD_START;
+                    // it is not too old, hence we can start the IMDB qury
                 } else {
-                    $returnValue = ReturnValues::$amazonQuerySucceeded;
+                    $returnValue = ReturnValues::$IMDB_QUERY_SHOULD_START;
                 }
-            } else if (contains($controlDoc[MARK_EXECUTION_KEY], ExecutionMarks::$imdbQuerySucceeded)) {
-                // imdb query may have succeeded, but maybe we need to restart
-                $oneDayInMinutes = 24 * 60;
-                if ($timeDiffMinutes > $oneDayInMinutes) {
-                    $returnValue = ReturnValues::$shouldStart;
+            } else if (contains($controlDoc[MARK_EXECUTION_KEY], ExecutionMarks::$IMDB_QUERY_STARTED)) {
+                // data is too old, we rerun the whole thing instead of starting the IMDB Query with old data
+                if ($timeDiffMinutes > WEEK_IN_MINUTES) {
+                    $returnValue = ReturnValues::$AMAZON_QUERY_SHOULD_START;
                 } else {
-                    $returnValue = ReturnValues::$imdbQuerySucceeded;
+                    $returnValue = ReturnValues::$IMDB_QUERY_SHOULD_CONTINUE;
+                }
+            } else if (contains($controlDoc[MARK_EXECUTION_KEY], ExecutionMarks::$IMDB_QUERY_SUCCEEDED)) {
+                // imdb query may have succeeded, but it may be too old
+                if ($timeDiffMinutes > WEEK_IN_MINUTES) {
+                    $returnValue = ReturnValues::$AMAZON_QUERY_SHOULD_START;
+                // it is not too old, hence we don't need to do anything
+                } else {
+                    $returnValue = ReturnValues::$ALL_UP_TO_DATE;
                 }
             } else {
                 // undefined case
-                $returnValue = ReturnValues::$shouldStart;
+                $returnValue = ReturnValues::$UNDEFINED;
             }
         }
         return $returnValue;
@@ -96,8 +110,8 @@ class DataOperations {
     public static function storeFoundAmazonPrimeMovies(array $movies) {
         foreach ($movies as $movie) {
             if (!MongoDBService::insertOneUnique(MongoDBCollections::$foundOnAmazonPrime, $movie)) {
-                echo "ERROR in DataOperations::storeAmazonPrimeMovies() while storing " .
-                    $movie['movie']."\n";
+                myLog("ERROR in DataOperations::storeAmazonPrimeMovies() while storing " .
+                    $movie['movie']);
             }
         }
     }
@@ -120,8 +134,8 @@ class DataOperations {
     }
 
     private static function echoCountOfColByFilter($colName, $filter = []) {
-        echo "Remaining in " . $colName . " : "
-            . MongoDBService::count($colName, $filter)."\n";
+        myLog("Remaining in " . $colName . " : "
+            . MongoDBService::count($colName, $filter));
     }
 
     public static function storeMatchedMovie($movie) {

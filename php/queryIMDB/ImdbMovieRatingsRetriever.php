@@ -4,36 +4,53 @@ const EXACT = 1;
 const POPULAR = 2;
 
 class ImdbMovieRatingsRetriever {
+    private $myExecutionId;
     private $movie = null;
     private $lastParsedDom;
     private $urlForImdbSearch;
-    private  $urlImdbMovie;
+    private $urlImdbMovie;
+
+    private function log($message) {
+        myLog($this->myExecutionId . " " . $message);
+    }
 
     private function removeSquareBracketFromTitle($title) {
         $cleanMovieTitle = $title;
+        // remove everything after the bracket
         $position = strpos($title, " [");
         if ($position !== false) {
             $cleanMovieTitle = substr($cleanMovieTitle, 0, $position);
         }
-        return $cleanMovieTitle;
+        // in case the brackets are missing
+        $position = strpos($title, "dt.OV");
+        if ($position !== false) {
+            $cleanMovieTitle = substr($cleanMovieTitle, 0, $position);
+        }
+        // in case the brackets are missing
+        $position = strpos($title, "OV");
+        if ($position !== false) {
+            $cleanMovieTitle = substr($cleanMovieTitle, 0, $position);
+        }
+        return trim($cleanMovieTitle);
     }
 
     private function handleFailedImdbSearch($movieTitle) {
         //todo: implement error handling
         // h1 class="findHeader">No results found for <span
         if (hasElementByAndSearchString($this->lastParsedDom, "h1", "class", "findHeader", "No results found for")) {
+            $this->log('IMDB search problem: No results found for ' . $movieTitle);
             return null;
         } else {
-            myLog("Unhandled case for $movieTitle. class 'result_text' missing");
+            $this->log("Unhandled case for $movieTitle. class 'result_text' missing. saving HTML to file.");
+            // if we get here, then it is a sign that an unknown html document was parsed
+            file_put_contents("null_$movieTitle.html", $this->lastParsedDom->saveHTML());
+            return null;
         }
-        // if we get here, then it is a sign that an unknown html document was parsed
-        file_put_contents("null_$movieTitle.html", $this->lastParsedDom->saveHTML());
-        return null;
     }
 
     private function sortOutResultsWithBadKeywords($resultTdElems, $movieTitle) {
-        $year = $this->movie['year'];
-        $this->resetYearIfDoesNotMatchWithYearInTitle($year, $movieTitle);
+        //$year = $this->movie['year'];
+        //$this->resetYearIfDoesNotMatchWithYearInTitle($year, $movieTitle);
 
         $promisingResultTdElems = array();
         foreach ($resultTdElems as $resultTdElem) {
@@ -47,11 +64,13 @@ class ImdbMovieRatingsRetriever {
                 contains($resultTdElem->nodeValue, "(Short)") ||
                 contains($resultTdElem->nodeValue, "(Video Game)")
             ) {
-               //skip element
-            } else if (is_numeric($year) && matchesYear($resultTdElem->nodeValue, $year)) {
+               // do nothing & skip element
+            /*} else if (is_numeric($year) && matchesYear($resultTdElem->nodeValue, $year)) {
                 // jahr vergleichen, manchmal weicht das Amazon-Jahr vom IMDB-Jahr um +/- 2 ab
                 $promisingResultTdElems[] = $resultTdElem;
             } else if (!is_numeric($year)) {
+                $promisingResultTdElems[] = $resultTdElem;*/
+            } else {
                 $promisingResultTdElems[] = $resultTdElem;
             }
         }
@@ -136,33 +155,33 @@ class ImdbMovieRatingsRetriever {
     }
 
     private function isSameDirector($imdbMovieDetailsDom, $directors) {
+        // early exit if we don't have a name
         if (!is_array($directors)) {
             if ($this->areNamesEqual($directors, "unavailable")) {
                 return true;
+            } else if (empty($directors)) {
+                return true;
             }
         }
-        /*<div class="credit_summary_item">
-            <h4 class="inline">Director:</h4>
-                <span itemprop="director" itemscope itemtype="http://schema.org/Person">
-            <a href="/name/nm2225959?ref_=tt_ov_dr"
-            itemprop='url'><span class="itemprop" itemprop="name">Steve Spel</span></a>            </span>
-        </div>*/
 
-        $elemsArray = getElementsBy($imdbMovieDetailsDom, "h4", "class", "inline");
+        $xpath = new DOMXPath($imdbMovieDetailsDom);
 
-        $foundDirectorElems = array();
-        foreach ($elemsArray as $i => $elem) {
-            $nodeValue = $elem->nodeValue;
-            if (contains($nodeValue, 'Director:') || contains($nodeValue, 'Directors:')) {
-                $foundDirectorElems = getElementsBy($imdbMovieDetailsDom, "span", "itemprop", "director");
-                $foundDirectorElems = array_merge($foundDirectorElems, getElementsBy($imdbMovieDetailsDom, "span", "itemprop", "directors"));
-            }
+        //decide which director query to take
+        $divElems = $xpath->query('//*[@id="title-overview-widget"]/div[2]/div');
+        $directorQuery = '';
+        if ($divElems->length === 2) {
+            $directorQuery = '//*[@id="title-overview-widget"]/div[2]/div[2]/div[1]/div[2]/a';
+        } else if ($divElems->length === 3) {
+            $directorQuery = '//*[@id="title-overview-widget"]/div[2]/div[1]/div[2]/a';
+        } else {
+            $this->log('Unhandled number of divElems in IMDB Movie Details Page.');
         }
+        $directorsElem = $xpath->query($directorQuery);
 
         // before we get here, the movie title and director matches already
         // thus, we return true already, if at least one actor matches
-        foreach ($foundDirectorElems as $foundDirectorElem) {
-            $foundDirector = $foundDirectorElem->nodeValue;
+        foreach ($directorsElem as $directorElem) {
+            $foundDirector = $directorElem->nodeValue;
             if (is_array($directors)) {
                 foreach ($directors as $director) {
                     if ($this->areNamesEqual($director, $foundDirector)) {
@@ -170,7 +189,9 @@ class ImdbMovieRatingsRetriever {
                     }
                 }
             } else {
-                return $this->areNamesEqual($directors, $foundDirector);
+                if ($this->areNamesEqual($directors, $foundDirector)) {
+                    return true;
+                }
             }
         }
 
@@ -179,43 +200,22 @@ class ImdbMovieRatingsRetriever {
     }
 
     private function hasSameActors($imdbMovieDetailsDom, $actors) {
-        /*
-         * <div class="credit_summary_item">
-                <h4 class="inline">Writer:</h4>
-                    <span itemprop="creator" itemscope itemtype="http://schema.org/Person">
-        <a href="/name/nm0293366?ref_=tt_ov_wr"
-        itemprop='url'><span class="itemprop" itemprop="name">Devery Freeman</span></a> (story and screenplay)            </span>
-            </div>
-            <div class="credit_summary_item">
-                <h4 class="inline">Stars:</h4>
-                    <span itemprop="actors" itemscope itemtype="http://schema.org/Person">
-        <a href="/name/nm0534045?ref_=tt_ov_st_sm"
-        itemprop='url'><span class="itemprop" itemprop="name">Fred MacMurray</span></a>,             </span>
-                    <span itemprop="actors" itemscope itemtype="http://schema.org/Person">
-        <a href="/name/nm0872456?ref_=tt_ov_st_sm"
-        itemprop='url'><span class="itemprop" itemprop="name">Claire Trevor</span></a>,             </span>
-                    <span itemprop="actors" itemscope itemtype="http://schema.org/Person">
-        <a href="/name/nm0000994?ref_=tt_ov_st_sm"
-        itemprop='url'><span class="itemprop" itemprop="name">Raymond Burr</span></a>            </span>
-                    <span class="ghost">|</span>
-        <a href="fullcredits?ref_=tt_ov_st_sm"
-        >See full cast & crew</a>&nbsp;&raquo;
-            </div>*/
+        $xpath = new DOMXPath($imdbMovieDetailsDom);
 
-        $elemsArray = getElementsBy($imdbMovieDetailsDom, "h4", "class", "inline");
-
-        $foundActorElems = array();
-        foreach ($elemsArray as $i => $elem) {
-            if (contains($elem->nodeValue, 'Star:') || contains($elem->nodeValue, 'Stars:')) {
-                $foundActorElems = getElementsBy($imdbMovieDetailsDom, "span", "itemprop", "actor");
-                $foundActorElems = array_merge($foundActorElems, getElementsBy($imdbMovieDetailsDom, "span", "itemprop", "actors"));
-            }
+        //decide which stars query to take
+        $divElems = $xpath->query('//*[@id="title-overview-widget"]/div[2]/div');
+        $starsQuery = '';
+        if ($divElems->length === 2) {
+            $starsQuery = '//*[@id="title-overview-widget"]/div[2]/div[2]/div[1]/div[4]/a';
+        } else if ($divElems->length === 3) {
+            $starsQuery = '//*[@id="title-overview-widget"]/div[2]/div[1]/div[4]/a';
+        } else {
+            $this->log('Unhandled number of divElems in IMDB Movie Details Page.');
         }
+        $starsElem = $xpath->query($starsQuery);
 
-        // before we get here, the movie title and director matches already
-        // thus, we return true already, if at least one actor matches
-        foreach ($foundActorElems as $foundActorElem) {
-            $foundActor = $foundActorElem->nodeValue;
+        foreach ($starsElem as $starElem) {
+            $foundActor = $starElem->nodeValue;
             if (is_array($actors)) {
                 foreach ($actors as $actor) {
                     if ($this->areNamesEqual($actor, $foundActor)) {
@@ -248,7 +248,7 @@ class ImdbMovieRatingsRetriever {
                     <div class="notEnoughRatings">Needs 5 Ratings</div>
             </div>*/
 
-        $ratingValue;
+        $ratingValue = null;
         if (empty($ratingValueElemsArray)) {
             $ratingValue = "0.0";
         } else {
@@ -284,13 +284,24 @@ class ImdbMovieRatingsRetriever {
         return $ratingCount;
     }
 
+    private function getYear($imdbMovieDetailsDom) {
+        $xpath = new DOMXPath($imdbMovieDetailsDom);
+        $yearQuery = '//*[@id="titleYear"]/a';
+        $yearElem = ($xpath->query($yearQuery))[0];
+        if ($yearElem) {
+            return $yearElem->nodeValue;
+        } else {
+            return "1900";
+        }
+    }
+
     private function findBestMatchAndExtractMovieDetailsFromPromisingResults($promisingResultTdElems, $movieTitle) {
-        $year = $this->movie['year'];
+        //$year = $this->movie['year'];
         $directors = $this->movie['director'];
         $actors = $this->movie['actors'];
 
         $possibleMatches = array();
-        //myLog($movieTitle . " has promising results: " . count($promisingResultTdElems));
+        //$this->log($movieTitle . " has promising results: " . count($promisingResultTdElems));
         foreach ($promisingResultTdElems as $resultTdElem) {
             //get deep link
             $this->urlImdbMovie = $this->getImdbMovieUrl($resultTdElem);
@@ -300,7 +311,7 @@ class ImdbMovieRatingsRetriever {
             $isSameDirector = $this->isSameDirector($imdbMovieDetailsDom, $directors);
             $hasSameActors = $this->hasSameActors($imdbMovieDetailsDom, $actors);
 
-            //myLog("isSamedirector: " . var_export($isSameDirector, true) . " hasSameActors: " . var_export($hasSameActors, true));
+            //$this->log("isSamedirector: " . var_export($isSameDirector, true) . " hasSameActors: " . var_export($hasSameActors, true));
 
             if ($isSameDirector || $hasSameActors) {
                 $ratingValue = $this->getRatingValue($imdbMovieDetailsDom);
@@ -309,6 +320,7 @@ class ImdbMovieRatingsRetriever {
                 // we recieve the ratingCount as a string with commas: "123,456,789"
                 $ratingCount = intval(str_replace("," ,"", $ratingCountString));
 
+                $year = $this->getYear($imdbMovieDetailsDom);
                 $possibleMatches[] = array(
                     'movie'=>$this->movie['movie'],
                     'director'=>$directors,
@@ -318,17 +330,21 @@ class ImdbMovieRatingsRetriever {
                     'ratingCountString'=>$ratingCountString,
                     'imdbMovieUrl'=>$this->urlImdbMovie
                 );
+            } else {
+                $this->log('Actors AND Directors do not match.');
             }
         }
         if (count($possibleMatches) > 1) {
-            myLog("Found more than one match:");
+            $this->log("Found more than one match:");
             foreach ($possibleMatches as $possibleMatch) {
-                myLog("     " . $possibleMatch['movie']);
+                $this->log("     " . $possibleMatch['movie'] . " " . $possibleMatch['imdbMovieUrl']);
             }
+            $this->log("     Saving only the first.");
             return $possibleMatches[0];
         } else if (count($possibleMatches) == 1) {
             return $possibleMatches[0];
         } else {
+            $this->log("Returning empty possibleMatches.");
             return null;
         }
         //if (!contains($nodeValue, "aka \"") && !multipleOccuranceOf($nodeValue, "(") && containsYear($nodeValue, $year)) {
@@ -340,21 +356,21 @@ class ImdbMovieRatingsRetriever {
         if ($promisingResultTdElems) {
             return $this->findBestMatchAndExtractMovieDetailsFromPromisingResults($promisingResultTdElems, $movieTitle);
         } else {
+            $this->log('$promisingResultTdElems empty. Abort.');
             return null;
         }
     }
 
     private function getSearchUrl ($searchType, $movieTitle) {
+        //exact:    https://www.imdb.com/find?q=Mission%3A%20Impossible%20-%20Fallout&s=tt&ttype=ft&exact=true&ref_=fn_tt_ex
+        //popular:  https://www.imdb.com/find?q=Mission%3A%20Impossible%20-%20Fallout&s=tt&ttype=ft&ref_=fn_ft
+        $part1 = '/find?q=';
         if ($searchType == EXACT) {
-            //http://www.imdb.com/find?q=Die+Unfassbaren+2+-+Now+You+See+Me+2&s=tt&exact=true&ref_=fn_tt_ex
-            $part1 = '/find?q=';
-            $part2 = '&s=tt&exact=true&ref_=fn_tt_ex';
+            $part2 = '&s=tt&ttype=ft&exact=true&ref_=fn_tt_ex';
             $urlForExactSearch = IMDBURL . $part1 . urlencode($movieTitle) . $part2;
             return $urlForExactSearch;
         } else if ($searchType == POPULAR) {
-            //http://www.imdb.com/find?ref_=nv_sr_fn&q=Die+Unfassbaren+2+-+Now+You+See+Me+2&s=tt
-            $part1 = '/find?ref_=nv_sr_fn&q=';
-            $part2 = '&s=tt';
+            $part2 = '&s=tt&ttype=ft&ref_=fn_ft';
             $urlForPopularSearch = IMDBURL . $part1 . urlencode($movieTitle) . $part2;
             return $urlForPopularSearch;
         }
@@ -372,15 +388,10 @@ class ImdbMovieRatingsRetriever {
     private function getMovieDetailsFor ($movieTitle) {
         $movieDetails = null;
         if (strlen($movieTitle) == 0) {
+            $this->log('movieTitle empty, aborting.');
             return $movieDetails;
         }
 
-        /*<table class="findList">
-    <tr class="findResult odd"> <td class="primary_photo">
-        <a href="/title/tt1718835/?ref_=fn_tt_tt_1" >
-        <img src="https://images-na.ssl-images-amazon.com/images/M/MV5BMzA2OTYzODgxNV5BMl5BanBnXkFtZTcwMzA3MTY0OA@@._V1_UX32_CR0,0,32,44_AL_.jpg" /></a> </td>
-        <td class="result_text"> <a href="/title/tt1718835/?ref_=fn_tt_tt_1" >Mein liebster Alptraum</a> (2011) </td> </tr></table>
-        */
         $resultTdElems = $this->doImdbSearchAndGetResultTdElems(EXACT, $movieTitle);
 
         if (!$resultTdElems) {//empty or null, retry with other url
@@ -396,8 +407,13 @@ class ImdbMovieRatingsRetriever {
         }
     }
 
-    public function __construct($movie) {
+    public function __construct($movie, $myExecutionId) {
         $this->movie = $movie;
+        if ($myExecutionId) {
+            $this->myExecutionId = $myExecutionId;
+        } else {
+            $this->myExecutionId = "no execution ID set";
+        }
     }
 
     private function cleanAfterColon($movieTitle) {
@@ -424,16 +440,19 @@ class ImdbMovieRatingsRetriever {
         $imdbMovieDetails = $this->getMovieDetailsFor($cleanMovieTitle);
 
         if (is_null($imdbMovieDetails) && (contains($cleanMovieTitle, ":"))) {
+            $this->log('Unable to get MovieDetailsFor: ' . $cleanMovieTitle . ' retrying after -');
             $cleanMovieTitle = $this->cleanAfterColon($cleanMovieTitle);
             $imdbMovieDetails = $this->getMovieDetailsFor($cleanMovieTitle);
         }
 
         if (is_null($imdbMovieDetails) && (contains($cleanMovieTitle, "-"))) {
+            $this->log('Unable to get MovieDetailsFor: ' . $cleanMovieTitle . ' retrying after -');
             $cleanMovieTitle = $this->cleanAfterDash($cleanMovieTitle);
             $imdbMovieDetails = $this->getMovieDetailsFor($cleanMovieTitle);
         }
 
         if (is_null($imdbMovieDetails) && (contains($cleanMovieTitle, "&"))) {
+            $this->log('Unable to get MovieDetailsFor: ' . $cleanMovieTitle . ' retrying by replacing & with and');
             $cleanMovieTitle = str_replace("&","and",$cleanMovieTitle);
             $imdbMovieDetails = $this->getMovieDetailsFor($cleanMovieTitle);
             if (is_null($imdbMovieDetails)) {
@@ -442,17 +461,20 @@ class ImdbMovieRatingsRetriever {
             }
         } else if (is_null($imdbMovieDetails) && (contains($cleanMovieTitle, "und"))) {
             // "Stolz und Vorurteil" liefert falsche Ergebnisse, aber "Stolz & Vorurteil" funktioniert
+            $this->log('Unable to get MovieDetailsFor: ' . $cleanMovieTitle . ' retrying by replacing und with &');
             $cleanMovieTitle = str_replace("und","&", $cleanMovieTitle);
             $imdbMovieDetails = $this->getMovieDetailsFor($cleanMovieTitle);
         }
 
         if (is_null($imdbMovieDetails) && ((contains($cleanMovieTitle, "(")) || (contains($cleanMovieTitle, ")")))) {
+            $this->log('Unable to get MovieDetailsFor: ' . $cleanMovieTitle . ' retrying after without ()');
             $cleanMovieTitle = str_replace("(", "", $cleanMovieTitle);
             $cleanMovieTitle = str_replace(")", "", $cleanMovieTitle);
             $imdbMovieDetails = $this->getMovieDetailsFor($cleanMovieTitle);
         }
 
         if (is_null($imdbMovieDetails) && ($this->containsRomanNumber())) {
+            $this->log('Unable to get MovieDetailsFor: ' . $cleanMovieTitle . ' retrying after without roman number');
             $cleanMovieTitle = $this->replaceRomanNumber();
             $imdbMovieDetails = $this->getMovieDetailsFor($cleanMovieTitle);
         }
@@ -468,7 +490,7 @@ class ImdbMovieRatingsRetriever {
         }
         if (count($linksArray) > 1) {
             //todo: handle if multiple links are found
-            myLog("Found more than one link: print_r($linksArray)");
+            $this->log("Found more than one link: print_r($linksArray)");
         }
         return  IMDBURL . $linksArray[0];
     }

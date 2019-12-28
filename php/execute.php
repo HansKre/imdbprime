@@ -55,38 +55,45 @@ ini_set('max_input_time', '36000');
 /*============EXECUTION LOGIC==============*/
 $myExecutionId = rand();
 
-$didRunPrimeMoviesToday = DataOperations::didRunPrimeMoviesToday();
-myLog("=====Starting Execution.php with: $didRunPrimeMoviesToday =====");
+$howToExecute = DataOperations::howToExecute();
+myLog("===== Execution Decision for Amazon Query is: $howToExecute =====");
 
-if ($didRunPrimeMoviesToday === ReturnValues::$shouldStart) {
-    if (DataOperations::markExecutionAs(ExecutionMarks::$started)) {
+if ($howToExecute === ReturnValues::$AMAZON_QUERY_SHOULD_START) {
+    if (DataOperations::markExecutionAs(ExecutionMarks::$AMAZON_QUERY_STARTED)) {
         DataOperations::dropPrimeMoviesCollection();
         $myPrimeMovies = new PrimeMovies($myExecutionId);
         if ($myPrimeMovies->startQuery(1)) {
             myLog("PrimeMovies Successful");
         }
-        DataOperations::markExecutionAs(ExecutionMarks::$amazonQuerySucceeded);
+        DataOperations::markExecutionAs(ExecutionMarks::$AMAZON_QUERY_SUCCEEDED);
     }
-} else if ($didRunPrimeMoviesToday == ReturnValues::$shouldContinue) {
-    if (DataOperations::markExecutionAs(ExecutionMarks::$started)) {
+} else if ($howToExecute == ReturnValues::$AMAZON_QUERY_SHOULD_CONTINUE) {
+    if (DataOperations::markExecutionAs(ExecutionMarks::$AMAZON_QUERY_STARTED)) {
         $myPrimeMovies = new PrimeMovies($myExecutionId);
         if ($myPrimeMovies->continueQuery()) {
             myLog("PrimeMovies Successful");
         }
-        DataOperations::markExecutionAs(ExecutionMarks::$amazonQuerySucceeded);
+        DataOperations::markExecutionAs(ExecutionMarks::$AMAZON_QUERY_SUCCEEDED);
     }
 }
 
-$didRunPrimeMoviesToday = DataOperations::didRunPrimeMoviesToday();
-myLog("===== Execution Decision for IMDB Query is: $didRunPrimeMoviesToday =====");
+// in worst case, this leads to a redundant evaluation but it is necessary to do validate that
+// the Amazon Query finished successfully
+$howToExecute = DataOperations::howToExecute();
+myLog("===== Execution Decision for IMDB Query is: $howToExecute =====");
 
-if ($didRunPrimeMoviesToday === ReturnValues::$amazonQuerySucceeded) {
-    myLog("=====Starte IMDB Query.=====");
-    $imdbQuery = new ImdbQuery($myExecutionId);
-    if ($imdbQuery->doQuery()) {
-        DataOperations::markExecutionAs(ExecutionMarks::$imdbQuerySucceeded);
-        myLog("=====Fertig=====");
-    } else {
-        myLog("=====Abbruch: queryimdb.php nicht erfolgreich.=====");
+if ($howToExecute === ReturnValues::$IMDB_QUERY_SHOULD_START) {
+    if (DataOperations::markExecutionAs(ExecutionMarks::$IMDB_QUERY_STARTED)) {
+        $imdbQuery = new ImdbQuery($myExecutionId);
+        if ($imdbQuery->doQuery("Starting new IMDB Query")) {
+            DataOperations::markExecutionAs(ExecutionMarks::$IMDB_QUERY_SUCCEEDED);
+        }
+    }
+} else if ($howToExecute == ReturnValues::$IMDB_QUERY_SHOULD_CONTINUE) {
+    if (DataOperations::markExecutionAs(ExecutionMarks::$AMAZON_QUERY_STARTED)) {
+        $imdbQuery = new ImdbQuery($myExecutionId);
+        if ($imdbQuery->doQuery("Continueing IMDB Query")) {
+            DataOperations::markExecutionAs(ExecutionMarks::$IMDB_QUERY_SUCCEEDED);
+        }
     }
 }
