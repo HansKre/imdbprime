@@ -2,6 +2,8 @@
 ini_set('max_execution_time', 3600);
 require_once(realpath(dirname(__FILE__)).'/../commons.php');
 
+const IS_DEBUG = false;
+
 class PrimeMovies {
     private $i;
     private $executionId;
@@ -33,8 +35,6 @@ class PrimeMovies {
             }
         } while ($httpCode !== 200);
 
-        myLog("Received HTTP Code " . strval($httpCode));
-
         //Create a new DOM document
         $dom = new DOMDocument;
 
@@ -64,19 +64,22 @@ class PrimeMovies {
             }
             */
 
-            $titleQuerySuffix = '/div/div/div/div[2]/div[2]/div/div[1]/div/div/div[1]/h2/a/span';
-            $directorQuerySuffix = '/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div/div/ul/li[2]/span/a';
-            $actorsQuerySuffix = '/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div/div/ul/li[1]/span/a';
+            $titleQuerySuffix = '/div/span/div/div/div[2]/div[2]/div/div[1]/div/div/div[1]/h2/a/span';
+            // this Suffix retrieves the >first< director only: /div/span/div/div/div[2]/div[2]/div/div[2]/div[2]/div/div/ul/li[2]/span/a[1]
+            // if we remove the [1] at the end, we can cycle through all the directors
+            $directorQuerySuffix = '/div/span/div/div/div[2]/div[2]/div/div[2]/div[2]/div/div/ul/li[2]/span/a';
 
-            //in case there are no actors or no director, the suffix is differen
-            $directorActorsFallbackQuerySuffix = '/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div/div/ul/li/span/a';
+            $actorsQuerySuffix = '/div/span/div/div/div[2]/div[2]/div/div[2]/div[2]/div/div/ul/li[1]/span/a';
+
+            //in case there are no actors or no director, the suffix is different
+            $directorActorsFallbackQuerySuffix = '/div/span/div/div/div[2]/div[2]/div/div[2]/div[2]/div/div/ul/li/span/a';
 
             $movieCountOnPage = 1;
             $lastMovieOnPage = false;
 
             // iterate over the movies on current search page
             while (!$lastMovieOnPage) {
-                $baseQuery = '//*[@id="search"]/div[1]/div[2]/div/span[3]/div[1]/div[' . $movieCountOnPage . ']';
+                $baseQuery = '//*[@id="search"]/div[1]/div[2]/div/span[4]/div[1]/div[' . $movieCountOnPage . ']';
 
                 $movieTitleElem = $xpath->query($baseQuery . $titleQuerySuffix);
                 $directorElem = $xpath->query($baseQuery . $directorQuerySuffix);
@@ -85,7 +88,7 @@ class PrimeMovies {
                 if (!$directorElem[0] || !$actorsElem[0]) {
                     // if we are here, there is either no actors or no director
                     // and we need to find out whether we get the one or the other
-                    $labelQuerySuffix = '/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div/div/ul/li/span/span';
+                    $labelQuerySuffix = '/div/span/div/div/div[2]/div[2]/div/div[2]/div[2]/div/div/ul/li/span/span';
 
                     $labelElem = $xpath->query($baseQuery . $labelQuerySuffix);
                     if ($labelElem[0] && $labelElem[0]->nodeValue) {
@@ -101,6 +104,12 @@ class PrimeMovies {
 
                 // Validate
                 if ($movieTitleElem[0] && $movieTitleElem[0]->nodeValue) {
+
+                    // debugOut not before here to avoid the false triggers for when end of page is reached
+                    $this->debugOut($movieTitleElem);
+                    $this->debugOut($directorElem);
+                    $this->debugOut($actorsElem);
+
                     $movieTitle = $movieTitleElem[0]->nodeValue;
                     // take the first director only
                     $director = '';
@@ -115,7 +124,7 @@ class PrimeMovies {
                             }
                         }
                     }
-                    $year = 0;
+                    $year = 0; // ignore the year for now
                     $movies[] = array('year'=>$year, 'movie'=>$movieTitle, 'director'=>$director, 'actors'=>$actors, 'searchPage'=>$this->i);
                 } else if (!$movieTitleElem[0]) {
                     $lastMovieOnPage = true;
@@ -160,7 +169,9 @@ class PrimeMovies {
                 }
             } else {
                 $sleepTime += 500000;
-                myLog($this->executionId . " , " . $sleepTime/1000000);
+                myLog($this->executionId .
+                    " Could not find any movies on HTML page, maybe the page was empty? Sleeping for " .
+                    $sleepTime/1000000 . "s and then trying again.");
             }
             usleep($sleepTime);
         }
@@ -211,5 +222,15 @@ class PrimeMovies {
             }
         }
         return false;
+    }
+
+    private function debugOut($elem) {
+        if (IS_DEBUG) {
+            if ($elem[0] && $elem[0]->nodeValue) {
+                $this->log(trim($elem[0]->nodeValue));
+            } else {
+                $this->log("PrimeMovies::debugOut failed to print the nodeValue");
+            }
+        }
     }
 }

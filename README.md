@@ -128,13 +128,66 @@ https://dashboard.heroku.com/apps/imdbprime
     * continues execution of Amazon Prime Query where it has stopped / has been aborted
 * 
 ### Scraping Amazon
-todo
+* the search URL: https://www.amazon.de/s?i=prime-instant-video&bbn=3279204031&rh=n%3A3279204031%2Cn%3A3010076031%2Cn%3A3015915031%2Cp_n_ways_to_watch%3A7448695031%2Cp_72%3A3289799031%2Cp_n_entity_type%3A9739119031&lo=list&dc&fst=as%3Aoff&qid=1564341535&rnid=9739118031&ref=sr_pg_4
+* the startQuery() function loops through all the Amazon-pages until the end is reached
+* for each page, getMoviesFromUrl() is called to scrape movie details (title, directors, actors, year)
+* scraping is based on xpath, example:
+```
+xpath to movie title1:   '//*[@id="search"]/div[1]/div[2]/div/span[3]/div[1]/div[1]  /div/div/div/div[2]/div[2]/div/div[1]/div/div/div[1]/h2/a/span'
+```
+* every time Amazon changes how their page is structured, there is a risk that the xpath composition breaks
+#### Debugging xpath locations: selecting the element based on xpath-location
+* open the above mentioned search URL in chrome
+* open Chrome Developer Tools
+* go to the console tab
+* get the full xpath from the code, for that:
+    * concat the strings, e.g. for $movieTitleElem it is $baseQuery + $titleQuerySuffix
+    * example: ```//*[@id="search"]/div[1]/div[2]/div/span[3]/div[1]/div[1]/div/div/div/div[2]/div[2]/div/div[1]/div/div/div[1]/h2/a/span```
+    * in chrome, you can select that element by running in console: ```$x('//*[@id="search"]/div[1]/div[2]/div/span[3]/div[1]/div[1]/div/div/div/div[2]/div[2]/div/div[1]/div/div/div[1]/h2/a/span')[0].innerText```
+        * note that you NEED to use single quotes in $x('') because of the double quotes from the @id="search", otherwise it will NOT work!
+        * note that you need to add ```[0].innerText``` to the query. The [0] selects the first element (Xpath-selection may return multiple elements) and because we want the caption only, instead of the whole DOM-Object.  
+* running the code in Debug mode
+    * in primemovies.php, set a breakpoint at the line with the while-loop "while (!$lastMovieOnPage) {"
+    * go to execute.php and start running the code in Debug-Mode
+    * in case you need to restart frequently, consider adjusting the execute.php-execute-decision by replacing the line:
+    ```if ($howToExecute === ReturnValues::$AMAZON_QUERY_SHOULD_START) { ```
+    * by this line:
+    ```if (true) {``` 
+
+#### Debugging xpath locations: retrieving correct/new/changed xpath-location for an element
+* Start Chrome
+* Right click the element of interest, for example the title of the movie
+* Click 'inspect'
+* The Chrome Developer Tools are opened and the element's code-snippet is pre-selected
+* Right click the code-snippet > Copy > Copy XPath
+* verify by selecting the element in the console
+    * example: if the Xpath to the first title element was ```//*[@id="search"]/div[1]/div[2]/div/span[4]/div[1]/div[1]/div/span/div/div/div[2]/div[2]/div/div[1]/div/div/div[1]/h2/a/span```
+    * select it programmatically by doing ```$x('//*[@id="search"]/div[1]/div[2]/div/span[4]/div[1]/div[1]/div/span/div/div/div[2]/div[2]/div/div[1]/div/div/div[1]/h2/a/span')[0].innerText```
+
+#### Correcting the Xpaths:
+* for that, you need to compare the current Xpaths with the new/changed and adjust accordingly
+* example:
+    * old: ```$x('//*[@id="search"]/div[1]/div[2]/div/span[3]/div[1]/div[1]/div/div/div/div[2]/div[2]/div/div[1]/div/div/div[1]/h2/a/span')[0].innerText```
+    * new: ```$x('//*[@id="search"]/div[1]/div[2]/div/span[4]/div[1]/div[1]/div/span/div/div/div[2]/div[2]/div/div[1]/div/div/div[1]/h2/a/span')[0].innerText```
+* do it for a couple of elements to find a pattern
+* example:
+    * movie1 title:     ```//*[@id="search"]/div[1]/div[2]/div/span[4]/div[1]/div[1]    /div/span/div/div/div[2]/div[2]/div/div[1]/div/div/div[1]/h2/a/span```
+    * movie2 title:     ```//*[@id="search"]/div[1]/div[2]/div/span[4]/div[1]/div[2]    /div/span/div/div/div[2]/div[2]/div/div[1]/div/div/div[1]/h2/a/span```
+    * movie8 director1: ```//*[@id="search"]/div[1]/div[2]/div/span[4]/div[1]/div[8]    /div/span/div/div/div[2]/div[2]/div/div[2]/div[2]/div/div/ul/li[2]/span/a[1]```
+    * movie8 director2: ```//*[@id="search"]/div[1]/div[2]/div/span[4]/div[1]/div[8]    /div/span/div/div/div[2]/div[2]/div/div[2]/div[2]/div/div/ul/li[2]/span/a[2]```
 ### Scraping IMDB
 todo
 ### Mongo DB
 todo
 ### The cron job
-todo
+* The Heroku Scheduler (free) is provisioned for imdbprime
+    * accessible from Heroku Dashboard https://dashboard.heroku.com/apps/imdbprime > Installed add-ons
+* The Scheduler runs at a Frequency of "Every 10 minutes"
+* The Scheduler executes the following command:
+```
+$ php -f php/execute.php
+```
+
 ### The restarting capabilities
 todo
 
