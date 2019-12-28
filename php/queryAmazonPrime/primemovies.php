@@ -35,6 +35,11 @@ class PrimeMovies {
             }
         } while ($httpCode !== 200);
 
+        $this->log("Received a 200!");
+        $this->log("======================START");
+        $this->log($html);
+        $this->log("======================END");
+
         //Create a new DOM document
         $dom = new DOMDocument;
 
