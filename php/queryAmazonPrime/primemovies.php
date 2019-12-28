@@ -13,6 +13,7 @@ class PrimeMovies {
 
     private function getMoviesFromUrl($url, &$reachedEnd) {
         $movies = array();
+        $html = null;
 
         // Download the HTML page
         // Loops to deal with Error from Apache-Logs:
@@ -25,12 +26,14 @@ class PrimeMovies {
             // @var array $http_response_header is created
             $httpCode = getHttpCode($http_response_header);
 
-            if ($httpCode !== '200') {
-                myLog("Received HTTP Code " . $httpCode . " when trying to request " .
+            if ($httpCode !== 200) {
+                myLog("Received HTTP Code " . strval($httpCode) . " when trying to request " .
                     $url . " in PrimeMovies::getMoviesFromUrl. Sleeping for 10 seconds.");
                 usleep(ONESECOND * 10);
             }
-        } while ($httpCode !== '200');
+        } while ($httpCode !== 200);
+
+        myLog("Received HTTP Code " . strval($httpCode));
 
         //Create a new DOM document
         $dom = new DOMDocument;

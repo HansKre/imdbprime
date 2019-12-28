@@ -21,6 +21,46 @@ First of all, the Heroku CLI needs to be setup as this is the way that I have ch
 
 Ressource: https://devcenter.heroku.com/articles/heroku-cli
 
+## PHP Composer
+To make changes to the packages, the PHP Composer needs to be installed.
+
+* Detailed instructions can be found here: https://getcomposer.org/download/
+* choose installation folder (I recommend it is a path in your PATH variable)
+```
+$ env | grep PATH
+PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+```
+* I decide to install Composer to /usr/local/bin
+* Follow the steps: 
+```
+# Switch to installation directory
+cd /usr/local/bin
+# Download the installer to the current directory
+php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+# Verify the installer SHA-384, which you can also cross-check here
+php -r "if (hash_file('sha384', 'composer-setup.php') === 'baf1608c33254d00611ac1705c1d9958c817a1a33bce370c0595974b342601bd80b92a3f46067da89e3b06bff421f182') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+# Run the installer
+php composer-setup.php
+# Remove the installer
+php -r "unlink('composer-setup.php');"
+```
+
+* after changes to the dependencies, i.e. to the composer.json, you should always update composer.lock file as well
+    * this is done by running in the project directory:
+```
+php composer.phar update
+```
+
+* if composer.phar cannot be found, try running
+```
+php /usr/local/bin/composer.phar update --verbose
+```
+
+* For a deployment: The lock file is required in order to guarantee reliable and reproducible installation of dependencies across systems and deploys. It must always be kept in sync with 'composer.json'. Whenever you change 'composer.json', ensure that you perform the following steps locally on your computer:
+    1. run 'composer update'
+    2. add all changes using 'git add composer.json composer.lock'
+    3. commit using 'git commit'.
+
 ## Getting the health of the application
 todo (logs from CLI, heroku-folder-structure)
 
