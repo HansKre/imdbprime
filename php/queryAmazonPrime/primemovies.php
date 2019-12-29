@@ -2,10 +2,10 @@
 ini_set('max_execution_time', 3600);
 require_once(realpath(dirname(__FILE__)).'/../commons.php');
 
-const IS_DEBUG = false;
+const IS_DEBUG = true;
 
 class PrimeMovies {
-    private $i;
+    private $currentAmazonPageNumber;
     private $executionId;
     private $startTime;
 
@@ -29,16 +29,14 @@ class PrimeMovies {
             $httpCode = getHttpCode($http_response_header);
 
             if ($httpCode !== 200) {
-                myLog("Received HTTP Code " . strval($httpCode) . " when trying to request " .
+                myLog("Received HTTP Code " . strval($httpCode) . " for URL " .
                     $url . " in PrimeMovies::getMoviesFromUrl. Sleeping for 10 seconds.");
                 usleep(ONESECOND * 10);
             }
         } while ($httpCode !== 200);
 
-        $this->log("Received a 200!");
-        $this->log("======================START");
-        $this->log($html);
-        $this->log("======================END");
+        if (IS_DEBUG) $this->log("Received 200. Continue with extracting the details.");
+        if (IS_DEBUG) saveHtmlAndXmlToFile($html, $this->currentAmazonPageNumber);
 
         //Create a new DOM document
         $dom = new DOMDocument;
@@ -46,6 +44,8 @@ class PrimeMovies {
         //Parse the HTML. The @ is used to suppress any queryAmazonPrime errors
         //that will be thrown if the $html string isn't valid XHTML.
         if (@$dom->loadHTML($html)) {
+            if (IS_DEBUG) $this->log("dom->loadHTML succeeded.");
+
             $xpath = new DOMXPath($dom);
 
             /*
@@ -130,18 +130,21 @@ class PrimeMovies {
                         }
                     }
                     $year = 0; // ignore the year for now
-                    $movies[] = array('year'=>$year, 'movie'=>$movieTitle, 'director'=>$director, 'actors'=>$actors, 'searchPage'=>$this->i);
+                    $movies[] = array('year'=>$year, 'movie'=>$movieTitle, 'director'=>$director, 'actors'=>$actors, 'searchPage'=>$this->currentAmazonPageNumber);
                 } else if (!$movieTitleElem[0]) {
                     $lastMovieOnPage = true;
                 } else {
-                    echo "not valid " . $movieCountOnPage . " on page: " . $this->i;
+                    echo "not valid " . $movieCountOnPage . " on page: " . $this->currentAmazonPageNumber;
                 }
                 $movieCountOnPage++;
             }
 
             $reachedEnd = $this->isLastResultPage($dom);
+            if (IS_DEBUG) $this->log("Page scraped and succesffully reached the end of the file. Returning movies.");
             return $movies;
         }
+        if (IS_DEBUG) $this->log("dom->loadHTML did NOT succeeded. Saving to Amazon page to file & Retruning null");
+        if (IS_DEBUG) saveHtmlAndXmlToFile($html, $this->currentAmazonPageNumber);
         return null;
     }
 
@@ -157,18 +160,18 @@ class PrimeMovies {
     public function startQuery($startAt) {
         $this->setCounter($startAt);
 
-        $this->log("Starting primemovies.php script with i = " . $this->i);
+        $this->log("Starting primemovies.php script with i = " . $this->currentAmazonPageNumber);
         $this->startTime();
 
         $reachedEnd = false;
 
         $sleepTime = ONESECOND;
         while ($reachedEnd == false) {
-            myLog($this->executionId . " Parsing page " . $this->i);
+            myLog($this->executionId . " Parsing page " . $this->currentAmazonPageNumber);
             $newMovies = $this -> getMoviesFromUrl($this->getSearchUrl(), $reachedEnd);
             if (!empty($newMovies)) {
                 DataOperations::storeFoundAmazonPrimeMovies($newMovies);
-                $this->i++;
+                $this->currentAmazonPageNumber++;
                 if ($sleepTime > 2 * ONESECOND) {
                     $sleepTime -= 500000;
                 }
@@ -201,9 +204,9 @@ class PrimeMovies {
     private function setCounter($startAt)
     {
         if ($startAt) {
-            $this->i = $startAt;
+            $this->currentAmazonPageNumber = $startAt;
         } else {
-            $this->i = 1;
+            $this->currentAmazonPageNumber = 1;
         }
     }
 
@@ -212,7 +215,7 @@ class PrimeMovies {
         // category: movies + rated with >3 stars:  https://www.amazon.de/s?i=prime-instant-video&bbn=3279204031&rh=n%3A3279204031%2Cn%3A3010076031%2Cn%3A3015915031%2Cp_n_ways_to_watch%3A7448695031%2Cp_72%3A3289799031%2Cp_n_entity_type%3A9739119031&lo=list&dc&page=5&fst=as%3Aoff&qid=1564341535&rnid=9739118031&ref=sr_pg_4
 
         return 'https://www.amazon.de/s?i=prime-instant-video&bbn=3279204031&rh=n%3A3279204031%2Cn%3A3010076031%2Cn%3A3015915031%2Cp_n_ways_to_watch%3A7448695031%2Cp_72%3A3289799031%2Cp_n_entity_type%3A9739119031&lo=list&dc&page='
-            . $this->i
+            . $this->currentAmazonPageNumber
             . '&fst=as%3Aoff&qid=1564341535&rnid=9739118031&ref=sr_pg_4';
     }
 

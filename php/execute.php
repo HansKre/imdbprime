@@ -59,6 +59,7 @@ $howToExecute = DataOperations::howToExecute();
 myLog("===== Execution Decision for Amazon Query is: $howToExecute =====");
 
 if ($howToExecute === ReturnValues::$AMAZON_QUERY_SHOULD_START) {
+//if (true) {
     if (DataOperations::markExecutionAs(ExecutionMarks::$AMAZON_QUERY_STARTED)) {
         DataOperations::dropPrimeMoviesCollection();
         $myPrimeMovies = new PrimeMovies($myExecutionId);

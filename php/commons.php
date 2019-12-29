@@ -125,12 +125,17 @@ function loadAndParseHtmlFrom($deepLink) {
     return $imdbMovieDetailsDom;
 }
 
-/*
- * DOMElement appears to be empty for var_dump() or when debugging it.
- * Workaround:
- */
-function debugGetDomElemContent($domElement) {
-    return $xml = $domElement->ownerDocument->saveXML($domElement);
+function saveHtmlAndXmlToFile($html, $pageNumber) {
+    $fileNameHtml = "page_" . strval($pageNumber) . ".html";
+    $fileNameDOMDoc = "page_DOMDoc" . strval($pageNumber) . ".html";
+
+    // this overwrites existing files
+    file_put_contents($fileNameHtml, $html);
+
+    $dom = new DOMDocument;
+    if (@$dom->loadHTML($html)) {
+        $dom->saveHTMLFile($fileNameDOMDoc);
+    }
 }
 
 function getHttpCode($http_response_header) {

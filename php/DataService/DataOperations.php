@@ -35,6 +35,8 @@ class DataOperations {
                 } else {
                     // in production, we should never reach this scode
                     // if we are here, it may be due to concurrency and another script may be still running
+                    // this could be the case if we deploy a new version to heroku WHILE a script is running
+                    // (the old version of the script cotninues to run)
                     // or we got here because we are debugging and deliberately aborted the previous execution
                     // or for some reason the script aborted before the CRON_JOB_MAX_EXECUTION_TIME
                     $returnValue = ReturnValues::$AMAZON_WAIT_FOR_PREVIOUS_QUERY_TO_FINISH;
