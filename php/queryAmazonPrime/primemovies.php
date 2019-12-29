@@ -140,7 +140,7 @@ class PrimeMovies {
             }
 
             $reachedEnd = $this->isLastResultPage($dom);
-            if (IS_DEBUG) $this->log("Page scraped and succesffully reached the end of the file. Returning movies.");
+            if (IS_DEBUG && empty($movies)) saveHtmlAndXmlToFile($html, $this->currentAmazonPageNumber);
             return $movies;
         }
         if (IS_DEBUG) $this->log("dom->loadHTML did NOT succeeded. Saving to Amazon page to file & Retruning null");

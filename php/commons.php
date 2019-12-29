@@ -136,6 +136,7 @@ function saveHtmlAndXmlToFile($html, $pageNumber) {
     if (@$dom->loadHTML($html)) {
         $dom->saveHTMLFile($fileNameDOMDoc);
     }
+    echo "Files " . $fileNameHtml . " , " . $fileNameDOMDoc . " written.";
 }
 
 function getHttpCode($http_response_header) {
