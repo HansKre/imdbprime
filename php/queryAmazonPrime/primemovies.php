@@ -2,7 +2,7 @@
 ini_set('max_execution_time', 3600);
 require_once(realpath(dirname(__FILE__)).'/../commons.php');
 
-const IS_DEBUG = true;
+const IS_DEBUG = false;
 
 class PrimeMovies {
     private $currentAmazonPageNumber;

@@ -73,6 +73,7 @@ class DataOperations {
     }
 
     public static function markExecutionAs($markString) {
+        // the filter is used as an ID for the document which needs to be updated (we use the Appname)
         $filter = [
             CONFIG_FOR_KEY => APP_NAME,
         ];
@@ -82,18 +83,6 @@ class DataOperations {
         ];
         return MongoDBService::updateMany(MongoDBCollections::$control, $filter, $doc);
     }
-
-    //TODO: not needed anymore
-    /*public static function storeMovies($movie) {
-        // add movie/displayedMovies as last array entry/entries
-        if (isset($movie['movie'])) {
-            self::insertOne(self::$collectionNameAmazonPrime, $movie);
-        } else {
-            foreach ($movie as $movieEntry) {
-                self::insertOne(self::$collectionNameAmazonPrime, $movieEntry);
-            }
-        }
-    }*/
 
     private static function calcTimeDiffMinutes($controlDoc): int {
         //2017-07-29 12:05:12
@@ -176,5 +165,14 @@ class DataOperations {
 
     public static function getAllMoviesWithRatings() : array {
         return MongoDBService::findAll(MongoDBCollections::$moviesWithRating);
+    }
+
+    public static function addSuccessTimeStamp() {
+        $doc = [
+            "finished_successfully_at" => nowAsString()
+        ];
+        if (!MongoDBService::insertOneUnique(MongoDBCollections::$successTimeStamps, $doc)) {
+            myLog("ERROR in DataOperations::addSuccessTimeStamp() while storing ");
+        }
     }
 }

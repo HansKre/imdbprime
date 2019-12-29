@@ -190,16 +190,3 @@ $ php -f php/execute.php
 
 ### The restarting capabilities
 todo
-
------
-
-1. List example
-
-```
-git push
-```
-
-2. Second List entry
-```
-sudo openssl dhparam -out /etc/nginx/dhparam.pem 2048
-```

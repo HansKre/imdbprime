@@ -51,9 +51,14 @@ ini_set('max_input_time', '36000');
 // https://ageek.de/6/php-scripte-im-hintergrund-ausfuhren/
 // https://entwickler.de/online/asynchronous-io-in-php-oder-doch-lieber-threads-137913.html
 
-
 /*============EXECUTION LOGIC==============*/
 $myExecutionId = rand();
+
+// IMDB debugging start
+    //$imdbQuery = new ImdbQuery($myExecutionId);
+    //$imdbQuery->doQuery("Continueing IMDB Query");
+    //return;
+// debugging end
 
 $howToExecute = DataOperations::howToExecute();
 myLog("===== Execution Decision for Amazon Query is: $howToExecute =====");
@@ -88,6 +93,7 @@ if ($howToExecute === ReturnValues::$IMDB_QUERY_SHOULD_START) {
         $imdbQuery = new ImdbQuery($myExecutionId);
         if ($imdbQuery->doQuery("Starting new IMDB Query")) {
             DataOperations::markExecutionAs(ExecutionMarks::$IMDB_QUERY_SUCCEEDED);
+            DataOperations::addSuccessTimeStamp();
         }
     }
 } else if ($howToExecute == ReturnValues::$IMDB_QUERY_SHOULD_CONTINUE) {
@@ -95,6 +101,7 @@ if ($howToExecute === ReturnValues::$IMDB_QUERY_SHOULD_START) {
         $imdbQuery = new ImdbQuery($myExecutionId);
         if ($imdbQuery->doQuery("Continueing IMDB Query")) {
             DataOperations::markExecutionAs(ExecutionMarks::$IMDB_QUERY_SUCCEEDED);
+            DataOperations::addSuccessTimeStamp();
         }
     }
 }

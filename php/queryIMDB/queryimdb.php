@@ -46,7 +46,12 @@ class ImdbQuery {
         if ($movieWithRating) {
             $this->movieWithRating = $movieWithRating;
         } else {
-            $this->skippedMovie = $this->movie;
+            // add details why the movie was skipped to facilitate later debugging
+            $skippedMovie = $this->movie;
+            $skippedMovie['getUrlForImdbSearch'] = $imdbMovieRatingsRetriever->getUrlForImdbSearch();
+            $skippedMovie['getUrlImdbMovie'] = $imdbMovieRatingsRetriever->getUrlImdbMovie();
+
+            $this->skippedMovie = $skippedMovie;
         }
     }
 

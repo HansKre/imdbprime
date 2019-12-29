@@ -8,4 +8,5 @@ class MongoDBCollections
     public static $moviesWithRatingInProgress = 'moviesWithRatingsInProgress';
     public static $skippedMovies = 'skippedMovies';
     public static $skippedMoviesInProgress = 'skippedMoviesInProgress';
+    public static $successTimeStamps = 'successTimeStamps';
 }

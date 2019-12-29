@@ -58,17 +58,17 @@ class MongoDBService {
      *
      * @param string $colName
      * @param array $filter This is the filter which is used to find the document which needs to be updated.
-     * @param array $fieldsToUpdate These are the fields which need to be updated.
+     * @param array $content These are the fields which need to be updated.
      * @return bool returns true if update was successful.
      */
-    public static function updateMany(string $colName, array $filter, array $fieldsToUpdate) {
+    public static function updateMany(string $colName, array $filter, array $content) {
         //http://php.net/manual/de/mongocollection.update.php
         $db = self::db();
         if ($db) {
             $collection = $db->selectCollection($colName);
 
             $update = [
-                '$set' => $fieldsToUpdate
+                '$set' => $content
             ];
 
             $options = [

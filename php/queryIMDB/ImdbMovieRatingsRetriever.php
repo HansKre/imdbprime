@@ -8,7 +8,28 @@ class ImdbMovieRatingsRetriever {
     private $movie = null;
     private $lastParsedDom;
     private $urlForImdbSearch;
+    private $urlForImdbSearchArray = array();
     private $urlImdbMovie;
+    private $urlImdbMovieArray = array();
+
+    // for later debugging purposes, we want to preserve all search URLs
+    private function setUrlForImdbSearch($searchUrl) {
+        array_push($this->urlForImdbSearchArray, $searchUrl);
+        $this->urlForImdbSearch = $searchUrl;
+    }
+
+    public function getUrlForImdbSearch() {
+        return $this->urlForImdbSearchArray;
+    }
+
+    private function setUrlImdbMovie($urlImdbMovie) {
+        array_push($this->urlImdbMovieArray, $urlImdbMovie);
+        $this->urlImdbMovie = $urlImdbMovie;
+    }
+
+    public function getUrlImdbMovie() {
+        return $this->urlImdbMovieArray;
+    }
 
     private function log($message) {
         myLog($this->myExecutionId . " " . $message);
@@ -171,15 +192,14 @@ class ImdbMovieRatingsRetriever {
         $directorQuery = '';
         if ($divElems->length === 2) {
             $directorQuery = '//*[@id="title-overview-widget"]/div[2]/div[2]/div[1]/div[2]/a';
-        } else if ($divElems->length === 3) {
+        } else if (($divElems->length === 3) || ($divElems->length === 4)) {
             $directorQuery = '//*[@id="title-overview-widget"]/div[2]/div[1]/div[2]/a';
         } else {
             $this->log('Unhandled number of divElems in IMDB Movie Details Page.');
+            return false;
         }
         $directorsElem = $xpath->query($directorQuery);
 
-        // before we get here, the movie title and director matches already
-        // thus, we return true already, if at least one actor matches
         foreach ($directorsElem as $directorElem) {
             $foundDirector = $directorElem->nodeValue;
             if (is_array($directors)) {
@@ -207,10 +227,11 @@ class ImdbMovieRatingsRetriever {
         $starsQuery = '';
         if ($divElems->length === 2) {
             $starsQuery = '//*[@id="title-overview-widget"]/div[2]/div[2]/div[1]/div[4]/a';
-        } else if ($divElems->length === 3) {
+        } else if (($divElems->length === 3) || ($divElems->length === 4)) {
             $starsQuery = '//*[@id="title-overview-widget"]/div[2]/div[1]/div[4]/a';
         } else {
-            $this->log('Unhandled number of divElems in IMDB Movie Details Page.');
+            $this->log('Unhandled number of divElems in IMDB Movie Details Page. ABORTING.');
+            return false;
         }
         $starsElem = $xpath->query($starsQuery);
 
@@ -304,7 +325,7 @@ class ImdbMovieRatingsRetriever {
         //$this->log($movieTitle . " has promising results: " . count($promisingResultTdElems));
         foreach ($promisingResultTdElems as $resultTdElem) {
             //get deep link
-            $this->urlImdbMovie = $this->getImdbMovieUrl($resultTdElem);
+            $this->setUrlImdbMovie($this->buildImdbMovieUrl($resultTdElem));
             $imdbMovieDetailsDom = loadAndParseHtmlFrom($this->urlImdbMovie);
 
 
@@ -361,7 +382,7 @@ class ImdbMovieRatingsRetriever {
         }
     }
 
-    private function getSearchUrl ($searchType, $movieTitle) {
+    private function buildSearchUrl ($searchType, $movieTitle) {
         //exact:    https://www.imdb.com/find?q=Mission%3A%20Impossible%20-%20Fallout&s=tt&ttype=ft&exact=true&ref_=fn_tt_ex
         //popular:  https://www.imdb.com/find?q=Mission%3A%20Impossible%20-%20Fallout&s=tt&ttype=ft&ref_=fn_ft
         $part1 = '/find?q=';
@@ -378,7 +399,7 @@ class ImdbMovieRatingsRetriever {
     }
 
     private function doImdbSearchAndGetResultTdElems ($searchType, $movieTitle) {
-        $this->urlForImdbSearch = $this->getSearchUrl($searchType, $movieTitle);
+        $this->setUrlForImdbSearch($this->buildSearchUrl($searchType, $movieTitle));
         $this->lastParsedDom = loadAndParseHtmlFrom($this->urlForImdbSearch);
 
         $resultTdElems = getElementsByClass($this->lastParsedDom, 'td', 'result_text');
@@ -482,7 +503,7 @@ class ImdbMovieRatingsRetriever {
         return $imdbMovieDetails;
     }
 
-    private function getImdbMovieUrl($resultTdElem) {
+    private function buildImdbMovieUrl($resultTdElem) {
         $aElems = $resultTdElem->getElementsByTagName('a');
         $linksArray = array();
         foreach ($aElems as $aElem) {
