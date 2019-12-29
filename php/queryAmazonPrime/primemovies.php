@@ -29,8 +29,8 @@ class PrimeMovies {
             $httpCode = getHttpCode($http_response_header);
 
             if ($httpCode !== 200) {
-                myLog("Received HTTP Code " . strval($httpCode) . " for URL " .
-                    $url . " in PrimeMovies::getMoviesFromUrl. Sleeping for 10 seconds.");
+                myLog("HTTP Code " . strval($httpCode) . " for Amazon Page " .
+                    $this->currentAmazonPageNumber . " @ PrimeMovies::getMoviesFromUrl. Sleeping for 10s");
                 usleep(ONESECOND * 10);
             }
         } while ($httpCode !== 200);
