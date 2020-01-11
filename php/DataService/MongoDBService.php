@@ -35,8 +35,10 @@ class MongoDBService {
 
             try {
                 $cursor = $collection->find($doc);
+
                 //insert only, if it does not exist yet
-                if (!$cursor->toArray()) {
+                $records = iterator_to_array($cursor);
+                if (count($records) == 0) {
                     return $collection->insertOne($doc)->isAcknowledged();
                 } else {
                     return false;
