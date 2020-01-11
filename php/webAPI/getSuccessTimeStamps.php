@@ -11,9 +11,9 @@ $result = DataOperations::getAllSuccessTimeStamps();
 
 header('Content-Type: text/html');
 
-echo "Number of entries: " . strval(count($result));
+// nl2br — Fügt vor allen Zeilenumbrüchen eines Strings HTML-Zeilenumbrüche ein
+echo nl2br("Number of entries: " . strval(count($result)) . "\n");
 
 foreach ($result as $item) {
-    // nl2br — Fügt vor allen Zeilenumbrüchen eines Strings HTML-Zeilenumbrüche ein
     echo nl2br($item['finished_successfully_at'] . "\n");
 }
