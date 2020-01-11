@@ -15,5 +15,10 @@ header('Content-Type: text/html');
 echo nl2br("Number of entries: " . strval(count($result)) . "\n");
 
 foreach ($result as $item) {
-    echo nl2br($item['finished_successfully_at'] . "\n");
+    $withRating = isset($item['numberOfMoviesWithRating']) ? $item['numberOfMoviesWithRating'] : '?';
+    $skipped = isset($item['numberOfSkippedMovies']) ? $item['numberOfSkippedMovies'] : '?';
+
+    echo nl2br($item['finished_successfully_at']
+        . ": " . $withRating . " with ratings and "
+        . $skipped . " skipped." . "\n");
 }

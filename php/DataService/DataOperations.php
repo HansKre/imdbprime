@@ -167,10 +167,20 @@ class DataOperations {
         return MongoDBService::findAll(MongoDBCollections::$moviesWithRating);
     }
 
+    public static function getAllSkippedMovies() : array {
+        return MongoDBService::findAll(MongoDBCollections::$skippedMovies);
+    }
+
     public static function addSuccessTimeStamp() {
+        $numberOfMoviesWithRating = self::getAllMoviesWithRatings();
+        $numberOfSkippedMovies = self::getAllSkippedMovies();
+
         $doc = [
-            "finished_successfully_at" => nowAsString()
+            "finished_successfully_at" => nowAsString(),
+            "numberOfMoviesWithRating" => strval(count($numberOfMoviesWithRating)),
+            "numberOfSkippedMovies" => strval(count($numberOfSkippedMovies))
         ];
+
         if (!MongoDBService::insertOneUnique(MongoDBCollections::$successTimeStamps, $doc)) {
             myLog("ERROR in DataOperations::addSuccessTimeStamp() while storing ");
         }

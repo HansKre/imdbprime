@@ -20,10 +20,14 @@ if (MONGODB_URI) {
 
     DataOperations::addSuccessTimeStamp();
     $result = DataOperations::getAllSuccessTimeStamps();
-    echo "Number of entries: " . strval(count($result));
-    foreach ($result as $item) {
-        // nl2br — Fügt vor allen Zeilenumbrüchen eines Strings HTML-Zeilenumbrüche ein
-        echo nl2br($item['finished_successfully_at'] . "\n");
-    }
+    echo nl2br("Number of entries: " . strval(count($result)) . "\n");
 
+    foreach ($result as $item) {
+        $withRating = isset($item['numberOfMoviesWithRating']) ? $item['numberOfMoviesWithRating'] : '?';
+        $skipped = isset($item['numberOfSkippedMovies']) ? $item['numberOfSkippedMovies'] : '?';
+
+        echo nl2br($item['finished_successfully_at']
+            . ": " . $withRating . " with ratings and "
+            . $skipped . " skipped." . "\n");
+    }
 }
