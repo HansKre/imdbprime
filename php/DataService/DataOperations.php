@@ -175,4 +175,8 @@ class DataOperations {
             myLog("ERROR in DataOperations::addSuccessTimeStamp() while storing ");
         }
     }
+
+    public static function getAllSuccessTimeStamps() : array {
+        return MongoDBService::findAll(MongoDBCollections::$successTimeStamps);
+    }
 }

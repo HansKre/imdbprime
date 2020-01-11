@@ -19,5 +19,11 @@ heroku config -a imdbprime
 if (MONGODB_URI) {
 
     DataOperations::addSuccessTimeStamp();
+    $result = DataOperations::getAllSuccessTimeStamps();
+    echo "Number of entries: " . strval(count($result));
+    foreach ($result as $item) {
+        // nl2br — Fügt vor allen Zeilenumbrüchen eines Strings HTML-Zeilenumbrüche ein
+        echo nl2br($item['finished_successfully_at'] . "\n");
+    }
 
 }
