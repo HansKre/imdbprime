@@ -9,7 +9,7 @@ https://imdbprime.herokuapp.com/php/webAPI/getSuccessTimeStamps.php
 
 $result = DataOperations::getAllSuccessTimeStamps();
 
-header('Content-Type: application/HTML');
+header('Content-Type: text/html');
 
 echo "Number of entries: " . strval(count($result));
 
