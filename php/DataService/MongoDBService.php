@@ -9,7 +9,10 @@ define('MY_DB_NAME', "heroku_n3dfqzx7");
 class MongoDBService {
     private static function db() {
         if (MONGODB_URI) {
-            $uriOptions = array("connectTimeoutMS" => 30000);
+            $uriOptions = array(
+                "connectTimeoutMS" => 30000,
+                'retryWrites' => false
+            );
             // returned results shall be arrays always. Don't return BSONDocuments
             $driverOptions= [
                 'typeMap' => [
@@ -44,7 +47,7 @@ class MongoDBService {
                     return false;
                 }
             } catch (Exception $e) {
-                myLog('Exception while trying to search & insert into the DB:');
+                myLog('Exception while trying to search & insert into the DB in MongoDBService::insertOneUnique. Exception:');
                 myLog($e->getMessage());
             }
         }
