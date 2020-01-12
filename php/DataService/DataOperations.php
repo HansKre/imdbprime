@@ -101,8 +101,8 @@ class DataOperations {
     public static function storeFoundAmazonPrimeMovies(array $movies) {
         foreach ($movies as $movie) {
             if (!MongoDBService::insertOneUnique(MongoDBCollections::$foundOnAmazonPrime, $movie)) {
-                myLog("ERROR in DataOperations::storeFoundAmazonPrimeMovies() while storing " .
-                    $movie['movie']);
+                myLog("INFO in DataOperations::storeFoundAmazonPrimeMovies(). Did not store " .
+                    $movie['movie'] . ' Maybe the exact same movie already existed in the DB.');
                 var_dump($movie);
             }
         }
