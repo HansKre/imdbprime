@@ -130,7 +130,13 @@ class PrimeMovies {
                         }
                     }
                     $year = 0; // ignore the year for now
-                    $movies[] = array('year'=>$year, 'movie'=>$movieTitle, 'director'=>$director, 'actors'=>$actors, 'searchPage'=>$this->currentAmazonPageNumber);
+                    $movies[] = array(
+                        'year'=>$year,
+                        'movie'=>$movieTitle,
+                        'director'=>$director,
+                        'actors'=>$actors,
+                        'searchPage'=>$this->currentAmazonPageNumber
+                    );
                 } else if (!$movieTitleElem[0]) {
                     $lastMovieOnPage = true;
                 } else {
