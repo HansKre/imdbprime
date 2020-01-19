@@ -97,7 +97,7 @@ if ($howToExecute === ReturnValues::$IMDB_QUERY_SHOULD_START) {
         }
     }
 } else if ($howToExecute == ReturnValues::$IMDB_QUERY_SHOULD_CONTINUE) {
-    if (DataOperations::markExecutionAs(ExecutionMarks::$AMAZON_QUERY_STARTED)) {
+    if (DataOperations::markExecutionAs(ExecutionMarks::$IMDB_QUERY_STARTED)) {
         $imdbQuery = new ImdbQuery($myExecutionId);
         if ($imdbQuery->doQuery("Continueing IMDB Query")) {
             DataOperations::markExecutionAs(ExecutionMarks::$IMDB_QUERY_SUCCEEDED);
