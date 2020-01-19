@@ -226,16 +226,18 @@ class PrimeMovies {
     }
 
     private function isLastResultPage($dom) {
-    //<li class="a-disabled a-last">Weiter<span class="a-letter-space"></span><span class="a-letter-space"></span>→</li>
-        $elems = getElementsByClass($dom, 'li', 'a-disabled a-last');
-        if ($elems) {
-            foreach ($elems as $elem) {
-                if (strpos($elem->nodeValue, 'Weiter') !== false) {
-                    return true;
-                }
-            }
+        $enabledWeiter =    '/html/body/div[1]/div[1]/div[1]/div[2]/div/span[8]/div/span/div/div/ul/li[7]/a';
+        $disabledWeiter =   '/html/body/div[1]/div[1]/div[1]/div[2]/div/span[8]/div/span/div/div/ul/li[7]';
+        //the link element (i.e. the a-tag) does not exist in the disabled-state
+
+        $xpath = new DOMXPath($dom);
+        $linkElem = $xpath->query($enabledWeiter);
+
+        if (empty($linkElem)) {
+            return true;
+        } else {
+            return false;
         }
-        return false;
     }
 
     private function debugOut($elem) {
