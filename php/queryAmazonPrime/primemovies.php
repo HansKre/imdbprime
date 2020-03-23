@@ -23,8 +23,23 @@ class PrimeMovies {
         do {
             //Load the HTML page
             //the @ lets ignore errors (since we are retrieving HTTP status code anyway)
-            @$html = file_get_contents($url);// After gile_get_contents is executed,
+            //@$html = file_get_contents($url);
 
+            // set request headers to prevent amazon from assuming that we are a bot
+            $options = array(
+                'http'=>array(
+                    'method'=>"GET",
+                    'header'=>
+                        "Accept: text/html\r\n" .
+                        "Accept-language: de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7\r\n" .
+                        "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36\r\n"
+                )
+            );
+
+            $context = stream_context_create($options);
+            $file = file_get_contents($url, false, $context);
+
+            // After gile_get_contents is executed,
             // @var array $http_response_header is created
             $httpCode = getHttpCode($http_response_header);
 
