@@ -241,17 +241,34 @@ class PrimeMovies {
     }
 
     private function isLastResultPage($dom) {
-        $enabledWeiter =    '/html/body/div[1]/div[1]/div[1]/div[2]/div/span[8]/div/span/div/div/ul/li[7]/a';
-        $disabledWeiter =   '/html/body/div[1]/div[1]/div[1]/div[2]/div/span[8]/div/span/div/div/ul/li[7]';
-        //the link element (i.e. the a-tag) does not exist in the disabled-state
-
         $xpath = new DOMXPath($dom);
-        $linkElem = $xpath->query($enabledWeiter);
 
-        if (empty($linkElem)) {
-            return true;
-        } else {
+        // look for "Benötigen Sie Hilfe?"
+        // if found, then return istLastResultPage == true
+        $needHelpStr = "Benötigen Sie Hilfe?";
+        $needHelpXPath = '//*[@id="search"]/div[1]/div[2]/div/span[10]/div/div/span/span/div/div/div/div/h2/span';
+        $elem = $xpath->query($needHelpXPath);
+
+        if ($elem[0] && $elem[0]->innerHTML) {
+            $value = trim($elem[0]->innerHTML);
+            if (contains($value, $needHelpStr)) {
+                return true;
+            }
+        }
+
+        // look for the 'Weiter' button
+
+        $enabledWeiter =    '/html/body/div[1]/div[1]/div[1]/div[2]/div/span[8]/div/span/div/div/ul/li[7]/a';
+
+        //the link element (i.e. the a-tag) does not exist in the disabled-state
+        $disabledWeiter =   '/html/body/div[1]/div[1]/div[1]/div[2]/div/span[8]/div/span/div/div/ul/li[7]';
+
+        $weiterEnabled = !empty($xpath->query($enabledWeiter));
+
+        if ($weiterEnabled) {
             return false;
+        } else {
+            return true;
         }
     }
 
