@@ -54,6 +54,14 @@ ini_set('max_input_time', '36000');
 /*============EXECUTION LOGIC==============*/
 $myExecutionId = rand();
 
+// Amazon debugging start
+//$myPrimeMovies = new PrimeMovies($myExecutionId);
+//if ($myPrimeMovies->startQuery(179)) {
+//    myLog("PrimeMovies Successful");
+//}
+//return;
+// debugging end
+
 // IMDB debugging start
     //$imdbQuery = new ImdbQuery($myExecutionId);
     //$imdbQuery->doQuery("Continueing IMDB Query");

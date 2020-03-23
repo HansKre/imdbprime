@@ -253,8 +253,8 @@ class PrimeMovies {
         $needHelpXPath = '//*[@id="search"]/div[1]/div[2]/div/span[10]/div/div/span/span/div/div/div/div/h2/span';
         $elem = $xpath->query($needHelpXPath);
 
-        if ($elem[0] && $elem[0]->innerHTML) {
-            $value = trim($elem[0]->innerHTML);
+        if ($elem[0] && $elem[0]->nodeValue) {
+            $value = trim($elem[0]->nodeValue);
             if (contains($value, $needHelpStr)) {
                 return true;
             }
