@@ -37,7 +37,7 @@ class PrimeMovies {
             );
 
             $context = stream_context_create($options);
-            $file = file_get_contents($url, false, $context);
+            @$html = file_get_contents($url, false, $context);
 
             // After gile_get_contents is executed,
             // @var array $http_response_header is created
@@ -58,7 +58,7 @@ class PrimeMovies {
 
         //Parse the HTML. The @ is used to suppress any queryAmazonPrime errors
         //that will be thrown if the $html string isn't valid XHTML.
-        if (@$dom->loadHTML($html)) {
+        if ($html && @$dom->loadHTML($html)) {
             if (IS_DEBUG) $this->log("dom->loadHTML succeeded.");
 
             $xpath = new DOMXPath($dom);
@@ -163,6 +163,10 @@ class PrimeMovies {
             $reachedEnd = $this->isLastResultPage($dom);
             if (IS_DEBUG && empty($movies)) saveHtmlAndXmlToFile($html, $this->currentAmazonPageNumber);
             return $movies;
+        } else {
+            // either $html was null or couldn't initate $dom from $html
+            // let's assume the end is reached, otherwise this case is unhandled
+            $reachedEnd = true;
         }
         if (IS_DEBUG) $this->log("dom->loadHTML did NOT succeeded. Saving to Amazon page to file & Retruning null");
         if (IS_DEBUG) saveHtmlAndXmlToFile($html, $this->currentAmazonPageNumber);
