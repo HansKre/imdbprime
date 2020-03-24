@@ -22,7 +22,11 @@ class DataOperations {
             // there no "lastExecution" entry at all
             return ReturnValues::$AMAZON_QUERY_SHOULD_START;
         } else {
-            $timeDiffMinutes = self::calcTimeDiffMinutes($controlDoc);
+            if (array_key_exists(LAST_EXECUTION_KEY, $controlDoc)) {
+                $timeDiffMinutes = self::calcTimeDiffMinutes($controlDoc);
+            } else {
+                return ReturnValues::$AMAZON_QUERY_SHOULD_START;
+            }
 
             // ===== SWITCH THROUGH ALL THE 4 EXECUTION MARKS ===== //
             if (contains($controlDoc[MARK_EXECUTION_KEY], ExecutionMarks::$AMAZON_QUERY_STARTED)) {
