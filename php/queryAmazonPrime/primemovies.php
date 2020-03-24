@@ -200,14 +200,8 @@ class PrimeMovies {
             if (!empty($newMovies)) {
                 DataOperations::storeFoundAmazonPrimeMovies($newMovies);
                 $this->currentAmazonPageNumber++;
-                if ($sleepTime > 2 * ONESECOND) {
-                    $sleepTime -= 500000;
-                }
             } else {
-                $sleepTime += 500000;
-                myLog($this->executionId .
-                    " Could not find any movies on HTML page, maybe the page was empty? Sleeping for " .
-                    $sleepTime/1000000 . "s and then trying again.");
+                $reachedEnd = true;
             }
             usleep($sleepTime);
         }
@@ -253,7 +247,12 @@ class PrimeMovies {
          * in other words: we don't have to make sure that we received a proper response page from amazon
         */
 
-        $xpath = new DOMXPath($dom);
+        $xpath = null;
+        if ($dom) {
+            $xpath = new DOMXPath($dom);
+        } else {
+            return true;
+        }
 
         // look for "Benötigen Sie Hilfe?"
         // if found, then return istLastResultPage == true
