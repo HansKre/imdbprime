@@ -20,6 +20,7 @@ class PrimeMovies {
         // Download the HTML page
         // Loops to deal with Error from Apache-Logs:
         // PHP Warning:  file_get_contents(<url>): failed to open stream: HTTP request failed! HTTP/1.0 503 Service Unavailable
+        $aging = 1;
         do {
             //Load the HTML page
             //the @ lets ignore errors (since we are retrieving HTTP status code anyway)
@@ -45,8 +46,10 @@ class PrimeMovies {
 
             if ($httpCode !== 200) {
                 myLog("HTTP Code " . strval($httpCode) . " for Amazon Page " .
-                    $this->currentAmazonPageNumber . " @ PrimeMovies::getMoviesFromUrl. Sleeping for 10s");
-                usleep(ONESECOND * 10);
+                    $this->currentAmazonPageNumber . " @ PrimeMovies::getMoviesFromUrl. Sleeping for " . strval($aging * 10) . "s.");
+                myLog($html);
+                usleep(ONESECOND * 10 * $aging);
+                $aging = $aging + 1;
             }
         } while ($httpCode !== 200);
 
