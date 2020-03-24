@@ -245,11 +245,16 @@ class PrimeMovies {
     }
 
     private function isLastResultPage($dom) {
+
+        /* if we are here, we can assume http_status_code == 200
+         * in other words: we don't have to make sure that we received a proper response page from amazon
+        */
+
         $xpath = new DOMXPath($dom);
 
         // look for "Benötigen Sie Hilfe?"
         // if found, then return istLastResultPage == true
-        $needHelpStr = "Benötigen Sie Hilfe?";
+        /*$needHelpStr = "Benötigen Sie Hilfe?";
         $needHelpXPath = '//*[@id="search"]/div[1]/div[2]/div/span[10]/div/div/span/span/div/div/div/div/h2/span';
         $elem = $xpath->query($needHelpXPath);
 
@@ -258,20 +263,24 @@ class PrimeMovies {
             if (contains($value, $needHelpStr)) {
                 return true;
             }
-        }
+        }*/
 
         // look for the 'Weiter' button
 
-        $enabledWeiter =    '/html/body/div[1]/div[1]/div[1]/div[2]/div/span[8]/div/span/div/div/ul/li[7]/a';
+        $enabledWeiter =    '/html/body/div[1]/div[2]/div[1]/div[2]/div/span[8]/div/div/span/div/div/ul/li[7]/a';
+        $isWeiterEnabled = !empty($xpath->query($enabledWeiter));
 
-        //the link element (i.e. the a-tag) does not exist in the disabled-state
-        $disabledWeiter =   '/html/body/div[1]/div[1]/div[1]/div[2]/div/span[8]/div/span/div/div/ul/li[7]';
-
-        $weiterEnabled = !empty($xpath->query($enabledWeiter));
-
-        if ($weiterEnabled) {
+        if ($isWeiterEnabled) {
+            // we are not on the last page, since we can click 'Weiter'
             return false;
         } else {
+            // check if we are on the last page
+            // we check if the 'Weiter' button is present but disabled on the last state
+            /*$disabledWeiter =   '/html/body/div[1]/div[2]/div[1]/div[2]/div/span[8]/div/div/span/div/div/ul/li[7]';
+            $isWeiterDisabled = empty($xpath->query($disabledWeiter));
+            if ($isWeiterDisabled) {
+                return true;
+            }*/
             return true;
         }
     }
