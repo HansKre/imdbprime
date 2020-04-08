@@ -105,6 +105,12 @@ class PrimeMovies {
                 $baseQuery = '//*[@id="search"]/div[1]/div[2]/div/span[4]/div[1]/div[' . $movieCountOnPage . ']';
 
                 $movieTitleElem = $xpath->query($baseQuery . $titleQuerySuffix);
+                if (!$movieTitleElem[0]) {
+                    // retry with slightly different xpath-basheQuery
+                    $baseQuery = '//*[@id="search"]/div[1]/div[1]/div/span[4]/div[1]/div[' . $movieCountOnPage . ']';
+                    $movieTitleElem = $xpath->query($baseQuery . $titleQuerySuffix);
+                }
+
                 $directorElem = $xpath->query($baseQuery . $directorQuerySuffix);
                 $actorsElem = $xpath->query($baseQuery . $actorsQuerySuffix);
 
