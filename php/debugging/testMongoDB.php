@@ -61,9 +61,10 @@ array(6) {
 //echo DataOperations::replaceOldImdbQueryResults();
 //echo MongoDBService::renameCollection(MongoDBCollections::$moviesWithRating, MongoDBCollections::$moviesWithRating);
 echo "Running";
-return;
-
-define('MONGODB_URI', getenv('MONGODB_URI'));
+// already defined in Run-Configuration of PHP-Storm, otherwise define it as env-variable in terminal:
+//define('MONGODB_URI', getenv('MONGODB_URI'));
+//echo MONGODB_URI;
+//return;
 if (MONGODB_URI) {
     $options = array("connectTimeoutMS" => 30000);
     $client = new MongoDB\Client(MONGODB_URI, $options);
@@ -72,7 +73,7 @@ if (MONGODB_URI) {
      * First we'll add a few songs. Nothing is required to create the songs
      * collection; it is created automatically when we insert.
      */
-    $songs = $client->heroku_n3dfqzx7->songs;
+    $songs = $client->imdbprime->songs;
     // To insert a dict, use the insert method.
     $songs->insertMany($seedData);
 

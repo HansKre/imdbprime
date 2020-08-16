@@ -4,7 +4,7 @@ require_once (realpath(dirname(__FILE__)).'/../../vendor/autoload.php'); // incl
 
 
 define('MONGODB_URI', getenv('MONGODB_URI'));
-define('MY_DB_NAME', "heroku_n3dfqzx7");
+define('MY_DB_NAME', "imdbprime");
 
 class MongoDBService {
     private static function db() {

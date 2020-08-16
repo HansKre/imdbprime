@@ -55,6 +55,7 @@ ini_set('max_input_time', '36000');
 $myExecutionId = rand();
 
 // Amazon debugging start
+// url: https://www.amazon.de/s?i=prime-instant-video&bbn=3279204031&rh=n%3A3279204031%2Cn%3A3010076031%2Cn%3A3015915031%2Cp_n_ways_to_watch%3A7448695031%2Cp_72%3A3289799031%2Cp_n_entity_type%3A9739119031&lo=list&dc&page=127&fst=as%3Aoff&qid=1564341535&rnid=9739118031&ref=sr_pg_4
 /*$myPrimeMovies = new PrimeMovies($myExecutionId);
 if ($myPrimeMovies->startQuery(2)) {
     myLog("PrimeMovies Successful");
