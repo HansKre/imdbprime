@@ -13,7 +13,7 @@ class PrimeMovies {
         myLog($this->executionId . " " . $message);
     }
 
-    private function getMoviesFromUrl($url, &$reachedEnd) {
+    private function getMoviesFromUrl($url, &$isLastResultsPage) {
         $movies = array();
         $html = null;
 
@@ -63,6 +63,8 @@ class PrimeMovies {
         //that will be thrown if the $html string isn't valid XHTML.
         if ($html && @$dom->loadHTML($html)) {
             if (IS_DEBUG) $this->log("dom->loadHTML succeeded.");
+
+            $isLastResultsPage = $this->isLastResultPage($dom);
 
             $xpath = new DOMXPath($dom);
 
@@ -162,24 +164,30 @@ class PrimeMovies {
                         'actors'=>$actors,
                         'searchPage'=>$this->currentAmazonPageNumber
                     );
-                } else if (!$movieTitleElem[0]) {
+                } else if ($movieCountOnPage <= 16 && !$isLastResultsPage && !$movieTitleElem[0]) {
+                    $this->log("Failed to parse movie " . $movieCountOnPage . " on current page.");
+                    $this->debugOut($movieTitleElem);
+                    $this->debugOut($directorElem);
+                    $this->debugOut($actorsElem);
+                    $this->log("movieTitleElem: " . $movieTitleElem . " directorElem " . $directorElem . " actorsElem: " . $actorsElem);
+                } else if (!$movieTitleElem[0] && $isLastResultsPage) {
                     $lastMovieOnPage = true;
                 } else {
-                    echo "not valid " . $movieCountOnPage . " on page: " . $this->currentAmazonPageNumber;
+                    $this->log("Failed to parse movie " . $movieCountOnPage . " on current page.");
                 }
                 $movieCountOnPage++;
             }
-
-            $reachedEnd = $this->isLastResultPage($dom);
             if (IS_DEBUG && empty($movies)) saveHtmlAndXmlToFile($html, $this->currentAmazonPageNumber);
             return $movies;
         } else {
             // either $html was null or couldn't initate $dom from $html
             // let's assume the end is reached, otherwise this case is unhandled
-            $reachedEnd = true;
+            $this->log("$ html was null or $ dom->loadHTML($ html) returned null");
+            $isLastResultsPage = true;
         }
         if (IS_DEBUG) $this->log("dom->loadHTML did NOT succeeded. Saving to Amazon page to file & Retruning null");
         if (IS_DEBUG) saveHtmlAndXmlToFile($html, $this->currentAmazonPageNumber);
+        $this->log("Returning movies = null");
         return null;
     }
 
