@@ -172,10 +172,10 @@ class PrimeMovies {
                     $this->debugOut("movieTitleElem", $movieTitleElem);
                     $this->debugOut("directorElem", $directorElem);
                     $this->debugOut("actorsElem", $actorsElem);
-                } else if (!$movieTitleElem[0] && $isLastResultsPage) {
+                } else if (!$movieTitleElem[0]) {
                     $lastMovieOnPage = true;
                 } else {
-                    // handle edge case...
+                    // handle edge case... just in case...
                     $this->log("Failed to parse movie " . $movieCountOnPage . " on current page.");
                 }
             }
