@@ -166,6 +166,7 @@ class PrimeMovies {
                         'actors'=>$actors,
                         'searchPage'=>$this->currentAmazonPageNumber
                     );
+                $movieCountOnPage++;
                 } else if ($movieCountOnPage <= 16 && !$isLastResultsPage && !$movieTitleElem[0]) {
                     $this->log("Failed to parse movie " . $movieCountOnPage . " on current page.");
                     $this->debugOut("movieTitleElem", $movieTitleElem);
@@ -174,9 +175,9 @@ class PrimeMovies {
                 } else if (!$movieTitleElem[0] && $isLastResultsPage) {
                     $lastMovieOnPage = true;
                 } else {
+                    // handle edge case...
                     $this->log("Failed to parse movie " . $movieCountOnPage . " on current page.");
                 }
-                $movieCountOnPage++;
             }
             if (IS_DEBUG && empty($movies)) saveHtmlAndXmlToFile($html, $this->currentAmazonPageNumber);
             return $movies;
