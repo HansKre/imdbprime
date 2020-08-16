@@ -138,9 +138,11 @@ class PrimeMovies {
                 if ($movieTitleElem[0] && $movieTitleElem[0]->nodeValue) {
 
                     // debugOut not before here to avoid the false triggers for when end of page is reached
-                    $this->debugOut($movieTitleElem);
-                    $this->debugOut($directorElem);
-                    $this->debugOut($actorsElem);
+                    if (IS_DEBUG) {
+                        $this->debugOut("movieTitleElem", $movieTitleElem);
+                        $this->debugOut("directorElem", $directorElem);
+                        $this->debugOut("actorsElem", $actorsElem);
+                    }
 
                     $movieTitle = $movieTitleElem[0]->nodeValue;
                     // take the first director only
@@ -166,10 +168,9 @@ class PrimeMovies {
                     );
                 } else if ($movieCountOnPage <= 16 && !$isLastResultsPage && !$movieTitleElem[0]) {
                     $this->log("Failed to parse movie " . $movieCountOnPage . " on current page.");
-                    $this->debugOut($movieTitleElem);
-                    $this->debugOut($directorElem);
-                    $this->debugOut($actorsElem);
-                    $this->log("movieTitleElem: " . $movieTitleElem . " directorElem " . $directorElem . " actorsElem: " . $actorsElem);
+                    $this->debugOut("movieTitleElem", $movieTitleElem);
+                    $this->debugOut("directorElem", $directorElem);
+                    $this->debugOut("actorsElem", $actorsElem);
                 } else if (!$movieTitleElem[0] && $isLastResultsPage) {
                     $lastMovieOnPage = true;
                 } else {
@@ -304,13 +305,11 @@ class PrimeMovies {
         }
     }
 
-    private function debugOut($elem) {
-        if (IS_DEBUG) {
+    private function debugOut($name, $elem) {
             if ($elem[0] && $elem[0]->nodeValue) {
-                $this->log(trim($elem[0]->nodeValue));
+                $this->log($name . ": " . trim($elem[0]->nodeValue));
             } else {
-                $this->log("PrimeMovies::debugOut failed to print the nodeValue");
+                $this->log("PrimeMovies::debugOut failed to print the nodeValue for " . $name);
             }
-        }
     }
 }
