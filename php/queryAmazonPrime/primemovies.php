@@ -208,7 +208,9 @@ class PrimeMovies {
                 DataOperations::storeFoundAmazonPrimeMovies($newMovies);
                 $this->currentAmazonPageNumber++;
             } else {
-                $reachedEnd = true;
+                // we assume that there should not be amazon pages with zero movies if we everything works correctly
+                myLog($this->executionId . ' newMovies was empty. Trying again.');
+                usleep(ONESECOND * 10);
             }
             usleep($sleepTime);
         }
