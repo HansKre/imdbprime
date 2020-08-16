@@ -2,7 +2,7 @@
 ini_set('max_execution_time', 3600);
 require_once(realpath(dirname(__FILE__)).'/../commons.php');
 
-const IS_DEBUG = false;
+const IS_DEBUG = true;
 
 class PrimeMovies {
     private $currentAmazonPageNumber;
@@ -67,8 +67,9 @@ class PrimeMovies {
             $xpath = new DOMXPath($dom);
 
             /*
-             * xpath to movie title1:   '//*[@id="search"]/div[1]/div[2]/div/span[3]/div[1]/div[1]  /div/div/div/div[2]/div[2]/div/div[1]/div/div/div[1]/h2/a/span'
-             * xpath to movie title2:   '//*[@id="search"]/div[1]/div[2]/div/span[3]/div[1]/div[2]  /div/div/div/div[2]/div[2]/div/div[1]/div/div/div[1]/h2/a/span'
+             * xpath to movie title1:   '//*[@id="search"]/div[1]/div/div[1]/div/span[3]/div[2]/div[1]  /div/span/div/div/div[2]/div[2]/div/div[1]/div/div/div[1]/h2/a/span'
+             * xpath to movie title2:   '//*[@id="search"]/div[1]/div/div[1]/div/span[3]/div[2]/div[2]  /div/span/div/div/div[2]/div[2]/div/div[1]/div/div/div[1]/h2/a/span'
+             *
              * xpath to director1:      '//*[@id="search"]/div[1]/div[2]/div/span[3]/div[1]/div[1]  /div/div/div/div[2]/div[2]/div/div[2]/div[2]/div/div/ul/li[2]/span/a'
              * xpath to director2:      '//*[@id="search"]/div[1]/div[2]/div/span[3]/div[1]/div[2]  /div/div/div/div[2]/div[2]/div/div[2]/div[2]/div/div/ul/li[2]/span/a'
              *                          '//*[@id="search"]/div[1]/div[2]/div/span[3]/div[1]/div[12] /div/div/div/div[2]/div[2]/div/div[2]/div[2]/div/div/ul/li/span/a'
@@ -102,7 +103,7 @@ class PrimeMovies {
 
             // iterate over the movies on current search page
             while (!$lastMovieOnPage) {
-                $baseQuery = '//*[@id="search"]/div[1]/div[2]/div/span[4]/div[1]/div[' . $movieCountOnPage . ']';
+                $baseQuery = '//*[@id="search"]/div[1]/div/div[1]/div/span[3]/div[2]/div[' . $movieCountOnPage . ']';
 
                 $movieTitleElem = $xpath->query($baseQuery . $titleQuerySuffix);
                 if (!$movieTitleElem[0]) {
@@ -275,7 +276,7 @@ class PrimeMovies {
 
         // look for the 'Weiter' button
 
-        $enabledWeiter =    '/html/body/div[1]/div[2]/div[1]/div[2]/div/span[8]/div/div/span/div/div/ul/li[7]/a';
+        $enabledWeiter =    '/html/body/div[1]/div[2]/div[1]/div/div[1]/div/span[3]/div[2]/div[17]/span/div/div/ul/li[7]/a';
         $isWeiterEnabled = !empty($xpath->query($enabledWeiter));
 
         if ($isWeiterEnabled) {
