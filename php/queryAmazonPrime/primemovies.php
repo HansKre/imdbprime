@@ -71,7 +71,7 @@ class PrimeMovies {
             /*
              * xpath to movie title1:   '//*[@id="search"]/div[1]/div/div[1]/div/span[3]/div[2]/div[1]  /div/span/div/div/div[2]/div[2]/div/div[1]/div/div/div[1]/h2/a/span'
              * xpath to movie title2:   '//*[@id="search"]/div[1]/div/div[1]/div/span[3]/div[2]/div[2]  /div/span/div/div/div[2]/div[2]/div/div[1]/div/div/div[1]/h2/a/span'
-             *
+             *  alternative query       '//*[@id="search"]/div[1]/div[2]/div/span[3]/div[2]/div[1]      /div/span/div/div/div[2]/div[2]/div/div[1]/div/div/div[1]/h2/a/span
              * xpath to director1:      '//*[@id="search"]/div[1]/div[2]/div/span[3]/div[1]/div[1]  /div/div/div/div[2]/div[2]/div/div[2]/div[2]/div/div/ul/li[2]/span/a'
              * xpath to director2:      '//*[@id="search"]/div[1]/div[2]/div/span[3]/div[1]/div[2]  /div/div/div/div[2]/div[2]/div/div[2]/div[2]/div/div/ul/li[2]/span/a'
              *                          '//*[@id="search"]/div[1]/div[2]/div/span[3]/div[1]/div[12] /div/div/div/div[2]/div[2]/div/div[2]/div[2]/div/div/ul/li/span/a'
@@ -110,8 +110,11 @@ class PrimeMovies {
                 $movieTitleElem = $xpath->query($baseQuery . $titleQuerySuffix);
                 if (!$movieTitleElem[0]) {
                     // retry with slightly different xpath-basheQuery
-                    $baseQuery = '//*[@id="search"]/div[1]/div[1]/div/span[4]/div[1]/div[' . $movieCountOnPage . ']';
+                    $baseQuery = '//*[@id="search"]/div[1]/div[2]/div/span[3]/div[2]/div[' . $movieCountOnPage . ']';
                     $movieTitleElem = $xpath->query($baseQuery . $titleQuerySuffix);
+                    if (!$movieTitleElem[0]) {
+                        $this->log("IMPORTANT: alternative query does not work!!!");
+                    }
                 }
 
                 $directorElem = $xpath->query($baseQuery . $directorQuerySuffix);
@@ -166,7 +169,6 @@ class PrimeMovies {
                         'actors'=>$actors,
                         'searchPage'=>$this->currentAmazonPageNumber
                     );
-                $movieCountOnPage++;
                 } else if ($movieCountOnPage <= 16 && !$isLastResultsPage && !$movieTitleElem[0]) {
                     $this->log("Failed to parse movie " . $movieCountOnPage . " on current page.");
                     $this->debugOut("movieTitleElem", $movieTitleElem);
@@ -178,6 +180,7 @@ class PrimeMovies {
                     // handle edge case... just in case...
                     $this->log("Failed to parse movie " . $movieCountOnPage . " on current page.");
                 }
+                $movieCountOnPage++;
             }
             if (IS_DEBUG && empty($movies)) saveHtmlAndXmlToFile($html, $this->currentAmazonPageNumber);
             return $movies;
